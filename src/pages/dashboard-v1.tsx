@@ -52,19 +52,24 @@ const Dashboard = () => {
           <div className="text-xl font-medium">Rift</div>
           <Input badge={true} placeholder="Search..." />
           <div className="flex flex-col gap-2 font-medium text-muted-foreground">
-            <Link href="/dashboard" className={`flex items-center gap-2`}>
+            <Button
+              variant="ghost"
+              className={`flex items-center justify-start gap-2`}
+            >
               <Home />
               Home
-            </Link>
+            </Button>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <div
-                    className={`flex cursor-not-allowed items-center gap-2 text-muted`}
+                  <Button
+                    variant="ghost"
+                    disabled
+                    className={`flex items-center gap-2 disabled:cursor-not-allowed`}
                   >
                     <Chat />
                     Chat
-                  </div>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Talk to your favorite creators!</p>
@@ -73,10 +78,13 @@ const Dashboard = () => {
             </TooltipProvider>
             <Sheet>
               <SheetTrigger>
-                <span className={`flex items-center gap-2`}>
+                <Button
+                  variant="ghost"
+                  className={`flex w-full items-center justify-start gap-2`}
+                >
                   <Notifications />
                   Notifications
-                </span>
+                </Button>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
@@ -103,14 +111,14 @@ const Dashboard = () => {
                 </div>
               </SheetContent>
             </Sheet>
-            <Link href="/explore" className={`flex items-center gap-2`}>
+            <Button variant="ghost" className={`flex items-center gap-2 justify-start`}>
               <Explore />
               Explore
-            </Link>
-            <Link href="/@username" className={`flex items-center gap-2`}>
+            </Button>
+            <Button variant="ghost" className={`flex items-center gap-2 justify-start`}>
               <Profile />
               Profile
-            </Link>
+            </Button>
           </div>
         </div>
         <div className="flex items-center justify-between">
