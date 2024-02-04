@@ -4,35 +4,41 @@
 
 @layer base {
   :root {
-    --background: #020817;
-    --foreground: #f8fafc;
+    --background: #0d0d0d;
+    --foreground: #ffffff;
 
-    --card: #020817;
-    --card-foreground: #f8fafc;
+    --card: var(--background);
+    --card-foreground: var(--foreground);
 
-    --popover: #020817;
-    --popover-foreground: #f8fafc;
+    --popover: var(--background);
+    --popover-foreground: var(--foreground);
 
-    --primary: #f8fafc;
-    --primary-foreground: #0f1729;
+    --badge-destructive: #f8c9d2;
+    --badge-destructive-foreground: #710e21;
 
-    --secondary: #1d2839;
-    --secondary-foreground: #f8fafc;
+    --primary: #6e3ff3;
+    --primary-foreground: #ffffff;
 
-    --muted: #1d2839;
-    --muted-foreground: #787b7f;
+    --secondary: #333333;
+    --secondary-foreground: #afafaf;
 
-    --accent: #1d2839;
-    --accent-foreground: #f8fafc;
+    --muted: #333333;
+    --muted-foreground: #777777;
 
-    --destructive: #811d1d;
-    --destructive-foreground: #f8fafc;
+    --accent: #6e3ff3;
+    --accent-foreground: #ffffff;
 
-    --border: #1d2839;
-    --input: #1d2839;
-    --ring: #cbd5e1;
+    --destructive: #df1c41;
+    --destructive-foreground: #ffffff;
 
-    --radius: 0.5rem;
+    --success: #cbf5e5;
+    --success-foreground: #176448;
+
+    --border: #333333;
+    --input: #333333;
+    --ring: #333333;
+
+    --radius: 8px;
   }
 }
 
