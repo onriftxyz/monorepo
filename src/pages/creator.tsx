@@ -5,7 +5,8 @@ import {
   Add,
   Analytics,
   ArrowTopRight,
-  ChevronUpDownS,
+  Chat,
+  ChevronDown,
   Explore,
   Home,
   Members,
@@ -16,14 +17,7 @@ import {
   Views,
 } from "~/components/icons";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  OverviewCard,
-} from "~/components/ui/card";
+import { OverviewCard } from "~/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
@@ -38,10 +32,8 @@ import {
   TableBody,
   TableCell,
 } from "~/components/ui/table";
-import Image from "next/image";
 import { cn, parseJwt } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
-import { Badge } from "~/components/ui/badge";
 import {
   Select,
   SelectTrigger,
@@ -49,18 +41,21 @@ import {
   SelectContent,
   SelectItem,
   SelectGroup,
-  SelectLabel,
 } from "~/components/ui/select";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 const CreatorDashboard = () => {
   const [user, setUser] = useState<string>();
-  const [userEmail, setUserEmail] = useState<string>();
+  const [wallet, setWallet] = useState<string>();
+
+  const router = useRouter();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     setUser(parseJwt(getAuthToken())?.username);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    setUserEmail(parseJwt(getAuthToken())?.email);
+    setWallet(parseJwt(getAuthToken())?.verified_account?.address);
   }, []);
 
   return (
@@ -72,59 +67,64 @@ const CreatorDashboard = () => {
     >
       <div className="flex flex-col justify-between gap-4 px-4 py-6">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 text-lg font-medium">
-            <Image
-              src="https://img.logoipsum.com/299.svg"
-              width={42}
-              height={42}
-              alt="icon"
-              className="rounded-full"
-            />
-            <div className="flex flex-col">
-              <div className="leading-4">Project 1</div>
-              <div className="text-sm text-muted-foreground">
-                Creator Dashboard
-              </div>
+          <div className="flex flex-col">
+            <div className="text-sm uppercase">Rift</div>
+            <div className="text-xs text-secondary-foreground">
+              Creator Dashboard
             </div>
           </div>
           <Separator />
           <div className="flex flex-col gap-2 font-medium text-muted-foreground">
             <Button
-              variant="ghost"
+              variant={router.pathname === "/creator" ? "default" : "ghost"}
               className={`flex items-center justify-start gap-2`}
             >
-              <Home />
+              <Home size={20} />
               Dashboard
             </Button>
             <Collapsible>
               <div className="flex items-center justify-between">
                 <Button
-                  variant="ghost"
+                  variant={
+                    router.pathname === "/creator/posts" ? "default" : "ghost"
+                  }
                   className={`flex w-full items-center justify-start gap-2`}
                 >
-                  <Post />
+                  <Post size={20} />
                   Posts
                 </Button>
                 <CollapsibleTrigger>
-                  <ChevronUpDownS />
+                  <ChevronDown size={20} />
                 </CollapsibleTrigger>
               </div>
               <CollapsibleContent>
                 <Button
-                  variant="ghost"
+                  variant={
+                    router.pathname === "/creator/posts/drafts"
+                      ? "default"
+                      : "ghost"
+                  }
                   className={`flex w-full items-center justify-start gap-2`}
                 >
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drafts
                 </Button>
                 <Button
                   disabled
-                  variant="ghost"
+                  variant={
+                    router.pathname === "/creator/posts/scheduled"
+                      ? "default"
+                      : "ghost"
+                  }
                   className={`flex w-full items-center justify-start gap-2 disabled:cursor-not-allowed`}
                 >
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Scheduled
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant={
+                    router.pathname === "/creator/posts/published"
+                      ? "default"
+                      : "ghost"
+                  }
                   className={`flex w-full items-center justify-start gap-2`}
                 >
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published
@@ -132,34 +132,49 @@ const CreatorDashboard = () => {
               </CollapsibleContent>
             </Collapsible>
             <Button
-              variant="ghost"
+              variant={
+                router.pathname === "/creator/members" ? "default" : "ghost"
+              }
               className={`flex items-center justify-start gap-2`}
             >
-              <Members />
+              <Members size={20} />
               Members
             </Button>
             <Button
-              variant="ghost"
+              variant={
+                router.pathname === "/creator/chat" ? "default" : "ghost"
+              }
               className={`flex items-center justify-start gap-2`}
             >
-              <Settings />
-              Settings
+              <Chat size={20} />
+              Chat
             </Button>
             <Button
-              variant="ghost"
+              variant={
+                router.pathname === "/creator/settings" ? "default" : "ghost"
+              }
               className={`flex items-center justify-start gap-2`}
             >
-              <Profile />
-              Profile
+              <Settings size={20} />
+              Settings
             </Button>
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <span>{user}</span>
-            <span className="text-xs font-medium text-muted-foreground">
-              {userEmail}
-            </span>
+          <div className="flex items-center gap-2">
+            <Image
+              src="https://picsum.photos/64"
+              alt="profile photo"
+              width={48}
+              height={48}
+              className="h-10 w-10 rounded-full"
+            />
+            <div className="flex flex-col">
+              <span>{user}</span>
+              <span className="text-xs font-medium text-muted-foreground">
+                {wallet ?? "0x000000000000"}
+              </span>
+            </div>
           </div>
           <Button variant={"outline"} size={"icon"}>
             <Settings />
@@ -172,7 +187,7 @@ const CreatorDashboard = () => {
             Creator Dashboard
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" className="flex items-center">
               <Explore />
               Visit site
               <ArrowTopRight />
@@ -185,12 +200,14 @@ const CreatorDashboard = () => {
         </div>
         <div className="flex items-center justify-between pt-4">
           <div className="flex gap-2">
-            <Analytics />
+            <span className="text-secondary-foreground">
+              <Analytics />
+            </span>
             Overview
           </div>
           <div>
             <Select>
-              <SelectTrigger className="w-[100px]">
+              <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Time period" />
               </SelectTrigger>
               <SelectContent>
