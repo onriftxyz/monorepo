@@ -7,6 +7,7 @@ import {
   ArrowTopRight,
   Chat,
   ChevronDown,
+  ChevronRight,
   Explore,
   Home,
   Members,
@@ -176,8 +177,8 @@ const CreatorDashboard = () => {
               </span>
             </div>
           </div>
-          <Button variant={"outline"} size={"icon"}>
-            <Settings />
+          <Button variant={"ghost"} size={"icon"}>
+            <ChevronRight />
           </Button>
         </div>
       </div>

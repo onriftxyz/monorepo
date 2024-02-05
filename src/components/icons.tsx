@@ -185,6 +185,39 @@ export const Money = ({ size = 24 }: IconProps) => {
   );
 };
 
+export const Add = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+        fill="white"
+      />
+    </svg>
+  );
+};
+
+// Chevrons / Arrows
+
+export const ChevronRight = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12.7958 11.9992L9.08331 8.2867L10.1438 7.2262L14.9168 11.9992L10.1438 16.7722L9.08331 15.7117L12.7958 11.9992Z" />
+    </svg>
+  );
+};
+
 export const ChevronDown = ({ size = 24 }: IconProps) => {
   return (
     <svg
@@ -209,23 +242,6 @@ export const ArrowTopRight = ({ size = 24 }: IconProps) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M13.0582 8.02005L6.49488 14.5834L5.41663 13.5051L11.9792 6.9418H6.19519V5.41669H14.5833V13.8048H13.0582V8.02005Z" />
-    </svg>
-  );
-};
-
-export const Add = ({ size = 24 }: IconProps) => {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
-        fill="white"
-      />
     </svg>
   );
 };
