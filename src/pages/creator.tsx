@@ -9,9 +9,11 @@ import {
   Explore,
   Home,
   Members,
+  Money,
   Post,
   Profile,
   Settings,
+  Views,
 } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import {
@@ -20,17 +22,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  OverviewCard,
 } from "~/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
-import { Input } from "~/components/ui/input";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
   Table,
-  TableCaption,
   TableHeader,
   TableRow,
   TableHead,
@@ -49,7 +50,7 @@ import {
   SelectItem,
   SelectGroup,
   SelectLabel,
-} from "@radix-ui/react-select";
+} from "~/components/ui/select";
 
 const CreatorDashboard = () => {
   const [user, setUser] = useState<string>();
@@ -165,7 +166,7 @@ const CreatorDashboard = () => {
           </Button>
         </div>
       </div>
-      <div className="col-span-4 flex flex-col gap-4 px-8 py-5">
+      <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-[28px]">
             Creator Dashboard
@@ -182,62 +183,48 @@ const CreatorDashboard = () => {
             </Button>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2"><Analytics />Overview</div>
+        <div className="flex items-center justify-between pt-4">
+          <div className="flex gap-2">
+            <Analytics />
+            Overview
+          </div>
           <div>
             <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a fruit" />
+              <SelectTrigger className="w-[100px]">
+                <SelectValue placeholder="Time period" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
+                  <SelectItem value="7d">7 days</SelectItem>
+                  <SelectItem value="30d">30 days</SelectItem>
+                  <SelectItem value="all">All time</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Subscriptions</CardTitle>
-              <CardDescription>All-time subscriber count</CardDescription>
-              <CardContent>
-                <div className="flex items-center gap-2 text-4xl font-semibold">
-                  69K <Badge variant={"success"}>+420%</Badge>
-                </div>
-              </CardContent>
-            </CardHeader>
-          </Card>
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Views</CardTitle>
-              <CardDescription>
-                Post impressions over the past month
-              </CardDescription>
-              <CardContent>
-                <div className="flex items-center gap-2 text-4xl font-semibold">
-                  4.2M <Badge variant={"success"}>+69%</Badge>
-                </div>
-              </CardContent>
-            </CardHeader>
-          </Card>
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Revenue</CardTitle>
-              <CardDescription>MRR over the past month</CardDescription>
-              <CardContent>
-                <div className="flex items-center gap-2 text-4xl font-semibold">
-                  $420K <Badge variant={"destructive"}>-4.2%</Badge>
-                </div>
-              </CardContent>
-            </CardHeader>
-          </Card>
+          <OverviewCard
+            title={"Subscriptions"}
+            data={"69K"}
+            variant={"success"}
+            badge={"+420%"}
+            icon={<Members />}
+          />
+          <OverviewCard
+            title={"Views"}
+            data={"4.2M"}
+            variant={"success"}
+            badge={"+69%"}
+            icon={<Views />}
+          />
+          <OverviewCard
+            title={"Revenue"}
+            data={"$420K"}
+            variant={"destructive"}
+            badge={"-4.2%"}
+            icon={<Money />}
+          />
         </div>
         <div className="grid grid-cols-4 gap-6">
           <div className="col-span-3">

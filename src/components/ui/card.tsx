@@ -1,6 +1,7 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
+import { Badge } from "./badge";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -10,12 +11,12 @@ const Card = React.forwardRef<
     ref={ref}
     className={cn(
       "rounded-xl border-2 bg-card text-card-foreground",
-      className
+      className,
     )}
     {...props}
   />
-))
-Card.displayName = "Card"
+));
+Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -26,8 +27,8 @@ const CardHeader = React.forwardRef<
     className={cn("flex flex-col space-y-1.5 p-6", className)}
     {...props}
   />
-))
-CardHeader.displayName = "CardHeader"
+));
+CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
@@ -38,8 +39,8 @@ const CardTitle = React.forwardRef<
     className={cn("font-semibold leading-none tracking-tight", className)}
     {...props}
   />
-))
-CardTitle.displayName = "CardTitle"
+));
+CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -50,16 +51,16 @@ const CardDescription = React.forwardRef<
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-))
-CardDescription.displayName = "CardDescription"
+));
+CardDescription.displayName = "CardDescription";
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("", className)} {...props} />
-))
-CardContent.displayName = "CardContent"
+));
+CardContent.displayName = "CardContent";
 
 const CardFooter = React.forwardRef<
   HTMLDivElement,
@@ -70,7 +71,48 @@ const CardFooter = React.forwardRef<
     className={cn("flex items-center p-6 pt-0", className)}
     {...props}
   />
-))
-CardFooter.displayName = "CardFooter"
+));
+CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+// Custom card component(s)
+interface OverviewCardProps {
+  title: string;
+  data: string;
+  variant: "success" | "destructive";
+  badge: string;
+  icon: React.ReactNode;
+}
+
+const OverviewCard = ({ title, data, variant, badge, icon }: OverviewCardProps) => {
+  return (
+    <Card className="w-full relative overflow-hidden">
+      <CardHeader>
+        <div className="pb-6">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border p-2">
+            {icon}
+          </div>
+        </div>
+        <CardTitle className="text-sm text-secondary-foreground">
+          {title}
+        </CardTitle>
+        <CardContent>
+          <div className="flex items-center gap-2 text-3xl">
+            {data} <Badge variant={variant}>{badge}</Badge>
+          </div>
+        </CardContent>
+      </CardHeader>
+      <div className={cn("w-28 h-28 rounded-full absolute -bottom-[35%] -right-[35%] blur-[100px]", variant === "success" ? "bg-green-500" : "bg-destructive")} />
+    </Card>
+  );
+};
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  // custom cards
+  OverviewCard,
+};
