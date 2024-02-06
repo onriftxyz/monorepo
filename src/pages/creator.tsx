@@ -95,14 +95,16 @@ const CreatorDashboard = () => {
                   variant={
                     router.pathname === "/creator/posts" ? "default" : "ghost"
                   }
-                  className={`flex w-full items-center justify-start gap-2`}
+                  className={`flex w-full items-center justify-between gap-2`}
                 >
-                  <Post size={20} />
-                  Posts
+                  <div className="flex items-center gap-2">
+                    <Post size={20} />
+                    Posts
+                  </div>
+                  <CollapsibleTrigger>
+                    <ChevronDown size={20} />
+                  </CollapsibleTrigger>
                 </Button>
-                <CollapsibleTrigger>
-                  <ChevronDown size={20} />
-                </CollapsibleTrigger>
               </div>
               <CollapsibleContent>
                 <Button
