@@ -8,8 +8,10 @@ import {
   Chat,
   ChevronDown,
   ChevronRight,
+  Comment,
   Explore,
   Home,
+  Like,
   List,
   Members,
   Money,
@@ -257,9 +259,12 @@ const CreatorDashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[400px]">Post</TableHead>
-                  <TableHead className="text-center">Views</TableHead>
-                  <TableHead className="text-center">Revenue</TableHead>
+                  <TableHead className="w-[500px]">Post</TableHead>
+                  <TableHead className="w-fit text-center">Views</TableHead>
+                  <TableHead className="w-fit text-center">Revenue</TableHead>
+                  <TableHead className="w-fit text-center">
+                    New Members
+                  </TableHead>
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
@@ -269,17 +274,44 @@ const CreatorDashboard = () => {
                   .map(() => (
                     <TableRow key={Math.random() * 100}>
                       <TableCell className="flex items-center gap-2">
-                        <Skeleton className="h-12 w-12 flex-shrink-0" />
-                        <div className="flex w-full flex-col gap-1">
-                          <Skeleton className="h-6 w-full" />
-                          <Skeleton className="h-3 w-full" />
+                        <Image
+                          src={
+                            "https://picsum.photos/64" +
+                            "?random=" +
+                            Math.random() * 10
+                          }
+                          alt="title"
+                          width={64}
+                          height={64}
+                          className="h-12 w-12 flex-shrink-0 rounded-md"
+                        />
+                        <div className="flex w-full flex-col gap-0.5">
+                          <div>Post title</div>
+                          <div className="flex text-xs text-secondary-foreground">
+                            {new Date().toLocaleDateString("en-US", {
+                              month: "short",
+                              year: "numeric",
+                              day: "2-digit",
+                            })}{" "}
+                            &bull;&nbsp;
+                            <Comment size={16} />
+                            &nbsp;
+                            {Math.round(Math.random() * 10)} comments
+                            &bull;&nbsp;
+                            <Like size={16} />
+                            &nbsp;
+                            {Math.round(Math.random() * 100)} likes
+                          </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-6 w-full" />
+                      <TableCell className="text-center">
+                        {Math.round(Math.random() * 100000)}
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-6 w-full" />
+                      <TableCell className="text-center">
+                        ${`${(Math.random() * 1000000) / 100}`.substring(0, 7)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {Math.round(Math.random() * 100000)}
                       </TableCell>
                       <TableCell className="w-6">
                         <Button size="icon" variant="ghost">
