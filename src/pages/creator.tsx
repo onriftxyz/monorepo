@@ -10,11 +10,13 @@ import {
   ChevronRight,
   Explore,
   Home,
+  List,
   Members,
   Money,
   Post,
   Profile,
   Settings,
+  ThreeDots,
   Views,
 } from "~/components/icons";
 import { Button } from "~/components/ui/button";
@@ -245,15 +247,20 @@ const CreatorDashboard = () => {
           />
         </div>
         <div className="grid grid-cols-4 gap-6">
-          <div className="col-span-3">
-            <div className="text-lg font-medium">Recent Posts</div>
+          <div className="col-span-3 rounded-lg border border-border p-4">
+            <div className="flex items-center gap-1">
+              <span className="text-secondary-foreground">
+                <List />
+              </span>
+              Posts
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[400px]">Post</TableHead>
-                  <TableHead>Views</TableHead>
-                  <TableHead>Members</TableHead>
-                  <TableHead className="text-right">Revenue</TableHead>
+                  <TableHead className="text-center">Views</TableHead>
+                  <TableHead className="text-center">Revenue</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -261,8 +268,12 @@ const CreatorDashboard = () => {
                   .fill("post")
                   .map(() => (
                     <TableRow key={Math.random() * 100}>
-                      <TableCell className="font-medium">
-                        <Skeleton className="h-6 w-full" />
+                      <TableCell className="flex items-center gap-2">
+                        <Skeleton className="h-12 w-12 flex-shrink-0" />
+                        <div className="flex w-full flex-col gap-1">
+                          <Skeleton className="h-6 w-full" />
+                          <Skeleton className="h-3 w-full" />
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Skeleton className="h-6 w-full" />
@@ -270,8 +281,10 @@ const CreatorDashboard = () => {
                       <TableCell>
                         <Skeleton className="h-6 w-full" />
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Skeleton className="h-6 w-full" />
+                      <TableCell className="w-6">
+                        <Button size="icon" variant="ghost">
+                          <ThreeDots />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
