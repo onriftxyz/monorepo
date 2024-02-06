@@ -227,6 +227,20 @@ export const Like = ({ size = 24 }: IconProps) => {
   );
 };
 
+export const Draft = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M19.2 3C19.6968 3 20.1 3.4032 20.1 3.9V7.2813L18.3 9.0813V4.8H5.70002V19.2H18.3V16.7178L20.1 14.9178V20.1C20.1 20.5968 19.6968 21 19.2 21H4.80002C4.30322 21 3.90002 20.5968 3.90002 20.1V3.9C3.90002 3.4032 4.30322 3 4.80002 3H19.2ZM20.8002 9.1272L22.0728 10.3998L15.0726 17.4L13.7982 17.3982L13.8 16.1274L20.8002 9.1272ZM12.9 12V13.8H8.40002V12H12.9ZM15.6 8.4V10.2H8.40002V8.4H15.6Z" />
+    </svg>
+  );
+};
+
 // General Icons
 export const Add = ({ size = 24 }: IconProps) => {
   return (
@@ -299,6 +313,61 @@ export const ArrowTopRight = ({ size = 24 }: IconProps) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M13.0582 8.02005L6.49488 14.5834L5.41663 13.5051L11.9792 6.9418H6.19519V5.41669H14.5833V13.8048H13.0582V8.02005Z" />
+    </svg>
+  );
+};
+
+export const ArrowRight = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_d_19_27290)">
+        <path
+          d="M10.5032 7.40005L7.28475 4.18165L8.13315 3.33325L12.8 8.00005L8.13315 12.6669L7.28475 11.8185L10.5032 8.60005H3.19995V7.40005H10.5032Z"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_d_19_27290"
+          x="-2"
+          y="-1"
+          width="20"
+          height="20"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dy="1" />
+          <feGaussianBlur stdDeviation="1" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.321569 0 0 0 0 0.345098 0 0 0 0 0.4 0 0 0 0.06 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_19_27290"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_19_27290"
+            result="shape"
+          />
+        </filter>
+      </defs>
     </svg>
   );
 };
