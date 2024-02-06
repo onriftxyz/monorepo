@@ -4,11 +4,13 @@ import { matter } from "~/components/fonts";
 import {
   Add,
   Analytics,
+  ArrowRight,
   ArrowTopRight,
   Chat,
   ChevronDown,
   ChevronRight,
   Comment,
+  Draft,
   Explore,
   Home,
   Like,
@@ -280,7 +282,7 @@ const CreatorDashboard = () => {
                             "?random=" +
                             Math.random() * 10
                           }
-                          alt="title"
+                          alt="cover image"
                           width={64}
                           height={64}
                           className="h-12 w-12 flex-shrink-0 rounded-md"
@@ -323,13 +325,53 @@ const CreatorDashboard = () => {
               </TableBody>
             </Table>
           </div>
-          <div className="">
-            <div className="text-lg font-medium">Drafts</div>
-            <div className="flex flex-col gap-2 pt-4">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
+          <div className="rounded-lg border border-border p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-secondary-foreground">
+                  <Draft />
+                </span>
+                Drafts
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-secondary-foreground">
+                  {Math.round(Math.random() * 10)}
+                </span>
+                <ArrowRight size={16} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 pt-4">
+              {Array(5)
+                .fill("draft")
+                .map(() => (
+                  <div key={Math.random()} className="flex items-center gap-2">
+                    <Image
+                      src={
+                        "https://picsum.photos/64" +
+                        "?random=" +
+                        Math.random() * 10
+                      }
+                      alt="cover image"
+                      width={64}
+                      height={64}
+                      className="h-12 w-12 flex-shrink-0 rounded-md"
+                    />
+                    <div className="flex w-full flex-col gap-0.5">
+                      <div className="line-clamp-1">
+                        Draft post title which is very long for demo purposes
+                      </div>
+                      <div className="line-clamp-1 text-xs text-secondary-foreground">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Quod itaque adipisci nemo ratione, deserunt, non sed,
+                        quas ducimus unde esse quisquam. Sed porro alias
+                        adipisci quibusdam ipsum cupiditate eos amet?
+                      </div>
+                    </div>
+                    <span className="text-secondary-foreground">
+                      <ThreeDots />
+                    </span>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
