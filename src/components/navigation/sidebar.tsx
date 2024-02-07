@@ -13,8 +13,8 @@ import {
   Chat,
   Settings,
   ChevronRight,
-} from "./icons";
-import { Button } from "./ui/button";
+} from "../icons";
+import { Button } from "../ui/button";
 import Image from "next/image";
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useState, useEffect } from "react";

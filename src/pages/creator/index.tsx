@@ -1,18 +1,13 @@
 import { matter } from "~/components/fonts";
 import {
-  Add,
   Analytics,
   ArrowRight,
-  ArrowTopRight,
   Comment,
   Draft,
-  Explore,
   Like,
   List,
   Members,
   Money,
-  Notifications,
-  Search,
   ThreeDots,
   Views,
 } from "~/components/icons";
@@ -36,7 +31,8 @@ import {
   SelectGroup,
 } from "~/components/ui/select";
 import Image from "next/image";
-import { CreatorSidebar } from "~/components/sidebar";
+import { CreatorSidebar } from "~/components/navigation/sidebar";
+import { CreatorTopNav } from "~/components/navigation/navbar";
 
 const CreatorDashboard = () => {
   return (
@@ -48,28 +44,7 @@ const CreatorDashboard = () => {
     >
       <CreatorSidebar />
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[28px]">
-            Creator Dashboard
-          </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size={"icon"}>
-              <Search size={20} />
-            </Button>
-            <Button variant="ghost" size={"icon"}>
-              <Notifications size={20} />
-            </Button>
-            <Button variant="outline" className="flex items-center">
-              <Explore />
-              Visit site
-              <ArrowTopRight />
-            </Button>
-            <Button>
-              <Add />
-              Create
-            </Button>
-          </div>
-        </div>
+        <CreatorTopNav title="Creator Dashboard" />
         <div className="flex items-center justify-between pt-4">
           <div className="flex gap-2">
             <span className="text-secondary-foreground">
