@@ -16,8 +16,8 @@
     --badge-destructive: #f8c9d2;
     --badge-destructive-foreground: #710e21;
 
-    --primary: #6e3ff3;
-    --primary-foreground: #ffffff;
+    --primary: #375DFB;
+    --primary-foreground: var(--foreground);
 
     --secondary: #333333;
     --secondary-foreground: #afafaf;
@@ -25,11 +25,11 @@
     --muted: #333333;
     --muted-foreground: #777777;
 
-    --accent: #6e3ff3;
-    --accent-foreground: #ffffff;
+    --accent: #375DFB;
+    --accent-foreground: var(--foreground);
 
     --destructive: #df1c41;
-    --destructive-foreground: #ffffff;
+    --destructive-foreground: var(--foreground);
 
     --success: #cbf5e5;
     --success-foreground: #176448;
