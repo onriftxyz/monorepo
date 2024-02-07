@@ -1,36 +1,23 @@
-import { getAuthToken } from "@dynamic-labs/sdk-react-core";
-import { useEffect, useState } from "react";
 import { matter } from "~/components/fonts";
 import {
   Add,
   Analytics,
   ArrowRight,
   ArrowTopRight,
-  Chat,
-  ChevronDown,
-  ChevronRight,
   Comment,
   Draft,
   Explore,
-  Home,
   Like,
   List,
   Members,
   Money,
-  Post,
-  Profile,
-  Settings,
+  Notifications,
+  Search,
   ThreeDots,
   Views,
 } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { OverviewCard } from "~/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible";
-import { Skeleton } from "~/components/ui/skeleton";
 import {
   Table,
   TableHeader,
@@ -39,8 +26,7 @@ import {
   TableBody,
   TableCell,
 } from "~/components/ui/table";
-import { cn, parseJwt } from "~/lib/utils";
-import { Separator } from "~/components/ui/separator";
+import { cn } from "~/lib/utils";
 import {
   Select,
   SelectTrigger,
@@ -50,21 +36,9 @@ import {
   SelectGroup,
 } from "~/components/ui/select";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { CreatorSidebar } from "~/components/sidebar";
 
 const CreatorDashboard = () => {
-  const [user, setUser] = useState<string>();
-  const [wallet, setWallet] = useState<string>();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    setUser(parseJwt(getAuthToken())?.username);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    setWallet(parseJwt(getAuthToken())?.verified_account?.address);
-  }, []);
-
   return (
     <main
       className={cn(
@@ -72,130 +46,19 @@ const CreatorDashboard = () => {
         matter.className,
       )}
     >
-      <div className="flex flex-col justify-between gap-4 px-4 py-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col">
-            <div className="text-sm uppercase">Rift</div>
-            <div className="text-xs text-secondary-foreground">
-              Creator Dashboard
-            </div>
-          </div>
-          <Separator />
-          <div className="flex flex-col gap-2 font-medium text-muted-foreground">
-            <Button
-              variant={router.pathname === "/creator" ? "default" : "ghost"}
-              className={`flex items-center justify-start gap-2`}
-            >
-              <Home size={20} />
-              Dashboard
-            </Button>
-            <Collapsible>
-              <div className="flex items-center justify-between">
-                <Button
-                  variant={
-                    router.pathname === "/creator/posts" ? "default" : "ghost"
-                  }
-                  className={`flex w-full items-center justify-between gap-2`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Post size={20} />
-                    Posts
-                  </div>
-                  <CollapsibleTrigger>
-                    <ChevronDown size={20} />
-                  </CollapsibleTrigger>
-                </Button>
-              </div>
-              <CollapsibleContent>
-                <Button
-                  variant={
-                    router.pathname === "/creator/posts/drafts"
-                      ? "default"
-                      : "ghost"
-                  }
-                  className={`flex w-full items-center justify-start gap-2`}
-                >
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drafts
-                </Button>
-                <Button
-                  disabled
-                  variant={
-                    router.pathname === "/creator/posts/scheduled"
-                      ? "default"
-                      : "ghost"
-                  }
-                  className={`flex w-full items-center justify-start gap-2 disabled:cursor-not-allowed`}
-                >
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Scheduled
-                </Button>
-                <Button
-                  variant={
-                    router.pathname === "/creator/posts/published"
-                      ? "default"
-                      : "ghost"
-                  }
-                  className={`flex w-full items-center justify-start gap-2`}
-                >
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published
-                </Button>
-              </CollapsibleContent>
-            </Collapsible>
-            <Button
-              variant={
-                router.pathname === "/creator/members" ? "default" : "ghost"
-              }
-              className={`flex items-center justify-start gap-2`}
-            >
-              <Members size={20} />
-              Members
-            </Button>
-            <Button
-              variant={
-                router.pathname === "/creator/chat" ? "default" : "ghost"
-              }
-              className={`flex items-center justify-start gap-2`}
-            >
-              <Chat size={20} />
-              Chat
-            </Button>
-            <Button
-              variant={
-                router.pathname === "/creator/settings" ? "default" : "ghost"
-              }
-              className={`flex items-center justify-start gap-2`}
-            >
-              <Settings size={20} />
-              Settings
-            </Button>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image
-              src="https://picsum.photos/64"
-              alt="profile photo"
-              width={48}
-              height={48}
-              className="h-10 w-10 rounded-full"
-            />
-            <div className="flex flex-col">
-              <span>{user}</span>
-              <span className="text-xs font-medium text-muted-foreground">
-                {wallet ?? "0x000000000000"}
-              </span>
-            </div>
-          </div>
-          <Button variant={"ghost"} size={"icon"}>
-            <ChevronRight />
-          </Button>
-        </div>
-      </div>
+      <CreatorSidebar />
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-[28px]">
             Creator Dashboard
           </div>
           <div className="flex gap-2">
+            <Button variant="ghost" size={"icon"}>
+              <Search size={20} />
+            </Button>
+            <Button variant="ghost" size={"icon"}>
+              <Notifications size={20} />
+            </Button>
             <Button variant="outline" className="flex items-center">
               <Explore />
               Visit site
