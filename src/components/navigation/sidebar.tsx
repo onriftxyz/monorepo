@@ -2,8 +2,8 @@ import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@radix-ui/react-collapsible";
-import { Separator } from "@radix-ui/react-select";
+} from "~/components/ui/collapsible";
+import { Separator } from "~/components/ui/separator";
 import { useRouter } from "next/router";
 import {
   Home,
