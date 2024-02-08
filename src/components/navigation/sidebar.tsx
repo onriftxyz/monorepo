@@ -19,6 +19,7 @@ import Image from "next/image";
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useState, useEffect } from "react";
 import { parseJwt } from "~/lib/utils";
+import { useToast } from "../ui/use-toast";
 
 export const CreatorSidebar = () => {
   const [user, setUser] = useState<string>();
@@ -26,13 +27,15 @@ export const CreatorSidebar = () => {
 
   const router = useRouter();
 
+  const { toast } = useToast();
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     setUser(parseJwt(getAuthToken())?.username);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     setWallet(parseJwt(getAuthToken())?.verified_account?.address);
   }, []);
-  
+
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
       <div className="flex flex-col gap-4">
@@ -136,7 +139,13 @@ export const CreatorSidebar = () => {
               router.pathname === "/creator/settings" ? "default" : "ghost"
             }
             className={`flex items-center justify-start gap-2`}
-            onClick={() => void router.push("/creator/settings")}
+            // onClick={() => void router.push("/creator/settings")}
+            onClick={() =>
+              toast({
+                title: "Not yet implemented!",
+                description: "The settings page has not yet been implemented.",
+              })
+            }
           >
             <Settings size={20} />
             Settings

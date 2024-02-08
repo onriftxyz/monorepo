@@ -8,7 +8,7 @@ import { SolanaWalletConnectors } from "@dynamic-labs/solana";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { CommandPalette } from "~/components/palette";
-import { Toaster } from "~/components/ui/sonner";
+import { Toaster } from "~/components/ui/toaster";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter();
