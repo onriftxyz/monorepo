@@ -1,6 +1,5 @@
 import { ThreeDots } from "@dynamic-labs/sdk-react-core";
 import { matter } from "~/components/fonts";
-import { Like, Comment } from "~/components/icons";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { Button } from "~/components/ui/button";
@@ -64,8 +63,15 @@ const Members = () => {
                     <TableCell>user@domain.com</TableCell>
                     <TableCell>
                       {new Date(
-                        Number(new Date()) - Math.round(Math.random() * (Math.random() * 1000000) * 1000000),
-                      ).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric"})}
+                        Number(new Date()) -
+                          Math.round(
+                            Math.random() * (Math.random() * 1000000) * 1000000,
+                          ),
+                      ).toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </TableCell>
                     <TableCell className="w-6">
                       <Button size="icon" variant="ghost">
