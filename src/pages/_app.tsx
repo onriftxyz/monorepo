@@ -7,6 +7,7 @@ import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { SolanaWalletConnectors } from "@dynamic-labs/solana";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { CommandPalette } from "~/components/palette";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter();
@@ -60,6 +61,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
         <meta name="theme-color" content="#000000" />
       </Head>
+      <CommandPalette />
       <Component {...pageProps} />
     </DynamicContextProvider>
   );
