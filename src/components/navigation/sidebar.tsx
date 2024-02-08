@@ -168,7 +168,16 @@ export const CreatorSidebar = () => {
             </span>
           </div>
         </div>
-        <Button variant={"ghost"} size={"icon"}>
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={() =>
+            toast({
+              title: "Not yet implemented!",
+              description: "Profile settings have not yet been implemented!",
+            })
+          }
+        >
           <ChevronRight />
         </Button>
       </div>
