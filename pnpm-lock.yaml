@@ -65,6 +65,9 @@ dependencies:
   next:
     specifier: ^14.0.4
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
+  next-themes:
+    specifier: ^0.2.1
+    version: 0.2.1(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
   novel:
     specifier: ^0.1.22
     version: 0.1.22(react@18.2.0)(solid-js@1.8.12)(svelte@4.2.9)(vue@3.4.15)
@@ -74,6 +77,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  sonner:
+    specifier: ^1.4.0
+    version: 1.4.0(react-dom@18.2.0)(react@18.2.0)
   superjson:
     specifier: ^2.2.1
     version: 2.2.1
@@ -7331,6 +7337,18 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
+  /next-themes@0.2.1(next@14.1.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==}
+    peerDependencies:
+      next: '*'
+      react: '*'
+      react-dom: '*'
+    dependencies:
+      next: 14.1.0(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /next@13.4.20-canary.15(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Ugd22aq9E0Eq0VFTn3htQjh50097ug8dAPS0v+9+AGz5VDhwx/ybnDo8S80Zjp8KGDuCP9S8LjwOiy0Ln8VeOg==}
     engines: {node: '>=16.14.0'}
@@ -8790,6 +8808,16 @@ packages:
 
   /sonner@0.7.4(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-xRVYOCTAxJge7hRGSwu7q+gIS9B2csuOZw8yNEaXe/qlncft5a7UmkttGNb4LOGu79rAB/GJ6JQbUMpJNf51Nw==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /sonner@1.4.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-nvkTsIuOmi9e5Wz5If8ldasJjZNVfwiXYijBi2dbijvTQnQppvMcXTFNxL/NUFWlI2yJ1JX7TREDsg+gYm9WyA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
