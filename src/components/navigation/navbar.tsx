@@ -1,4 +1,5 @@
-import { Search, Notifications, Explore, ArrowTopRight, Add } from "../icons";
+import { Search, Explore, ArrowTopRight, Add } from "../icons";
+import { Notifications } from "../notification";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
@@ -25,18 +26,7 @@ export const CreatorTopNav = ({ title }: CreatorNavProps) => {
         >
           <Search size={20} />
         </Button>
-        <Button
-          variant="ghost"
-          size={"icon"}
-          onClick={() =>
-            toast({
-              title: "Not yet implemented!",
-              description: "Notifications have not yet been implemented!",
-            })
-          }
-        >
-          <Notifications size={20} />
-        </Button>
+        <Notifications />
         <Button
           variant="outline"
           className="flex items-center"
