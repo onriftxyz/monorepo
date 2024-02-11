@@ -3,7 +3,7 @@ import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { cn } from "~/lib/utils";
 
-const Posts = () => {
+const Published = () => {
   return (
     <main
       className={cn(
@@ -13,11 +13,11 @@ const Posts = () => {
     >
       <CreatorSidebar />
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
-        <CreatorTopNav title="Posts" />
+        <CreatorTopNav title="Published" />
         <div className="flex items-center justify-between pt-4"></div>
       </div>
     </main>
   );
 };
 
-export default Posts;
+export default Published;
