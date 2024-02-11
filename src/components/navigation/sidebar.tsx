@@ -25,6 +25,8 @@ export const CreatorSidebar = () => {
   const [user, setUser] = useState<string>();
   const [wallet, setWallet] = useState<string>();
 
+  const [open, setOpen] = useState(false);
+
   const router = useRouter();
 
   const { toast } = useToast();
@@ -55,31 +57,22 @@ export const CreatorSidebar = () => {
             <Home size={20} />
             Dashboard
           </Button>
-          <Collapsible>
-            <div className="flex items-center justify-between">
+          <Collapsible open={router.pathname.startsWith("/creator/posts") || open} onOpenChange={setOpen}>
+            <CollapsibleTrigger className="w-full">
               <Button
                 variant={
                   router.pathname === "/creator/posts" ? "default" : "ghost"
                 }
                 className={`flex w-full items-center justify-between gap-2`}
-                onClick={(e) => {
-                  if (
-                    (e.target as unknown as { id: string }).id === "posts-btn"
-                  )
-                    void router.push("/creator/posts");
-                }}
-                id="posts-btn"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex w-full items-center gap-2">
                   <Post size={20} />
                   Posts
                 </div>
-                <CollapsibleTrigger className="z-50">
-                  <ChevronDown size={20} />
-                </CollapsibleTrigger>
+                <ChevronDown size={20} />
               </Button>
-            </div>
-            <CollapsibleContent>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-2">
               <Button
                 variant={
                   router.pathname === "/creator/posts/drafts"
