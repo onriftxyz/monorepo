@@ -1,8 +1,20 @@
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { matter, signifier } from "~/components/fonts";
-import { OnboardingButton } from "~/components/OnboardingButton";
+import { OnboardingButton } from "~/components/onboarding";
 
 export default function Home() {
+  const dynamic = useDynamicContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (dynamic.isAuthenticated) {
+      void router.push("/creator");
+    }
+  }, [dynamic]);
+
   return (
     <main
       className={`flex min-h-screen flex-col selection:bg-black selection:text-white ${matter.className}`}
