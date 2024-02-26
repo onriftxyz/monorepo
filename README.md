@@ -1,6 +1,6 @@
 # rift v1
 
-> for collosseum hackathon
+> collosseum hackathon
 > deadline for spec below: 27th march
 
 ## product specs:
@@ -26,3 +26,16 @@
 - "content" other than blogs behind paywall ( copy bento and gumroad)
 - paid thread like chat interface ( pay per thread - can be closed by either party )
 - limited collectible nfts settings with min. cost and royalty ( users pay for mint )
+
+---
+
+## roadmap
+
+week1:
+
+- authentication / user setup ( onboarding )
+- user settings
+- content management
+  - input validation, storage, per post settings
+- followers and email list
+- sending emails and settings around notifications
