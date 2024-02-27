@@ -35,6 +35,8 @@ crypto uniquely enables us to monetize & reward social interactions
 
 ## roadmap
 
+( more general [roadmap](/product/roadmap.md))
+
 week1:
 
 - authentication / user setup ( onboarding )
