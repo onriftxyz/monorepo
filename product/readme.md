@@ -9,6 +9,10 @@
 >
 > slightly longer: we're building a creator platform on solana which focuses on providing tools for creators to increasing their distribution and revenue via products like micropayments gated blogging, gated chats and membership gated services
 
+we enable micropayment gating of content, products and services to creators
+but not stopping there - your loyal audience are also heavily incentivized
+crypto uniquely enables us to monetize & reward social interactions
+
 #### creating:
 
 - smooth onboarding and uploading experience ( easy import etc )
