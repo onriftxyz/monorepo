@@ -6,6 +6,8 @@
 ## product specs:
 
 > creator platform with focus on increasing distribution and revenue for onchain creators
+>
+> slightly longer: we're building a creator platform on solana which focuses on providing tools for creators to increasing their distribution and revenue via products like micropayments gated blogging, gated chats and membership gated services
 
 #### creating:
 
