@@ -29,8 +29,6 @@
 - paid thread like chat interface ( pay per thread - can be closed by either party )
 - limited collectible nfts settings with min. cost and royalty ( users pay for mint )
 
----
-
 ## roadmap
 
 week1:
@@ -39,5 +37,22 @@ week1:
 - user settings
 - content management
   - input validation, storage, per post settings
+  - profile page
+  - settings page
+  - blog page / themes
 - followers and email list
 - sending emails and settings around notifications
+
+week2:
+
+- micropayments gating with getcode.com and solanapay
+- collect nfts and all settings around that
+- farcaster frames
+
+week3:
+
+- feed, explore page and notifications
+- paid chats
+- paid products page on profile
+
+ship it.
