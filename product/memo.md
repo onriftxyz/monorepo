@@ -24,3 +24,7 @@ This approach not only benefits creators by broadening their revenue streams but
 We plan on launching a feature limited MVP for the colosseum hackathon and launching private beta in q2 2024.
 
 You can find us [@onriftxyz](https://twitter.com/onriftxyz) on twitter - also feel free to dm me [@soulninja17](https://x.com/_soulninja) on twitter.
+
+---
+
+https://x.com/onriftxyz/status/1762923195865383144?s=20
