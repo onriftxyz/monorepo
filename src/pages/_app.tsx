@@ -18,7 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       settings={{
         environmentId: "623758f3-78a6-43fc-9261-9478b74f1d19",
         walletConnectors: [SolanaWalletConnectors],
-        appName: "Echo",
+        appName: "Rift",
         shadowDOMEnabled: false,
         eventsCallbacks: {
           onAuthSuccess: () => void router.push("/creator"),

@@ -1,4 +1,4 @@
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { matter } from "~/components/fonts";
