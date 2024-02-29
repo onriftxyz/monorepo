@@ -1,5 +1,12 @@
 import { matter } from "~/components/fonts";
 import {
+  useDynamicContext,
+  useUserWallets,
+  useEmbeddedWallet,
+  useEmbeddedReveal,
+} from "@dynamic-labs/sdk-react-core";
+
+import {
   Analytics,
   ArrowRight,
   Comment,
@@ -33,8 +40,31 @@ import {
 import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
+import { useEffect } from "react";
 
 const CreatorDashboard = () => {
+  const dynCtx = useDynamicContext();
+  const userWallets = useUserWallets();
+  const { setShowAuthFlow } = dynCtx;
+  const { createEmbeddedWallet, userHasEmbeddedWallet } = useEmbeddedWallet();
+  const { initExportProcess } = useEmbeddedReveal();
+
+  console.log(
+    "asdlkfalsdkfjlasdfasdf ---- USER WALLETS ----- askljdfakdjfkasdf",
+  );
+  console.log(userWallets);
+
+  function bringitin() {
+    setShowAuthFlow(true);
+  }
+
+  function hereyougo() {
+    try {
+      const walletId = createEmbeddedWallet();
+      console.log(walletId);
+    } catch (e) {}
+  }
+
   return (
     <main
       className={cn(
@@ -42,8 +72,33 @@ const CreatorDashboard = () => {
         matter.className,
       )}
     >
-      <CreatorSidebar />
-      <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
+      {/* <CreatorSidebar /> */}
+      <div className="text-white">
+        {userWallets.length > 0 ? (
+          userWallets.map((wallet) => (
+            <p key={wallet.id}>
+              {wallet.address}:{" "}
+              {wallet.connected ? "Connected" : "Not connected"}
+            </p>
+          ))
+        ) : (
+          <div>
+            <p className="text-white">No wallets on this account</p>
+            <p className="text-white">do one of two things:</p>
+            <button onClick={bringitin}>connect your wallet</button>
+            {userHasEmbeddedWallet() ? (
+              <p>you alr seem to have one 👀 {}</p>
+            ) : (
+              <button onClick={hereyougo}>
+                let us provision you a wallet which you have custody over
+              </button>
+            )}
+          </div>
+        )}
+        {dynCtx.user?.email}
+        <button onClick={() => initExportProcess()}>fuck</button>;
+      </div>
+      {/* <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Creator Dashboard" />
         <div className="flex items-center justify-between pt-4">
           <div className="flex gap-2">
@@ -215,7 +270,7 @@ const CreatorDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </main>
   );
 };

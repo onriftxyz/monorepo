@@ -21,6 +21,7 @@ export default function Home() {
         A new era of creation.
         <br />
         Coming soon on Solana.
+        <DynamicWidget />
       </div>
     </main>
   );

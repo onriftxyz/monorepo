@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { SolanaWalletConnectors } from "@dynamic-labs/solana";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { CommandPalette } from "~/components/palette";
@@ -17,7 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <DynamicContextProvider
       settings={{
         environmentId: "623758f3-78a6-43fc-9261-9478b74f1d19",
-        walletConnectors: [SolanaWalletConnectors],
+        walletConnectors: [SolanaWalletConnectors, EthereumWalletConnectors],
         appName: "Rift",
         shadowDOMEnabled: false,
         eventsCallbacks: {
