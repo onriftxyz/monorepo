@@ -7,10 +7,10 @@
 onboarding flow:
 
 - user comes to landing page / blog and clicks on cta
-- we give them magic.link / dynamic for email otp/link
+- we give them a magic link / dynamic for email otp/link
 - once they come to the platform they go through basic onboarding process
 - we collect basic user data like name, username, description etc
-- wallets are only required for certain actions and we will show modals for wallet connection that time
+- wallets are only required for certain actions and we will show modals for wallet connection during that time
 - but they are given an option to connect wallet during onboarding as well but as (optional)
 
 ---
@@ -26,4 +26,4 @@ db:
 
 ---
 
-ive asked for the design, and it'll come soon, but just wing it for now
+frontend design is on figma
