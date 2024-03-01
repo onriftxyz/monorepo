@@ -2,8 +2,6 @@ import { matter } from "~/components/fonts";
 import {
   useDynamicContext,
   useUserWallets,
-  useEmbeddedWallet,
-  useEmbeddedReveal,
 } from "@dynamic-labs/sdk-react-core";
 
 import {
@@ -46,9 +44,6 @@ const CreatorDashboard = () => {
   const dynCtx = useDynamicContext();
   const userWallets = useUserWallets();
   const { setShowAuthFlow } = dynCtx;
-  const { createEmbeddedWallet, userHasEmbeddedWallet } = useEmbeddedWallet();
-
-  const { initExportProcess } = useEmbeddedReveal();
 
   console.log(
     "asdlkfalsdkfjlasdfasdf ---- USER WALLETS ----- askljdfakdjfkasdf",
@@ -59,17 +54,6 @@ const CreatorDashboard = () => {
     setShowAuthFlow(true);
   }
 
-  const hereyougo = async () => {
-    if (!userHasEmbeddedWallet()) {
-      try {
-        const walletId = await createEmbeddedWallet();
-        // do whatever you want with that Id
-        console.log(walletId);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
   return (
     <main
       className={cn(
@@ -89,19 +73,10 @@ const CreatorDashboard = () => {
         ) : (
           <div>
             <p className="text-white">No wallets on this account</p>
-            <p className="text-white">do one of two things:</p>
             <button onClick={bringitin}>connect your wallet</button>
-            {userHasEmbeddedWallet() ? (
-              <p>you alr seem to have one 👀 {}</p>
-            ) : (
-              <button onClick={hereyougo}>
-                let us provision you a wallet which you have custody over
-              </button>
-            )}
           </div>
         )}
         {dynCtx.user?.email}
-        <button onClick={() => initExportProcess()}>fuck</button>;
       </div>
       {/* <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Creator Dashboard" />
