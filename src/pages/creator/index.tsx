@@ -47,6 +47,7 @@ const CreatorDashboard = () => {
   const userWallets = useUserWallets();
   const { setShowAuthFlow } = dynCtx;
   const { createEmbeddedWallet, userHasEmbeddedWallet } = useEmbeddedWallet();
+
   const { initExportProcess } = useEmbeddedReveal();
 
   console.log(
@@ -58,13 +59,17 @@ const CreatorDashboard = () => {
     setShowAuthFlow(true);
   }
 
-  function hereyougo() {
-    try {
-      const walletId = createEmbeddedWallet();
-      console.log(walletId);
-    } catch (e) {}
-  }
-
+  const hereyougo = async () => {
+    if (!userHasEmbeddedWallet()) {
+      try {
+        const walletId = await createEmbeddedWallet();
+        // do whatever you want with that Id
+        console.log(walletId);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
   return (
     <main
       className={cn(
