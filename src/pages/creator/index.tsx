@@ -1,5 +1,6 @@
 import { matter } from "~/components/fonts";
 import {
+  DynamicWidget,
   useDynamicContext,
   useUserWallets,
 } from "@dynamic-labs/sdk-react-core";
@@ -251,6 +252,7 @@ const CreatorDashboard = () => {
           </div>
         </div>
       </div> */}
+      <DynamicWidget />
     </main>
   );
 };

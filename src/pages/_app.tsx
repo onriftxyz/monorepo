@@ -21,7 +21,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         appName: "Rift",
         shadowDOMEnabled: false,
         eventsCallbacks: {
-          onAuthSuccess: () => void router.push("/creator"),
+          onAuthSuccess: (args) => {
+            if (args.user.newUser) {
+              void router.push("/onboard");
+            } else {
+              void router.push("/creator");
+            }
+          },
         },
       }}
     >

@@ -1,6 +1,6 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { matter } from "~/components/fonts";
@@ -13,14 +13,18 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { v4 } from "uuid";
+import type { V4Options } from "uuid";
 
 const OnboardingSchema = z.object({
-  email: z.string().email("Did you make a typo?"),
+  name: z.string(),
+  pfp: z.string().url(),
+  about: z.string(),
+  username: z.string().refine((s) => !s.includes(" "), "No Spaces!"),
 });
 
 export default function Home() {
@@ -30,20 +34,24 @@ export default function Home() {
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
     defaultValues: {
-      email: "",
+      name: "",
+      username: "",
+      pfp: "https://randomuser.me/api/portraits/lego/4.jpg",
+      about: "",
     },
   });
 
   const onSubmit = (data: z.infer<typeof OnboardingSchema>) => {
     toast({
       title: "Fake onboarding you...",
-      description: "Email: " + data.email,
     });
   };
 
   useEffect(() => {
-    if (dynamic.isAuthenticated) {
+    if (!dynamic.user?.newUser && dynamic.isAuthenticated) {
       void router.push("/creator");
+    } else if (!dynamic.isAuthenticated) {
+      void router.push("/");
     }
   }, [dynamic]);
 
@@ -64,11 +72,43 @@ export default function Home() {
           >
             <FormField
               control={onboardingForm.control}
-              name="email"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-secondary-foreground">
-                    Email
+                    Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="anatoly@solana.com" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={onboardingForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-secondary-foreground">
+                    Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="anatoly@solana.com" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={onboardingForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-secondary-foreground">
+                    Name
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="anatoly@solana.com" />

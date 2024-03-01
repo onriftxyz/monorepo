@@ -1,4 +1,4 @@
-import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { matter } from "~/components/fonts";
@@ -6,12 +6,18 @@ import { matter } from "~/components/fonts";
 export default function Home() {
   const dynamic = useDynamicContext();
   const router = useRouter();
+  const { setShowAuthFlow } = dynamic;
 
   useEffect(() => {
     if (dynamic.isAuthenticated) {
+      // @todo: check if they've finished onboarding -> if not push to onboard
       void router.push("/creator");
     }
   }, [dynamic]);
+
+  function loginClick() {
+    setShowAuthFlow(true);
+  }
 
   return (
     <main
@@ -20,8 +26,9 @@ export default function Home() {
       <div className="to-background/0 bg-gradient-to-b from-foreground bg-clip-text text-7xl font-medium text-transparent">
         A new era of creation.
         <br />
-        Coming soon on Solana.
-        <DynamicWidget />
+        <button className="mt-5" onClick={loginClick}>
+          Join in
+        </button>
       </div>
     </main>
   );
