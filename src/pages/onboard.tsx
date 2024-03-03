@@ -17,8 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { v4 } from "uuid";
-import type { V4Options } from "uuid";
 
 const OnboardingSchema = z.object({
   name: z.string(),
@@ -54,6 +52,9 @@ export default function Home() {
       void router.push("/");
     }
   }, [dynamic]);
+
+  // get the form data and call createUser
+  // todo: call trpc createUser with data
 
   return (
     <main
