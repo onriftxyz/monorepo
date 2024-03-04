@@ -1,32 +1,33 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-let post = {
-  id: 1,
-  name: "Hello World",
-};
-
 export const userRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   create: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    .input(
+      z.object({
+        name: z.string(),
+        username: z.string(),
+        pfp: z.string(),
+        about: z.string(),
+        email: z.string().email(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user = await ctx.prisma.user.create({
+          data: input,
+        });
 
-      post = { id: post.id + 1, name: input.name };
-      return post;
+        console.log(user);
+
+        return user;
+      } catch (e) {
+        console.log(e);
+        return new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
     }),
-
-  getLatest: publicProcedure.query(() => {
-    return post;
-  }),
 });

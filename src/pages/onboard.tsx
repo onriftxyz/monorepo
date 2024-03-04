@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { api } from "~/utils/api";
 
 const OnboardingSchema = z.object({
   name: z.string(),
@@ -28,6 +29,7 @@ const OnboardingSchema = z.object({
 export default function Home() {
   const dynamic = useDynamicContext();
   const router = useRouter();
+  const createUser = api.user.create.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
@@ -39,10 +41,24 @@ export default function Home() {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof OnboardingSchema>) => {
-    toast({
-      title: "Fake onboarding you...",
+  const onSubmit = async (data: z.infer<typeof OnboardingSchema>) => {
+    const user = await createUser.mutateAsync({
+      email: dynamic.user!.email!,
+      ...data,
     });
+    if (user) {
+      console.log(user);
+      toast({
+        title: "onboarded you...",
+        about: user.name,
+      });
+      router.push("/creator");
+    } else {
+      console.log(user);
+      toast({
+        title: "Could not onboard you...",
+      });
+    }
   };
 
   useEffect(() => {
@@ -52,9 +68,6 @@ export default function Home() {
       void router.push("/");
     }
   }, [dynamic]);
-
-  // get the form data and call createUser
-  // todo: call trpc createUser with data
 
   return (
     <main
@@ -93,7 +106,7 @@ export default function Home() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-secondary-foreground">
-                    Name
+                    Username
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="anatoly@solana.com" />
@@ -109,7 +122,7 @@ export default function Home() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-secondary-foreground">
-                    Name
+                    About
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="anatoly@solana.com" />
