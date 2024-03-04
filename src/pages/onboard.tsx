@@ -18,6 +18,7 @@ import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { api } from "~/utils/api";
+import { TRPCError } from "@trpc/server";
 
 const OnboardingSchema = z.object({
   name: z.string().min(8),
@@ -46,18 +47,16 @@ export default function Home() {
       email: dynamic.user!.email!,
       ...data,
     });
-    if (user) {
-      console.log(user);
+
+    if (user.name === "TRPCError") {
+      toast({
+        title: "could not onboard you...",
+      });
+    } else {
       toast({
         title: "onboarded you...",
-        about: user.name,
       });
       router.push("/creator");
-    } else {
-      console.log(user);
-      toast({
-        title: "Could not onboard you...",
-      });
     }
   };
 
