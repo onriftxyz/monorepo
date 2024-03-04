@@ -2,7 +2,7 @@ import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { prisma } from "./prisma";
+import { db } from "./db/client";
 
 type CreateContextOptions = Record<string, never>;
 
@@ -17,7 +17,7 @@ type CreateContextOptions = Record<string, never>;
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
-  return { prisma, ...opts };
+  return { db, ...opts };
 };
 
 /**

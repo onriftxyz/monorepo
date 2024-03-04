@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import {users} from '~/server/api/db/schema'
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -16,9 +17,7 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const user = await ctx.prisma.user.create({
-          data: input,
-        });
+        const user = await ctx.db.insert(users).values(input);
 
         console.log(user);
 

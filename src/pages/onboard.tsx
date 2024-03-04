@@ -48,7 +48,7 @@ export default function Home() {
       ...data,
     });
 
-    if (user.name === "TRPCError") {
+    if (user instanceof TRPCError && user.name === "TRPCError") {
       toast({
         title: "could not onboard you...",
       });
