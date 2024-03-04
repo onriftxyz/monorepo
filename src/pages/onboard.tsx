@@ -20,10 +20,13 @@ import { Separator } from "~/components/ui/separator";
 import { api } from "~/utils/api";
 
 const OnboardingSchema = z.object({
-  name: z.string(),
+  name: z.string().min(8),
   pfp: z.string().url(),
   about: z.string(),
-  username: z.string().refine((s) => !s.includes(" "), "No Spaces!"),
+  username: z
+    .string()
+    .min(4)
+    .refine((s) => !s.includes(" "), "No Spaces!"),
 });
 
 export default function Home() {
@@ -34,10 +37,7 @@ export default function Home() {
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
     defaultValues: {
-      name: "",
-      username: "",
       pfp: "https://randomuser.me/api/portraits/lego/4.jpg",
-      about: "",
     },
   });
 
@@ -102,7 +102,7 @@ export default function Home() {
 
             <FormField
               control={onboardingForm.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-secondary-foreground">
@@ -118,7 +118,7 @@ export default function Home() {
 
             <FormField
               control={onboardingForm.control}
-              name="name"
+              name="about"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-secondary-foreground">
