@@ -7,4 +7,4 @@ export default {
   dbCredentials: {
     connectionString: env.DATABASE_URL,
   },
-} satisfies Config; 
+} satisfies Config;
