@@ -12,9 +12,9 @@ export const users = pgTable("users", {
   name: text("name"),
   email: varchar("email", { length: 256 }).unique(),
   username: varchar("username", { length: 32 }).unique(),
-  about: text("about").notNull(),
+  about: text("about"),
   onboarded: boolean("onboarded").default(false),
-  pfp: text("pfp").notNull(),
+  pfp: text("pfp"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
