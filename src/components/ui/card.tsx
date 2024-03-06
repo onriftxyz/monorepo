@@ -83,9 +83,15 @@ interface OverviewCardProps {
   icon: React.ReactNode;
 }
 
-const OverviewCard = ({ title, data, variant, badge, icon }: OverviewCardProps) => {
+const OverviewCard = ({
+  title,
+  data,
+  variant,
+  badge,
+  icon,
+}: OverviewCardProps) => {
   return (
-    <Card className="w-full relative overflow-hidden">
+    <Card className="relative w-full overflow-hidden">
       <CardHeader>
         <div className="pb-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border p-2">
@@ -101,7 +107,12 @@ const OverviewCard = ({ title, data, variant, badge, icon }: OverviewCardProps) 
           </div>
         </CardContent>
       </CardHeader>
-      <div className={cn("w-28 h-28 rounded-full absolute -bottom-[35%] -right-[35%] blur-[100px]", variant === "success" ? "bg-green-500" : "bg-destructive")} />
+      <div
+        className={cn(
+          "absolute -bottom-[35%] -right-[35%] h-28 w-28 rounded-full blur-[100px]",
+          variant === "success" ? "bg-green-500" : "bg-destructive",
+        )}
+      />
     </Card>
   );
 };

@@ -111,11 +111,17 @@ const Dashboard = () => {
                 </div>
               </SheetContent>
             </Sheet>
-            <Button variant="ghost" className={`flex items-center gap-2 justify-start`}>
+            <Button
+              variant="ghost"
+              className={`flex items-center justify-start gap-2`}
+            >
               <Explore />
               Explore
             </Button>
-            <Button variant="ghost" className={`flex items-center gap-2 justify-start`}>
+            <Button
+              variant="ghost"
+              className={`flex items-center justify-start gap-2`}
+            >
               <Profile />
               Profile
             </Button>

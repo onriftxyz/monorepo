@@ -11,7 +11,7 @@
     "generate": "drizzle-kit generate:pg --schema=src/server/api/db/schema.ts",
     "postinstall": "pnpm run generate",
     "studio": "drizzle-kit studio",
-    "push:remote":"drizzle-kit push:pg",
+    "push:remote": "drizzle-kit push:pg",
     "format:fix": "prettier --write ."
   },
   "dependencies": {

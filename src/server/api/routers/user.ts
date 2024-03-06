@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import {users} from '~/server/api/db/schema'
+import { users } from "~/server/api/db/schema";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 

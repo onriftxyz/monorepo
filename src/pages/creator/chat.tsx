@@ -15,7 +15,7 @@ const Members = () => {
       <CreatorSidebar />
       <div className="col-span-4 flex flex-col px-8 pt-5">
         <CreatorTopNav title="Chat" />
-        <div className="grid grid-cols-3 gap-4 pt-5 divide-x-[1px] divide-muted">
+        <div className="grid grid-cols-3 gap-4 divide-x-[1px] divide-muted pt-5">
           <ChatSidebar />
           <div className="col-span-2"></div>
         </div>

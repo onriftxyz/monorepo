@@ -57,7 +57,10 @@ export const CreatorSidebar = () => {
             <Home size={20} />
             Dashboard
           </Button>
-          <Collapsible open={router.pathname.startsWith("/creator/posts") || open} onOpenChange={setOpen}>
+          <Collapsible
+            open={router.pathname.startsWith("/creator/posts") || open}
+            onOpenChange={setOpen}
+          >
             <CollapsibleTrigger className="w-full">
               <Button
                 variant={

@@ -10,6 +10,6 @@ export const matter = localFont({
 });
 
 export const signifier = localFont({
-    src: "./fonts/Signifier-Italic.woff2",
-    style: "italic"
-})
+  src: "./fonts/Signifier-Italic.woff2",
+  style: "italic",
+});
