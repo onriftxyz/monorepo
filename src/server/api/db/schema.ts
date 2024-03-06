@@ -5,6 +5,7 @@ import {
   varchar,
   boolean,
   timestamp,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -15,6 +16,18 @@ export const users = pgTable("users", {
   about: text("about"),
   onboarded: boolean("onboarded").default(false),
   pfp: text("pfp"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  title: text("title"),
+  content: text("content"),
+  views: integer("views").notNull().default(0),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

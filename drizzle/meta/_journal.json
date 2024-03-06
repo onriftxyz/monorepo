@@ -15,6 +15,13 @@
       "when": 1709641174019,
       "tag": "0001_huge_captain_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709723261514,
+      "tag": "0002_huge_la_nuit",
+      "breakpoints": true
     }
   ]
 }
