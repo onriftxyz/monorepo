@@ -8,7 +8,11 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "generate": "drizzle-kit generate:pg --schema=src/server/api/db/schema.ts"
+    "generate": "drizzle-kit generate:pg --schema=src/server/api/db/schema.ts",
+    "postinstall": "pnpm run generate",
+    "studio": "drizzle-kit studio",
+    "push:remote":"drizzle-kit push:pg",
+    "format:fix": "prettier --write ."
   },
   "dependencies": {
     "@dynamic-labs/sdk-react-core": "^1.2.0",
