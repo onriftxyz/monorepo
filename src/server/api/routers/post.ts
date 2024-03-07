@@ -2,8 +2,6 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { eq } from 'drizzle-orm';
-
-
 import { posts } from "~/server/api/db/schema";
 
 export const postRouter = createTRPCRouter({
@@ -19,7 +17,6 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const post = await ctx.db.insert(posts).values(input);
-
         return post;
       } catch (e) {
         return new TRPCError({
@@ -33,8 +30,6 @@ export const postRouter = createTRPCRouter({
   .mutation(async ({ ctx, input }) => {
     try {
       const deleted_post = await ctx.db.delete(posts).where(eq(posts.id, input.id)).returning();
-      console.log(deleted_post);
-
       return deleted_post;
     } catch (e) {
       console.log(e);
@@ -43,7 +38,17 @@ export const postRouter = createTRPCRouter({
       });
     }
   }),
-  getPosts: publicProcedure.query(() => {
-    // TODO: return posts from db
+  getPosts: publicProcedure.input(z.object({
+    userId: z.number().int().positive()
+  })).mutation(async({ctx,input}) => {
+    try {
+      const Posts = await ctx.db.select().from(posts).where(eq(posts.userId, input.userId))
+      return Posts;
+    } catch (e) {
+      console.log(e);
+      return new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+      });
+    }
   }),
 });
