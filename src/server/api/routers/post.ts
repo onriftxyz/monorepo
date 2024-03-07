@@ -6,13 +6,6 @@ import { eq } from 'drizzle-orm';
 
 import { posts } from "~/server/api/db/schema";
 
-const post = {
-  id: 1,
-  title: "first post",
-  content: "this is the first post",
-  userId: 1,
-};
-
 export const postRouter = createTRPCRouter({
   
   create: publicProcedure
@@ -25,12 +18,10 @@ export const postRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const client_post = await ctx.db.insert(posts).values(input);
-        console.log(client_post);
+        const post = await ctx.db.insert(posts).values(input);
 
-        return client_post;
+        return post;
       } catch (e) {
-        console.log(e);
         return new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
         });
@@ -52,8 +43,7 @@ export const postRouter = createTRPCRouter({
       });
     }
   }),
-
-  getLatest: publicProcedure.query(() => {
-    return post;
+  getPosts: publicProcedure.query(() => {
+    // TODO: return posts from db
   }),
 });
