@@ -61,11 +61,11 @@ const Dashboard = () => {
             </Button>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     disabled
-                    className={`flex items-center gap-2 disabled:cursor-not-allowed`}
+                    className={`flex items-center justify-start gap-2 disabled:cursor-not-allowed`}
                   >
                     <Chat />
                     Chat
@@ -77,7 +77,7 @@ const Dashboard = () => {
               </Tooltip>
             </TooltipProvider>
             <Sheet>
-              <SheetTrigger>
+              <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   className={`flex w-full items-center justify-start gap-2`}
