@@ -30,10 +30,10 @@ export default function Home() {
         A new era of creation.
         <br />
         <AuthDialog open={open} onOpenChange={setOpen}>
-          <button className="mt-5" onClick={loginClick}>
-            Join in
-          </button>
+          <button onClick={loginClick}>Join in &rarr;</button>
         </AuthDialog>
+        <br />
+        &nbsp;
       </div>
     </main>
   );
