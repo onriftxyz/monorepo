@@ -46,11 +46,6 @@ const CreatorDashboard = () => {
   const userWallets = useUserWallets();
   const { setShowAuthFlow } = dynCtx;
 
-  console.log(
-    "asdlkfalsdkfjlasdfasdf ---- USER WALLETS ----- askljdfakdjfkasdf",
-  );
-  console.log(userWallets);
-
   function bringitin() {
     setShowAuthFlow(true);
   }
