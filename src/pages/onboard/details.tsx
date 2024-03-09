@@ -21,6 +21,7 @@ import { api } from "~/utils/api";
 import { TRPCError } from "@trpc/server";
 import Image from "next/image";
 import Layout from "./layout";
+import ImageUpload from "./components/ImageUpload";
 
 const OnboardingSchema = z.object({
   name: z.string().min(2),
@@ -69,6 +70,9 @@ export default function Home() {
               onSubmit={onboardingForm.handleSubmit(onSubmit)}
               className="flex w-[392px] flex-col gap-6"
             >
+              <div className="flex justify-center">
+              <ImageUpload/>
+              </div>
               <FormField
                 control={onboardingForm.control}
                 name="name"
