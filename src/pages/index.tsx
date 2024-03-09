@@ -5,11 +5,12 @@ import { AuthDialog } from "~/components/auth";
 import { matter } from "~/components/fonts";
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
   // const dynamic = useDynamicContext();
   // const router = useRouter();
   // const { setShowAuthFlow } = dynamic;
 
-  const [open, setOpen] = useState(false);
 
   // useEffect(() => {
   //   if (dynamic.isAuthenticated) {
@@ -17,10 +18,6 @@ export default function Home() {
   //     void router.push("/creator");
   //   }
   // }, [dynamic]);
-
-  function loginClick() {
-    setOpen(true);
-  }
 
   return (
     <main
@@ -30,7 +27,7 @@ export default function Home() {
         A new era of creation.
         <br />
         <AuthDialog open={open} onOpenChange={setOpen}>
-          <button onClick={loginClick}>Join in &rarr;</button>
+          <button>Join in &rarr;</button>
         </AuthDialog>
         <br />
         &nbsp;
