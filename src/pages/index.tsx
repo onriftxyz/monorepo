@@ -22,9 +22,9 @@ export default function Home() {
 
   return (
     <main
-      className={`flex min-h-screen flex-col justify-center px-36 selection:bg-background selection:text-foreground ${matter.className}`}
+      className={`flex min-h-screen flex-col justify-center px-8 selection:bg-background selection:text-foreground md:px-36 ${matter.className}`}
     >
-      <div className="to-background/0 bg-gradient-to-b from-foreground bg-clip-text text-7xl font-medium text-transparent">
+      <div className="to-background/0 bg-gradient-to-b from-foreground bg-clip-text text-3xl font-medium text-transparent md:text-7xl">
         A new era of creation.
         <br />
         {isDesktop ? (
