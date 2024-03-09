@@ -28,7 +28,6 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { toast } from "./ui/use-toast";
 import { useConnectWithEmailOtp } from "@dynamic-labs/sdk-react-core";
 
 interface Props {
