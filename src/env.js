@@ -11,7 +11,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.string(),
-    JWT_SECRET: z.string(),
+    JWT_SECRET: z.string().min(10),
   },
 
   /**
