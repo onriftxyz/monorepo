@@ -83,12 +83,12 @@ dependencies:
   drizzle-orm:
     specifier: ^0.29.4
     version: 0.29.4(@types/react@18.2.48)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0)
-  jsonwebtoken:
-    specifier: ^9.0.2
-    version: 9.0.2
   input-otp:
     specifier: ^1.0.1
     version: 1.0.1(react-dom@18.2.0)(react@18.2.0)
+  jsonwebtoken:
+    specifier: ^9.0.2
+    version: 9.0.2
   next:
     specifier: ^14.0.4
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -146,10 +146,10 @@ devDependencies:
     specifier: ^18.17.0
     version: 18.19.11
   '@types/react':
-    specifier: ^18.2.37
+    specifier: ^18.2.0
     version: 18.2.48
   '@types/react-dom':
-    specifier: ^18.2.15
+    specifier: ^18.2.0
     version: 18.2.18
   '@types/uuid':
     specifier: ^9.0.8
@@ -7412,10 +7412,6 @@ packages:
       wrappy: 1.0.2
 
   /inherits@2.0.4:
-    resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
-
-  /inline-style-parser@0.1.1:
-    resolution: {integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==}
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
   /inline-style-parser@0.1.1:
