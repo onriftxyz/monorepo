@@ -29,6 +29,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { useConnectWithEmailOtp } from "@dynamic-labs/sdk-react-core";
+import { Loader } from "./icons";
 
 interface Props {
   open: boolean;
@@ -49,6 +50,7 @@ const AuthSchema = z.object({
 
 export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const { connectWithEmail, verifyOneTimePassword } = useConnectWithEmailOtp();
 
@@ -58,9 +60,12 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
 
   const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
+      setLoading(true);
       await connectWithEmail(data.email);
+      setLoading(false);
       setStep(step + 1);
     } else {
+      setLoading(true);
       verifyOneTimePassword(data.otp!)
         .then(() =>
           authForm.setError("otp", {
@@ -74,6 +79,7 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
             message: "Double check your verification code!",
           }),
         );
+      setLoading(false);
     }
   };
 
@@ -139,8 +145,15 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
               )}
             />
             <DialogFooter>
-              <Button type="submit">
-                {step === 0 ? "Continue" : "Verify"} &rarr;
+              <Button type="submit" disabled={loading}>
+                {step === 0 ? "Continue" : "Verify"}{" "}
+                {loading ? (
+                  <span className="animate-spin">
+                    <Loader />
+                  </span>
+                ) : (
+                  "→"
+                )}
               </Button>
             </DialogFooter>
           </form>
