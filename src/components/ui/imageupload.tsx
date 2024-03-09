@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
 
-export default function ImageUpload() {
+export  function ImageUpload() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const UploadIcon = () => (
     <svg width="44" height="40" viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,9 +27,9 @@ export default function ImageUpload() {
   };
 
   return (
-    <div className={cn("w-[112px] h-[112px] bg-secondary rounded-full flex justify-center items-center overflow-clip")}>
+    <div className={cn("w-[112px] h-[112px] bg-neutral-950 rounded-full flex justify-center items-center overflow-clip border-white border-2")}>
       <input id="fileInput" type="file" accept="image/*" style={{display: 'none'}} onChange={handleImageUpload} />
-      <label htmlFor="fileInput" className={cn("bg-secondary rounded-full")}>
+      <label htmlFor="fileInput" className={cn("rounded-full")}>
         {imageSrc ? <Image src={imageSrc} width={112} height={112} alt="Uploaded content" /> : <UploadIcon />}
       </label>
     </div>
