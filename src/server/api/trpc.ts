@@ -6,7 +6,7 @@ import { db } from './db/client'
 import { env } from '~/env'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 
-type CreateContextOptions = Record<string, never>
+// type CreateContextOptions = Record<string, never>
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   return {
@@ -64,7 +64,7 @@ const isAuthenticated = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      userDbId: payload?.userId as number,
+      userDbId: payload?.userId,
     },
   })
 })

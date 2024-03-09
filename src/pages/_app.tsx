@@ -22,10 +22,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         appName: 'Rift',
         shadowDOMEnabled: false,
         eventsCallbacks: {
-          onAuthSuccess: async (args) => {
+          onAuthSuccess: (args) => {
             if (args.user.newUser) {
-              await createUser.mutateAsync({
-                email: args.user.email as string,
+              createUser.mutate({
+                email: args.user.email!,
               })
               void router.push('/onboard')
             } else {
