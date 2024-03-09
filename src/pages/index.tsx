@@ -1,16 +1,17 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AuthDialog } from "~/components/auth";
+import { useMediaQuery } from "usehooks-ts";
+import { AuthDialog, AuthDrawer } from "~/components/auth";
 import { matter } from "~/components/fonts";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   // const dynamic = useDynamicContext();
   // const router = useRouter();
-  // const { setShowAuthFlow } = dynamic;
-
 
   // useEffect(() => {
   //   if (dynamic.isAuthenticated) {
@@ -26,9 +27,15 @@ export default function Home() {
       <div className="to-background/0 bg-gradient-to-b from-foreground bg-clip-text text-7xl font-medium text-transparent">
         A new era of creation.
         <br />
-        <AuthDialog open={open} onOpenChange={setOpen}>
-          <button>Join in &rarr;</button>
-        </AuthDialog>
+        {isDesktop ? (
+          <AuthDialog open={open} onOpenChange={setOpen}>
+            <button>Join in &rarr;</button>
+          </AuthDialog>
+        ) : (
+          <AuthDrawer open={open} onOpenChange={setOpen}>
+            <button>Join in &rarr;</button>
+          </AuthDrawer>
+        )}
         <br />
         &nbsp;
       </div>

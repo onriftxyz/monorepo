@@ -7,6 +7,15 @@ import {
   DialogHeader,
   DialogFooter,
 } from "./ui/dialog";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerFooter,
+} from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -160,5 +169,120 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
         </Form>
       </DialogContent>
     </Dialog>
+  );
+};
+
+export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const { connectWithEmail, verifyOneTimePassword } = useConnectWithEmailOtp();
+
+  const authForm = useForm<z.infer<typeof AuthSchema>>({
+    resolver: zodResolver(AuthSchema),
+  });
+
+  const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
+    if (step === 0) {
+      setLoading(true);
+      await connectWithEmail(data.email);
+      setLoading(false);
+      setStep(step + 1);
+    } else {
+      setLoading(true);
+      verifyOneTimePassword(data.otp!)
+        .then(() =>
+          authForm.setError("otp", {
+            type: "validate",
+            message: "You seem to check out!",
+          }),
+        )
+        .catch(() =>
+          authForm.setError("otp", {
+            type: "validate",
+            message: "Double check your verification code!",
+          }),
+        );
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerTrigger asChild>{children}</DrawerTrigger>
+      <DrawerContent className={`sm:max-w-[425px] ${matter.className}`}>
+        <Form {...authForm}>
+          <form
+            onSubmit={authForm.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4"
+          >
+            <DrawerHeader>
+              <DrawerTitle>Get started</DrawerTitle>
+              <DrawerDescription>
+                Towards a new era of creation.
+              </DrawerDescription>
+            </DrawerHeader>
+            <FormField
+              control={authForm.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="flex flex-col px-4">
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="anatoly@solana.com"
+                      className="w-full"
+                      disabled={step !== 0}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={authForm.control}
+              name="otp"
+              render={({ field }) => (
+                <FormItem
+                  className={`flex w-full flex-col transition-all duration-300 ease-in-out ${step === 1 ? "block" : "hidden"}`}
+                >
+                  <FormLabel className="px-4">Verification Code</FormLabel>
+                  <FormControl>
+                    <InputOTP
+                      {...field}
+                      required={false}
+                      maxLength={6}
+                      render={({ slots }) => (
+                        <>
+                          <InputOTPGroup>
+                            {slots.map((slot, index) => (
+                              <InputOTPSlot key={index} {...slot} />
+                            ))}
+                          </InputOTPGroup>
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage className="px-4" />
+                </FormItem>
+              )}
+            />
+            <DrawerFooter>
+              <Button type="submit" disabled={loading}>
+                {step === 0 ? "Continue" : "Verify"}{" "}
+                {loading ? (
+                  <span className="animate-spin">
+                    <Loader />
+                  </span>
+                ) : (
+                  "→"
+                )}
+              </Button>
+            </DrawerFooter>
+          </form>
+        </Form>
+      </DrawerContent>
+    </Drawer>
   );
 };
