@@ -89,14 +89,14 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
             <DialogHeader>
               <DialogTitle>Get started</DialogTitle>
               <DialogDescription>
-                Sign up with your email or one of the social providers.
+                Towards a new era of creation.
               </DialogDescription>
             </DialogHeader>
             <FormField
               control={authForm.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-2">
+                <FormItem className="flex flex-col">
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
@@ -115,7 +115,7 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
               name="otp"
               render={({ field }) => (
                 <FormItem
-                  className={`flex w-full flex-col gap-2 transition-all duration-300 ease-in-out ${step === 1 ? "block" : "hidden"}`}
+                  className={`flex w-full flex-col transition-all duration-300 ease-in-out ${step === 1 ? "block" : "hidden"}`}
                 >
                   <FormLabel>Verification Code</FormLabel>
                   <FormControl>
