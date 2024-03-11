@@ -11,7 +11,7 @@ import {
   Settings,
 } from "~/components/icons";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { BadgeInput } from "~/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -50,7 +50,7 @@ const Dashboard = () => {
       <div className="flex flex-col justify-between gap-4 px-8 py-6">
         <div className="flex flex-col gap-4">
           <div className="text-xl font-medium">Rift</div>
-          <Input badge={true} placeholder="Search..." />
+          <BadgeInput placeholder="Search..." />
           <div className="flex flex-col gap-2 font-medium text-muted-foreground">
             <Button
               variant="ghost"
