@@ -18,14 +18,22 @@ import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import { TRPCError } from "@trpc/server";
 import Image from "next/image";
-import { ImageUpload } from "~/components/ui/imageupload";
+import { ImageUpload } from "~/components/onboarding";
 
-const OnboardingSchema = z.object({
+export const OnboardingSchema = z.object({
   name: z
     .string({ required_error: "We won't sell your data!" })
     .min(2, "Try something longer?"),
   bio: z.string().max(200, "Try keeping it under 200.").optional(),
   twitter: z.string().optional(),
+  avatar: z
+    .instanceof(File)
+    .optional()
+    // These errors are handled in the ImageUpload component already,
+    // and displays toasts for the same, but still they are in the schema just in case,
+    // someone bypasses the client restrictions
+    .refine((f) => f?.type.startsWith("image/"), "Try selecting an image")
+    .refine((f) => (f?.size ?? 0) >= 10000000, "Your image is too big"),
 });
 
 export default function Home() {
@@ -87,7 +95,7 @@ export default function Home() {
             className="flex w-full flex-col gap-6"
           >
             <div className="flex justify-center">
-              <ImageUpload />
+              <ImageUpload form={onboardingForm} />
             </div>
             <FormField
               control={onboardingForm.control}
