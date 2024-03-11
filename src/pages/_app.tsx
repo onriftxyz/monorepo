@@ -9,6 +9,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { CommandPalette } from '~/components/palette'
 import { Toaster } from '~/components/ui/toaster'
+import { db } from '~/server/api/db/client'
+import { users } from '~/server/api/db/schema'
+import { eq } from 'drizzle-orm'
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter()
@@ -23,14 +26,24 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         shadowDOMEnabled: false,
         eventsCallbacks: {
           onAuthSuccess: (args) => {
-            if (args.user.newUser) {
-              createUser.mutate({
-                email: args.user.email!,
-              })
-              void router.push('/onboard')
-            } else {
-              void router.push('/creator')
-            }
+            void (async () => {
+              const dbUser = await db
+                .select()
+                .from(users)
+                .where(eq(users.email, args.user.email!))
+                .execute()
+
+              if (dbUser.length === 0) {
+                createUser.mutate({
+                  email: args.user.email!,
+                })
+                void router.push('/onboard')
+              } else if (!dbUser[0]?.onboarded) {
+                void router.push('/onboard')
+              } else {
+                void router.push('/creator')
+              }
+            })()
           },
         },
       }}
