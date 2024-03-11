@@ -12,23 +12,34 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
 import { api } from "~/utils/api";
 import { TRPCError } from "@trpc/server";
-import { Apple, Google, Twitter } from "~/components/icons";
 import Image from "next/image";
+import { ImageUpload } from "~/components/onboarding";
 
-const OnboardingSchema = z.object({
-  email: z.string().email(),
+export const OnboardingSchema = z.object({
+  name: z
+    .string({ required_error: "We won't sell your data!" })
+    .min(2, "Try something longer?"),
+  bio: z.string().max(200, "Try keeping it under 200.").optional(),
+  twitter: z.string().optional(),
+  avatar: z
+    .instanceof(File)
+    .optional()
+    // These errors are handled in the ImageUpload component already,
+    // and displays toasts for the same, but still they are in the schema just in case,
+    // someone bypasses the client restrictions
+    .refine((f) => f?.type.startsWith("image/"), "Try selecting an image")
+    .refine((f) => (f?.size ?? 0) >= 10000000, "Your image is too big"),
 });
 
 export default function Home() {
   // TODO: Do this properly
   // const dynamic = useDynamicContext();
-  // const router = useRouter();
+  const router = useRouter();
   // const createUser = api.auth.create.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
@@ -40,6 +51,11 @@ export default function Home() {
     // const user = await createUser.mutateAsync({
     //   ...data,
     // });
+
+    router.push("/creator");
+
+    // Or else push to dashboard/feed
+    // router.push("/creator");
   };
 
   // TODO: Do this properly
@@ -53,7 +69,7 @@ export default function Home() {
 
   return (
     <main
-      className={`grid min-h-screen grid-cols-2 selection:bg-white selection:text-black ${matter.className}`}
+      className={`grid min-h-screen grid-cols-2 selection:bg-white selection:text-black ${matter.className} overflow-y-hidden`}
     >
       <div className="relative flex min-h-screen flex-col items-center justify-center gap-4 px-24 text-center">
         {/* Noise & Texture Background */}
@@ -68,52 +84,72 @@ export default function Home() {
           height={256}
           alt="logo faded"
         />
-        <div className="bg-gradient-to-b from-foreground to-muted-foreground bg-clip-text text-4xl font-medium font-medium text-transparent">
+        <div className="bg-gradient-to-b from-foreground to-muted-foreground bg-clip-text text-4xl font-medium text-transparent">
           Where creators thrive, content reigns, and earnings soar.
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-4 px-40 py-12">
-        <div className="text-xl font-medium leading-none">Join Rift</div>
-        <div className="text-sm leading-none">
-          Sign in using Google, or your Email address.
-        </div>
-        <div className="flex w-full items-center gap-3">
-          <Button variant={"outline"} className="w-full">
-            <Google />
-          </Button>
-          <Button variant={"outline"} className="w-full">
-            <Apple />
-          </Button>
-          <Button variant={"outline"} className="w-full">
-            <Twitter />
-          </Button>
-        </div>
-        <div className="flex w-full items-center gap-3 text-sm text-muted-foreground">
-          <Separator className="shrink" />
-          <div>OR</div>
-          <Separator className="shrink" />
-        </div>
         <Form {...onboardingForm}>
           <form
             onSubmit={onboardingForm.handleSubmit(onSubmit)}
             className="flex w-full flex-col gap-6"
           >
+            <div className="flex justify-center">
+              <ImageUpload form={onboardingForm} />
+            </div>
             <FormField
               control={onboardingForm.control}
-              name="email"
+              name="name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Email<span className="text-accent">*</span>
-                  </FormLabel>
+                <FormItem className="gap-4">
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="anatoly@solana.com" />
+                    <Input {...field} placeholder="Anatoly" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Get Started &rarr;</Button>
+            <FormField
+              control={onboardingForm.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Tell us a bit about yourself..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={onboardingForm.control}
+              name="twitter"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Twitter</FormLabel>
+                  <div className="flex w-full items-center">
+                    <Input
+                      placeholder="twitter.com/"
+                      className="pointer-events-none w-fit cursor-not-allowed rounded-r-none"
+                    />
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="_soulninja"
+                        className="rounded-l-none"
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Continue &rarr;</Button>
           </form>
         </Form>
       </div>
