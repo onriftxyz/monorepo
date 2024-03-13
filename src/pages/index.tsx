@@ -1,24 +1,15 @@
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { AuthDialog, AuthDrawer } from "~/components/auth";
 import { matter } from "~/components/fonts";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  // const dynamic = useDynamicContext();
-  // const router = useRouter();
-
-  // useEffect(() => {
-  //   if (dynamic.isAuthenticated) {
-  //     // @todo: check if they've finished onboarding -> if not push to onboard
-  //     void router.push("/creator");
-  //   }
-  // }, [dynamic]);
+  useAuthenticated();
 
   return (
     <main

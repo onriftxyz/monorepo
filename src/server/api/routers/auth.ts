@@ -36,6 +36,8 @@ export const authRouter = createTRPCRouter({
           userId: newUser[0]?.userId,
         }
 
+        console.log(payload);
+
         const token = generateJWTToken(payload)
 
 

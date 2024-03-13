@@ -19,6 +19,7 @@ import { api } from "~/utils/api";
 import { TRPCError } from "@trpc/server";
 import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 export const OnboardingSchema = z.object({
   name: z
@@ -38,9 +39,7 @@ export const OnboardingSchema = z.object({
 
 export default function Home() {
   // TODO: Do this properly
-  // const dynamic = useDynamicContext();
   const router = useRouter();
-  // const createUser = api.auth.create.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
@@ -58,14 +57,7 @@ export default function Home() {
     // router.push("/creator");
   };
 
-  // TODO: Do this properly
-  // useEffect(() => {
-  //   if (!dynamic.user?.newUser && dynamic.isAuthenticated) {
-  //     void router.push("/creator");
-  //   } else if (!dynamic.isAuthenticated) {
-  //     void router.push("/");
-  //   }
-  // }, [dynamic]);
+  useAuthenticated();
 
   return (
     <main
