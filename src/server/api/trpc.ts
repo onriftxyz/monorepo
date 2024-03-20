@@ -64,7 +64,7 @@ const isAuthenticated = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      userDbId: payload?.userId,
+      userDbId: payload.userId,
     },
   })
 })

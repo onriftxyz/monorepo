@@ -31,23 +31,26 @@ export const authRouter = createTRPCRouter({
           .onConflictDoNothing()
           .execute()
 
-        // NOTE: User ID should be enough, but can add other things to the payload.
-        const payload = {
-          userId: newUser[0]?.userId,
+        if (newUser.length === 0) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'User with this email already exists',
+          })
         }
 
-        console.log(payload);
+        // NOTE: User ID should be enough, but can add other things to the payload.
+        const payload = {
+          userId: newUser[0]!.userId,
+        }
 
         const token = generateJWTToken(payload)
 
-
-      // NOTE: Maybe use a cookie serializer to do this, for now its fine.
+        // NOTE: Maybe use a cookie serializer to do this, for now its fine.
         ctx.res.setHeader(
           'Set-Cookie',
           `riftToken=${token}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; SameSite=Lax`,
         )
       } catch (e) {
-        // TODO:  We need better error handling
         console.log('Error while creating user', e)
         throw new TRPCError({
           message: e as string,
@@ -56,5 +59,5 @@ export const authRouter = createTRPCRouter({
       }
     }),
 
-  // A procedure to logout
+  // TODO: A procedure to logout
 })
