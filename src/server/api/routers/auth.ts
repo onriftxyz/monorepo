@@ -1,63 +1,55 @@
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-
-import { users } from '../db/schema'
-
-import { z } from 'zod'
-import { TRPCError } from '@trpc/server'
-
-import jwt from 'jsonwebtoken'
-import { env } from '~/env'
-
-const generateJWTToken = (payload: object) => {
-  const expireTime = 7 * 24 * 60 * 60
-  return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: expireTime,
-  })
-}
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { z } from "zod";
+import { TRPCError } from "@trpc/server";
+import { env } from "~/env";
 
 export const authRouter = createTRPCRouter({
-  register: publicProcedure
+  generateOtp: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      try {
-        const newUser = await ctx.db
-          .insert(users)
-          .values(input)
-          .returning({ userId: users.id })
-          .onConflictDoNothing()
-          .execute()
+      const { error } = await ctx.supabase.auth.signInWithOtp({
+        email: input.email,
+        options: {
+          shouldCreateUser: true,
+        },
+      });
 
-        if (newUser.length === 0) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'User with this email already exists',
-          })
-        }
-
-        // NOTE: User ID should be enough, but can add other things to the payload.
-        const payload = {
-          userId: newUser[0]!.userId,
-        }
-
-        const token = generateJWTToken(payload)
-
-        // NOTE: Maybe use a cookie serializer to do this, for now its fine.
-        ctx.res.setHeader(
-          'Set-Cookie',
-          `riftToken=${token}; HttpOnly; Path=/; Max-Age=${7 * 24 * 60 * 60}; SameSite=Lax`,
-        )
-      } catch (e) {
-        console.log('Error while creating user', e)
+      if (error) {
+        console.log("Error while sending OTP", error);
         throw new TRPCError({
-          message: e as string,
-          code: 'INTERNAL_SERVER_ERROR',
-        })
+          message: error.message,
+          code: "INTERNAL_SERVER_ERROR",
+        });
       }
     }),
 
+  verifyOtp: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        token: z.string().min(6).max(6),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase.auth.verifyOtp({
+        email: input.email,
+        token: input.token.toString(),
+        type: "email",
+      });
+
+      if (error) {
+        console.log("Error while verifying token", error);
+        throw new TRPCError({
+          message: error.message,
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+
+      return data;
+    }),
   // TODO: A procedure to logout
-})
+});
