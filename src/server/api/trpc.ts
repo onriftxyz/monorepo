@@ -8,7 +8,7 @@ import { createClient } from "~/utils/supabase";
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   return {
     db,
-    supabase: createClient({ req: _opts.req }),
+    supabase: createClient({ req: _opts.req, res: _opts.res }),
     ..._opts,
   };
 };
@@ -29,9 +29,17 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 export const createTRPCRouter = t.router;
 
-const isAuthenticated = t.middleware(({ _ctx, next }) => {
-  // So no middleware for now.
-  return next();
+const isAuthenticated = t.middleware(async ({ ctx, next }) => {
+  const user = await ctx.supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  return next({
+    ctx: {
+      user,
+    },
+  });
 });
 
 export const publicProcedure = t.procedure;

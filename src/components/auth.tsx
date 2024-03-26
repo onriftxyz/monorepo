@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogFooter,
 } from "./ui/dialog";
+
 import {
   Drawer,
   DrawerTrigger,
@@ -18,12 +19,10 @@ import {
 } from "./ui/drawer";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import {
-  useState,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-} from "react";
+import { useState } from "react";
+
+import type { Dispatch, ReactNode, SetStateAction } from "react";
+
 import { matter } from "./fonts";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { z } from "zod";
@@ -37,8 +36,8 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { useConnectWithEmailOtp } from "@dynamic-labs/sdk-react-core";
 import { Loader } from "./icons";
+import { api } from "~/utils/api";
 
 interface Props {
   open: boolean;
@@ -61,7 +60,8 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const { connectWithEmail, verifyOneTimePassword } = useConnectWithEmailOtp();
+  const generateOtp = api.auth.generateOtp.useMutation();
+  const verifyOtp = api.auth.verifyOtp.useMutation();
 
   const authForm = useForm<z.infer<typeof AuthSchema>>({
     resolver: zodResolver(AuthSchema),
@@ -70,12 +70,22 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
-      await connectWithEmail(data.email);
-      setLoading(false);
-      setStep(step + 1);
+      await generateOtp
+        .mutateAsync({ email: data.email })
+        .then(() => {
+          setLoading(false);
+          setStep(step + 1);
+        })
+        .catch(() =>
+          authForm.setError("email", {
+            type: "validate",
+            message: "We couldn't send you a verification code!",
+          }),
+        );
     } else {
       setLoading(true);
-      verifyOneTimePassword(data.otp!)
+      await verifyOtp
+        .mutateAsync({ email: data.email, token: data.otp! })
         .then(() =>
           authForm.setError("otp", {
             type: "validate",
@@ -176,7 +186,8 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const { connectWithEmail, verifyOneTimePassword } = useConnectWithEmailOtp();
+  const generateOtp = api.auth.generateOtp.useMutation();
+  const verifyOtp = api.auth.verifyOtp.useMutation();
 
   const authForm = useForm<z.infer<typeof AuthSchema>>({
     resolver: zodResolver(AuthSchema),
@@ -185,12 +196,13 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
   const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
-      await connectWithEmail(data.email);
+      await generateOtp.mutateAsync({ email: data.email });
       setLoading(false);
       setStep(step + 1);
     } else {
       setLoading(true);
-      verifyOneTimePassword(data.otp!)
+      await verifyOtp
+        .mutateAsync({ email: data.email, token: data.otp! })
         .then(() =>
           authForm.setError("otp", {
             type: "validate",

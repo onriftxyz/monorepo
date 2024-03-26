@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { users } from "~/server/api/db/schema";
@@ -7,8 +8,6 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-
-// typeof users.$inferInsert
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -23,43 +22,19 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { userDbId } = ctx;
-      const updatedUser = await ctx.db
-        .update(users)
-        .set(input)
-        .where(eq(users.id, userDbId))
-        .execute();
-
-      return {
-        user: updatedUser,
-      };
+      return {};
     }),
 
   get: protectedProcedure.query(async ({ ctx }) => {
-    const { userDbId } = ctx;
+    const { user } = ctx;
 
-    const user = await ctx.db
-      .select()
-      .from(users)
-      .limit(1)
-      .where(eq(users.id, userDbId))
-      .execute();
+    if (!user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User is not authenticated",
+      });
+    }
 
-    return {
-      user: user[0],
-    };
+    return user;
   }),
-
-  getByEmail: publicProcedure
-    .input(z.object({ email: z.string().email() }))
-    .mutation(async ({ input, ctx }) => {
-      const user = await ctx.db
-        .select()
-        .from(users)
-        .limit(1)
-        .where(eq(users.email, input.email))
-        .execute();
-
-      return user[0];
-    }),
 });
