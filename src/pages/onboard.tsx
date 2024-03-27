@@ -19,7 +19,6 @@ import { api } from "~/utils/api";
 import { TRPCError } from "@trpc/server";
 import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
-import { useAuthenticated } from "~/lib/useAuthenticated";
 
 export const OnboardingSchema = z.object({
   name: z
@@ -56,8 +55,6 @@ export default function Home() {
     // Or else push to dashboard/feed
     // router.push("/creator");
   };
-
-  useAuthenticated();
 
   return (
     <main

@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { AuthDialog, AuthDrawer } from "~/components/auth";
 import { matter } from "~/components/fonts";
-import { useAuthenticated } from "~/lib/useAuthenticated";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  useAuthenticated();
 
   return (
     <main

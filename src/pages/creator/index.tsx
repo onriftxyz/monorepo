@@ -40,7 +40,6 @@ import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { useEffect } from "react";
-import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const CreatorDashboard = () => {
   const dynCtx = useDynamicContext();
@@ -50,8 +49,6 @@ const CreatorDashboard = () => {
   function bringitin() {
     setShowAuthFlow(true);
   }
-
-  useAuthenticated();
 
   return (
     <main
