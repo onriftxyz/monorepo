@@ -1,4 +1,3 @@
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,10 +14,9 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "~/components/ui/button";
-import { api } from "~/utils/api";
-import { TRPCError } from "@trpc/server";
 import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
+import { api } from "~/utils/api";
 
 export const OnboardingSchema = z.object({
   name: z
@@ -40,20 +38,29 @@ export default function Home() {
   // TODO: Do this properly
   const router = useRouter();
 
+  const updateUser = api.user.update.useMutation();
+
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof OnboardingSchema>) => {
-    // TODO: Do this properly
-    // const user = await createUser.mutateAsync({
-    //   ...data,
-    // });
-
-    router.push("/creator");
-
-    // Or else push to dashboard/feed
-    // router.push("/creator");
+  const onSubmit = (data: z.infer<typeof OnboardingSchema>) => {
+    updateUser
+      .mutateAsync({
+        name: data.name,
+        username: data.twitter ?? "",
+        about: data.bio ?? "",
+        onboarded: true,
+        pfp: data.avatar?.name ?? "",
+        // TODO: Update updateAt field for supabase
+        // updateAt: new Date(),
+      })
+      .then(() => {
+        router.push("/creator");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

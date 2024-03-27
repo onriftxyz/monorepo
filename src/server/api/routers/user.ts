@@ -14,11 +14,24 @@ export const userRouter = createTRPCRouter({
         about: z.string(),
         pfp: z.string(),
         onboarded: z.boolean(),
-        updateAt: z.date(),
+        // updateAt: z.date(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return {};
+      const { supabase, user } = ctx;
+      const metadata = user!.user_metadata;
+
+      if (!metadata.onboarded) {
+        await supabase.auth.updateUser({
+          data: {
+            name: input.name,
+            username: input.username,
+            about: input.about,
+            pfp: input.pfp,
+            onboarded: input.onboarded,
+          },
+        });
+      }
     }),
 
   get: protectedProcedure.query(async ({ ctx }) => {

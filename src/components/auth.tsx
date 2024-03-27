@@ -70,21 +70,21 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
-      await generateOtp
+      generateOtp
         .mutateAsync({ email: data.email })
         .then(() => {
           setLoading(false);
           setStep(step + 1);
         })
-        .catch(() =>
+        .catch(() => {
           authForm.setError("email", {
             type: "validate",
             message: "We couldn't send you a verification code!",
-          }),
-        );
+          });
+        });
     } else {
       setLoading(true);
-      await verifyOtp
+      verifyOtp
         .mutateAsync({ email: data.email, token: data.otp! })
         .then(() =>
           authForm.setError("otp", {
@@ -201,13 +201,16 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
       setStep(step + 1);
     } else {
       setLoading(true);
-      await verifyOtp
+      verifyOtp
         .mutateAsync({ email: data.email, token: data.otp! })
-        .then(() =>
-          authForm.setError("otp", {
-            type: "validate",
-            message: "You seem to check out!",
-          }),
+        .then(
+          () =>
+            authForm.setError("otp", {
+              type: "validate",
+              message: "You seem to check out!",
+            }),
+
+          // Add user to public.profiles
         )
         .catch(() =>
           authForm.setError("otp", {

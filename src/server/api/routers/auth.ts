@@ -18,6 +18,9 @@ export const authRouter = createTRPCRouter({
         email: input.email,
         options: {
           shouldCreateUser: true,
+          data: {
+            onboarded: false,
+          },
         },
       });
 
