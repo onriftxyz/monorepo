@@ -3,11 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { users } from "~/server/api/db/schema";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -27,14 +23,6 @@ export const userRouter = createTRPCRouter({
 
   get: protectedProcedure.query(async ({ ctx }) => {
     const { user } = ctx;
-
-    if (!user) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "User is not authenticated",
-      });
-    }
-
     return user;
   }),
 });

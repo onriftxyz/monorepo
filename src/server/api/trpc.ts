@@ -1,4 +1,4 @@
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -32,12 +32,15 @@ export const createTRPCRouter = t.router;
 const isAuthenticated = t.middleware(async ({ ctx, next }) => {
   const user = await ctx.supabase.auth.getUser();
   if (!user) {
-    throw new Error("Unauthorized");
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "User is not authenticated",
+    });
   }
 
   return next({
     ctx: {
-      user,
+      user: user.data.user,
     },
   });
 });
