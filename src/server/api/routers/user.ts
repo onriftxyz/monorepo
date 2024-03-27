@@ -3,7 +3,11 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { users } from "~/server/api/db/schema";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -14,7 +18,29 @@ export const userRouter = createTRPCRouter({
         about: z.string(),
         pfp: z.string(),
         onboarded: z.boolean(),
-        // updateAt: z.date(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { supabase } = ctx;
+
+      await supabase.auth.updateUser({
+        data: {
+          name: input.name,
+          username: input.username,
+          about: input.about,
+          pfp: input.pfp,
+          onboarded: input.onboarded,
+        },
+      });
+    }),
+
+  onboard: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        username: z.string(),
+        about: z.string(),
+        pfp: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -22,14 +48,29 @@ export const userRouter = createTRPCRouter({
       const metadata = user!.user_metadata;
 
       if (!metadata.onboarded) {
-        await supabase.auth.updateUser({
-          data: {
-            name: input.name,
-            username: input.username,
-            about: input.about,
-            pfp: input.pfp,
-            onboarded: input.onboarded,
-          },
+        supabase.auth
+          .updateUser({
+            data: {
+              name: input.name,
+              username: input.username,
+              about: input.about,
+              pfp: input.pfp,
+              onboarded: true,
+            },
+          })
+          .then((user) => {
+            return user;
+          })
+          .catch(() => {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Could not onboard user.",
+            });
+          });
+      } else {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User has already onboarded",
         });
       }
     }),
@@ -37,5 +78,17 @@ export const userRouter = createTRPCRouter({
   get: protectedProcedure.query(async ({ ctx }) => {
     const { user } = ctx;
     return user;
+  }),
+
+  // NOTE:Only for testing onboarding.
+  unboard: adminProcedure.query(async ({ ctx }) => {
+    const { supabase } = ctx;
+    const user = await supabase.auth.updateUser({
+      data: {
+        onboarded: false,
+      },
+    });
+
+    return user.data.user; 
   }),
 });

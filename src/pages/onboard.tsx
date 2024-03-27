@@ -30,30 +30,29 @@ export const OnboardingSchema = z.object({
     // These errors are handled in the ImageUpload component already,
     // and displays toasts for the same, but still they are in the schema just in case,
     // someone bypasses the client restrictions
-    .refine((f) => f?.type.startsWith("image/"), "Try selecting an image")
-    .refine((f) => (f?.size ?? 0) >= 10000000, "Your image is too big"),
+    .refine((f) => f?.type.startsWith("image/"), "Try selecting an image"),
+  // HACK: @pybash please fix image size restriction.
+  // .refine((f) => (f?.size ?? 0) >= 10000000, "Your image is too big"),
 });
 
 export default function Home() {
   // TODO: Do this properly
   const router = useRouter();
 
-  const updateUser = api.user.update.useMutation();
+  const onboardUser = api.user.onboard.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof OnboardingSchema>) => {
-    updateUser
+  const onSubmit = async (data: z.infer<typeof OnboardingSchema>) => {
+    onboardUser
       .mutateAsync({
         name: data.name,
         username: data.twitter ?? "",
         about: data.bio ?? "",
-        onboarded: true,
-        pfp: data.avatar?.name ?? "",
-        // TODO: Update updateAt field for supabase
-        // updateAt: new Date(),
+        // HACK: Currently storing the image as a base64 string, but we should store it in a CDN
+        pfp: await data.avatar?.text() ?? "",
       })
       .then(() => {
         router.push("/creator");

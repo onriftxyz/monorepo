@@ -45,5 +45,31 @@ const isAuthenticated = t.middleware(async ({ ctx, next }) => {
   });
 });
 
+const isAdmin = t.middleware(async ({ ctx, next }) => {
+  const user = await ctx.supabase.auth.getUser();
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "User is not authenticated",
+    });
+  }
+
+  const adminEmails = ["pybash@milind.lol"];
+
+  if (!adminEmails.includes(user.data.user!.email!)) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "User is not an admin",
+    });
+  }
+
+  return next({
+    ctx: {
+      user: user.data.user,
+    },
+  });
+});
+
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthenticated);
+export const adminProcedure = t.procedure.use(isAdmin);

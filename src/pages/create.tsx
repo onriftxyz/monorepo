@@ -46,55 +46,52 @@ export default function Create() {
         title: "Post Created...",
       });
     }
-  }
-
-    return (
-      <div>
-        <div className="text-sm text-secondary-foreground">
-          Create a post.
-        </div>{" "}
-        <Form {...postForm}>
-          <form onSubmit={postForm.handleSubmit(onSubmit)}>
-            <FormField
-              control={postForm.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-secondary-foreground">
-                    Title
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Title" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={postForm.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-secondary-foreground">
-                    Content
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Content" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              className="bg-white text-black transition duration-200 ease-in-out hover:bg-white/80"
-              type="submit"
-              variant="secondary"
-            >
-              Create Post
-            </Button>
-          </form>
-        </Form>
-      </div>
-    );
   };
 
+  return (
+    <div>
+      <div className="text-sm text-secondary-foreground">Create a post.</div>{" "}
+      <Form {...postForm}>
+        <form onSubmit={postForm.handleSubmit(onSubmit)}>
+          <FormField
+            control={postForm.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-secondary-foreground">
+                  Title
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Title" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={postForm.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-secondary-foreground">
+                  Content
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Content" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            className="bg-white text-black transition duration-200 ease-in-out hover:bg-white/80"
+            type="submit"
+            variant="secondary"
+          >
+            Create Post
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+}
