@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -50,5 +54,16 @@ export const authRouter = createTRPCRouter({
 
       return data;
     }),
-  // TODO: A procedure to logout
+
+  logout: protectedProcedure.mutation(async ({ ctx }) => {
+    const { error } = await ctx.supabase.auth.signOut();
+
+    if (error) {
+      console.log("Error while logging out", error);
+      throw new TRPCError({
+        message: error.message,
+        code: "INTERNAL_SERVER_ERROR",
+      });
+    }
+  }),
 });
