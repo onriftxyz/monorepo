@@ -1,7 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { users } from "~/server/api/db/schema";
 
 import {
   adminProcedure,

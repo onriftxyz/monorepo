@@ -5,8 +5,8 @@ import { FormField, FormLabel } from "./ui/form";
 import { Upload } from "./icons";
 import type { UseFormReturn } from "react-hook-form";
 import type { z } from "zod";
-import type { OnboardingSchema } from "~/pages/onboard";
 import { toast } from "./ui/use-toast";
+import type { OnboardingSchema } from "~/utils/forms";
 
 interface Props {
   form: UseFormReturn<z.infer<typeof OnboardingSchema>>;

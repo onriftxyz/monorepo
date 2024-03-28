@@ -1,0 +1,30 @@
+import { z, type ZodCustomIssue } from "zod";
+import { toast } from "~/components/ui/use-toast";
+
+export const OnboardingSchema = z.object({
+  name: z
+    .string({ required_error: "We won't sell your data!" })
+    .min(2, "Try something longer?"),
+  bio: z.string().max(200, "Try keeping it under 200.").optional(),
+  twitter: z.string().optional(),
+  avatar: z
+    .instanceof(File)
+    .optional()
+    // These errors are handled in the ImageUpload component already,
+    // and displays toasts for the same, but still they are in the schema just in case,
+    // someone bypasses the client restrictions
+    .refine(
+      (f) => f?.type.startsWith("image/"),
+      () => {
+        toast({ title: "Try selecting an image", variant: "destructive" });
+        return "Try selecting an image" as unknown as ZodCustomIssue;
+      },
+    )
+    .refine(
+      (f) => (f?.size ?? 0) <= 10000000,
+      () => {
+        toast({ title: "Your image is too big", variant: "destructive" });
+        return "Your image is too big" as unknown as ZodCustomIssue;
+      },
+    ),
+});

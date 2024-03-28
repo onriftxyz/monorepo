@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type ZodCustomIssue, z } from "zod";
 import { matter } from "~/components/fonts";
 import {
   Form,
@@ -17,49 +17,35 @@ import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
 import { api } from "~/utils/api";
-
-export const OnboardingSchema = z.object({
-  name: z
-    .string({ required_error: "We won't sell your data!" })
-    .min(2, "Try something longer?"),
-  bio: z.string().max(200, "Try keeping it under 200.").optional(),
-  twitter: z.string().optional(),
-  avatar: z
-    .instanceof(File)
-    .optional()
-    // These errors are handled in the ImageUpload component already,
-    // and displays toasts for the same, but still they are in the schema just in case,
-    // someone bypasses the client restrictions
-    .refine((f) => f?.type.startsWith("image/"), "Try selecting an image"),
-  // HACK: @pybash please fix image size restriction.
-  // .refine((f) => (f?.size ?? 0) >= 10000000, "Your image is too big"),
-});
+import { OnboardingSchema } from "~/utils/forms";
 
 export default function Home() {
-  // TODO: Do this properly
   const router = useRouter();
 
-  const onboardUser = api.user.onboard.useMutation();
+  const { mutateAsync: onboard } = api.user.onboard.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof OnboardingSchema>) => {
-    onboardUser
-      .mutateAsync({
-        name: data.name,
-        username: data.twitter ?? "",
-        about: data.bio ?? "",
+  const onSubmit = async ({
+    name,
+    twitter,
+    bio,
+    avatar,
+  }: z.infer<typeof OnboardingSchema>) => {
+    try {
+      await onboard({
+        name: name,
+        username: twitter ?? "",
+        about: bio ?? "",
         // HACK: Currently storing the image as a base64 string, but we should store it in a CDN
-        pfp: await data.avatar?.text() ?? "",
-      })
-      .then(() => {
-        router.push("/creator");
-      })
-      .catch((error) => {
-        console.log(error);
+        pfp: (await avatar?.text()) ?? "",
       });
+      router.push("/creator");
+    } catch (e) {
+      console.error("Error occured in onboard.tsx > Onboard > onSubmit:\n", e);
+    }
   };
 
   return (
