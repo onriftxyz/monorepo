@@ -23,7 +23,7 @@ const PostSchema = z.object({
 });
 
 export default function Create() {
-  const createPost = api.post.create.useMutation();
+  const createPost = api.product.create.useMutation();
 
   const postForm = useForm<z.infer<typeof PostSchema>>({
     resolver: zodResolver(PostSchema),

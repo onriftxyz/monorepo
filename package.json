@@ -9,6 +9,7 @@
     "lint": "next lint",
     "start": "next start",
     "generate": "drizzle-kit generate:pg --schema=src/server/api/db/schema.ts",
+    "supabase": "npx supabase gen types typescript --project-id 'qduetpvomkdzpftaqmfx' --schema public > ./src/server/api/supabase/types.ts",
     "postinstall": "pnpm run generate",
     "studio": "drizzle-kit studio",
     "push:remote": "drizzle-kit push:pg",
