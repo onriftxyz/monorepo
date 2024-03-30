@@ -397,6 +397,20 @@ export const ArrowRight = ({ size = 24 }: IconProps) => {
   );
 };
 
+export const ArrowLeft = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 25 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M8.74598 11.1H19.7008V12.9H8.74598L13.5736 17.7276L12.301 19.0002L5.30078 12L12.301 4.99982L13.5736 6.27242L8.74598 11.1Z" />
+    </svg>
+  );
+};
+
 // Brand Assets (DO NOT EDIT THESE SVGs WITHOUT DISCUSSION)
 export const Google = () => {
   return (
