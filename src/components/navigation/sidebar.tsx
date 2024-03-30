@@ -16,27 +16,15 @@ import {
 } from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { getAuthToken } from "@dynamic-labs/sdk-react-core";
-import { useState, useEffect } from "react";
-import { parseJwt } from "~/lib/utils";
+import { useState, } from "react";
 import { useToast } from "../ui/use-toast";
 
 export const CreatorSidebar = () => {
-  const [user, setUser] = useState<string>();
-  const [wallet, setWallet] = useState<string>();
-
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
   const { toast } = useToast();
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    setUser(parseJwt(getAuthToken())?.username);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    setWallet(parseJwt(getAuthToken())?.verified_account?.address);
-  }, []);
 
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
@@ -158,9 +146,9 @@ export const CreatorSidebar = () => {
             className="h-10 w-10 rounded-full"
           />
           <div className="flex flex-col">
-            <span>{user}</span>
+            <span>PyBash</span>
             <span className="text-xs font-medium text-muted-foreground">
-              {wallet ?? "0x000000000000"}
+              0x000000000000
             </span>
           </div>
         </div>

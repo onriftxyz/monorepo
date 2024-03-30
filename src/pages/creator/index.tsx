@@ -1,11 +1,5 @@
 import { matter } from "~/components/fonts";
 import {
-  DynamicWidget,
-  useDynamicContext,
-  useUserWallets,
-} from "@dynamic-labs/sdk-react-core";
-
-import {
   Analytics,
   ArrowRight,
   Comment,
@@ -39,17 +33,8 @@ import {
 import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
-import { useEffect } from "react";
 
 const CreatorDashboard = () => {
-  const dynCtx = useDynamicContext();
-  const userWallets = useUserWallets();
-  const { setShowAuthFlow } = dynCtx;
-
-  function bringitin() {
-    setShowAuthFlow(true);
-  }
-
   return (
     <main
       className={cn(
@@ -57,24 +42,8 @@ const CreatorDashboard = () => {
         matter.className,
       )}
     >
-      {/* <CreatorSidebar /> */}
-      <div className="text-white">
-        {userWallets.length > 0 ? (
-          userWallets.map((wallet) => (
-            <p key={wallet.id}>
-              {wallet.address}:{" "}
-              {wallet.connected ? "Connected" : "Not connected"}
-            </p>
-          ))
-        ) : (
-          <div>
-            <p className="text-white">No wallets on this account</p>
-            <button onClick={bringitin}>connect your wallet</button>
-          </div>
-        )}
-        {dynCtx.user?.email}
-      </div>
-      {/* <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
+      <CreatorSidebar />
+      <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Creator Dashboard" />
         <div className="flex items-center justify-between pt-4">
           <div className="flex gap-2">
@@ -246,8 +215,7 @@ const CreatorDashboard = () => {
             </div>
           </div>
         </div>
-      </div> */}
-      <DynamicWidget />
+      </div>
     </main>
   );
 };
