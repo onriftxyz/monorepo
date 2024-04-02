@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { type ZodCustomIssue, z } from "zod";
+import type { z } from "zod";
 import { matter } from "~/components/fonts";
 import {
   Form,
@@ -34,18 +34,19 @@ export default function Home() {
     bio,
     avatar,
   }: z.infer<typeof OnboardingSchema>) => {
-    try {
-      await onboard({
-        name: name,
-        username: twitter ?? "",
-        about: bio ?? "",
-        // HACK: Currently storing the image as a base64 string, but we should store it in a CDN
-        pfp: (await avatar?.text()) ?? "",
+    onboard({
+      name: name,
+      username: twitter ?? "",
+      about: bio ?? "",
+      // HACK: Currently storing the image as a base64 string, but we should store it in a CDN
+      pfp: avatar?.name ?? "",
+    })
+      .then(() => {
+        router.push("/creator");
+      })
+      .catch((e) => {
+        console.log("Error when onboarding", e);
       });
-      router.push("/creator");
-    } catch (e) {
-      console.error("Error occured in onboard.tsx > Onboard > onSubmit:\n", e);
-    }
   };
 
   return (

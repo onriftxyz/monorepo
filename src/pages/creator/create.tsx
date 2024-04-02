@@ -8,6 +8,7 @@ import { ArrowLeft } from "~/components/icons";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
+import { api } from "~/utils/api";
 
 const STEP_TO_TITLE = [
   <>
@@ -63,6 +64,12 @@ const CreateProduct = () => {
   const [content, setContent] = useState<(string | File)[]>([]);
 
   const uploadRef = useRef<HTMLInputElement>(null);
+
+  // const createProduct = api.product.create.useMutation();
+
+  const handleSubmit = () => {
+    console.log(content);
+  };
 
   const router = useRouter();
 
@@ -218,7 +225,7 @@ const CreateProduct = () => {
               <Button onClick={() => setContent([...content, ""])}>
                 + Add link
               </Button>
-              <Button>Complete &rarr;</Button>
+              <Button onClick={handleSubmit}>Complete &rarr;</Button>
             </div>
           </div>
         ) : type === "UPLOAD" ? (
