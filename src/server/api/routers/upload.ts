@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -21,4 +22,27 @@ export const uploadRouter = createTRPCRouter({
 
     return data.signedUrl;
   }),
+
+  getProductFileSignedUrl: protectedProcedure
+    .input(
+      z.object({
+        folder: z.enum(["uploads", "markdown"]),
+        filename: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { supabase } = ctx;
+      const { data, error } = await supabase.storage
+        .from("products")
+        .createSignedUploadUrl(`uploads/${input.filename}`);
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data.signedUrl;
+    }),
 });

@@ -11,32 +11,35 @@ export type Database = {
     Tables: {
       products: {
         Row: {
-          content: string
+          content: string[] | null
           created_at: string
           creator: string | null
           id: number
           price: number
           title: string
+          type: Database["public"]["Enums"]["contenttype"] | null
           updated_at: string
           views: number
         }
         Insert: {
-          content: string
+          content?: string[] | null
           created_at?: string
           creator?: string | null
           id?: number
-          price: number
+          price?: number
           title: string
+          type?: Database["public"]["Enums"]["contenttype"] | null
           updated_at?: string
           views?: number
         }
         Update: {
-          content?: string
+          content?: string[] | null
           created_at?: string
           creator?: string | null
           id?: number
           price?: number
           title?: string
+          type?: Database["public"]["Enums"]["contenttype"] | null
           updated_at?: string
           views?: number
         }
@@ -94,7 +97,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      contenttype: "LINK" | "UPLOAD" | "MARKDOWN"
     }
     CompositeTypes: {
       [_ in never]: never

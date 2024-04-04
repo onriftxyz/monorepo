@@ -50,14 +50,9 @@ export const userRouter = createTRPCRouter({
       const metadata = user!.user_metadata;
 
       if (!metadata.onboarded) {
-        
-      console.log("image? ", input.avatarUploaded)
-
         const avatarUrl = input.avatarUploaded
           ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
           : "";
-
-        console.log("Broooooooooooooooo", avatarUrl);
 
         supabase.auth
           .updateUser({
@@ -66,7 +61,7 @@ export const userRouter = createTRPCRouter({
               twitter: input.twitter ?? "",
               bio: input.bio ?? "",
               avatar: avatarUrl,
-              onboarded: false,
+              onboarded: true,
             },
           })
           .then((user) => {

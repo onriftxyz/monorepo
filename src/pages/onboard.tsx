@@ -18,7 +18,6 @@ import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
 import { api } from "~/utils/api";
 import { OnboardingSchema } from "~/utils/forms";
-import { env } from "~/env";
 
 export default function Home() {
   const router = useRouter();
@@ -29,7 +28,7 @@ export default function Home() {
     resolver: zodResolver(OnboardingSchema),
   });
 
-  const signedUrlCall = api.upload.getAvatarSignedUrl.useMutation();
+  const uploadAvatar = api.upload.getAvatarSignedUrl.useMutation();
 
   const onSubmit = async ({
     name,
@@ -41,7 +40,7 @@ export default function Home() {
 
     if (avatar) {
       try {
-        const signedUrl = await signedUrlCall.mutateAsync();
+        const signedUrl = await uploadAvatar.mutateAsync();
         await fetch(signedUrl, {
           method: "PUT",
           body: avatar,

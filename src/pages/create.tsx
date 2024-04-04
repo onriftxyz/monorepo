@@ -15,12 +15,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { toast } from "~/components/ui/use-toast";
 import { Button } from "~/components/ui/button";
-
-const PostSchema = z.object({
-  title: z.string().min(1),
-  content: z.string().min(1),
-  userId: z.number().int().positive(),
-});
+import { PostSchema } from "~/utils/forms";
 
 export default function Create() {
   const createPost = api.product.create.useMutation();
@@ -33,17 +28,17 @@ export default function Create() {
   });
 
   const onSubmit = async (data: z.infer<typeof PostSchema>) => {
-    const post = await createPost.mutateAsync({
-      ...data,
-    });
-
-    if (post instanceof TRPCError) {
-      toast({
-        title: "Something went wrong...",
+    try {
+      const post = await createPost.mutateAsync({
+        ...data,
       });
-    } else {
+
       toast({
         title: "Post Created...",
+      });
+    } catch (error) {
+      toast({
+        title: "Something went wrong...",
       });
     }
   };

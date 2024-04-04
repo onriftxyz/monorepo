@@ -9,6 +9,9 @@ import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
 
+import { api } from "~/utils/api";
+import { env } from "~/env";
+
 const STEP_TO_TITLE = [
   <>
     Let&apos;s get started creating
@@ -59,13 +62,120 @@ const CreateProduct = () => {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0.0);
-  const [type, setType] = useState<"UPLOAD" | "LINKS" | "MARKDOWN">();
+  // TODO: Use Enum from supabase type
+  const [type, setType] = useState<"UPLOAD" | "LINK" | "MARKDOWN">();
   const [content, setContent] = useState<(string | File)[]>([]);
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    console.log(content);
+  const createPost = api.product.create.useMutation();
+  const uploadProductFile = api.upload.getProductFileSignedUrl.useMutation();
+
+  const uploadFile = async (folder: "uploads" | "markdown", file: File) => {
+    console.log("file", file);
+
+    const signedUrl = await uploadProductFile.mutateAsync({
+      filename: file.name,
+      folder: folder,
+    });
+
+    try {
+      await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+    } catch (e) {
+      return "";
+    }
+
+    return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/${folder}/${file.name}`;
+  };
+
+  const handleSubmit = async () => {
+    switch (type) {
+      case "LINK":
+        {
+          const links = content.filter(
+            (c) => typeof c === "string",
+          ) as string[];
+
+          try {
+            await createPost.mutateAsync({
+              title: name,
+              content: links,
+              price: price,
+              type: "LINK",
+            });
+          } catch (e) {
+            toast({
+              title: "Failed to create product",
+              variant: "destructive",
+            });
+          }
+        }
+        break;
+
+      case "UPLOAD":
+        {
+          const files = content.filter((c) => c instanceof File) as File[];
+
+          console.log("files", files);
+
+          try {
+            const links = await Promise.all(
+              files.map((file) => {
+                return uploadFile("uploads", file);
+              }),
+            );
+
+            await createPost.mutateAsync({
+              title: name,
+              content: links,
+              price: price,
+              type: "UPLOAD",
+            });
+          } catch (e) {
+            toast({
+              title: "Failed to create product",
+              variant: "destructive",
+            });
+          }
+        }
+        break;
+
+      case "MARKDOWN": {
+        // Generate a random string
+        // HACK: Find some way to have non-conflicting names
+        const randomString = Math.random().toString(36).substring(7);
+
+        const file = new File(
+          [content[0] as string],
+          `${randomString}_${name}.md`,
+          {
+            type: "text/markdown",
+          },
+        );
+
+        const link = await uploadFile("markdown", file);
+
+        try {
+          await createPost.mutateAsync({
+            title: name,
+            content: [link],
+            price: price,
+            type: "MARKDOWN",
+          });
+        } catch (e) {
+          toast({
+            title: "Failed to create product",
+            variant: "destructive",
+          });
+        }
+      }
+    }
   };
 
   const router = useRouter();
@@ -115,7 +225,7 @@ const CreateProduct = () => {
                 <Button
                   size="sm"
                   onClick={() => {
-                    setType("LINKS");
+                    setType("LINK");
                     setStep(step + 1);
                   }}
                 >
@@ -192,7 +302,7 @@ const CreateProduct = () => {
           </Button>
         </div>
       ) : step === 3 ? (
-        type === "LINKS" ? (
+        type === "LINK" ? (
           <div className="flex w-96 flex-col gap-4 pt-4">
             {content.length > 0 ? (
               content.map((_, ind) => (
@@ -241,7 +351,7 @@ const CreateProduct = () => {
               <Button onClick={() => uploadRef.current?.click()}>
                 + Add file
               </Button>
-              <Button>Complete &rarr;</Button>
+              <Button onClick={handleSubmit}>Complete &rarr;</Button>
             </div>
           </div>
         ) : (
@@ -251,7 +361,7 @@ const CreateProduct = () => {
               value={content[0]?.toString()}
               onChange={(e) => setContent([e.target.value])}
             ></Textarea>
-            <Button>Complete &rarr;</Button>
+            <Button onClick={handleSubmit}>Complete &rarr;</Button>
           </div>
         )
       ) : null}

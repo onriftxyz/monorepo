@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
@@ -9,7 +13,9 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string().min(1),
-        content: z.string().min(1),
+        content: z.array(z.string().min(1)),
+        type: z.enum(["LINK", "UPLOAD", "MARKDOWN"]),
+        price: z.number().gte(0),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -18,6 +24,8 @@ export const productRouter = createTRPCRouter({
         .upsert({
           title: input.title,
           content: input.content,
+          price: input.price,
+          type: input.type,
           creator: ctx.user!.id,
         })
         .select()
@@ -33,7 +41,7 @@ export const productRouter = createTRPCRouter({
       return data;
     }),
 
-  get: protectedProcedure
+  get: publicProcedure
     .input(
       z.object({
         creator: z.string().uuid(),
@@ -55,6 +63,23 @@ export const productRouter = createTRPCRouter({
 
       return data;
     }),
+
+  mine: protectedProcedure.query(async ({ ctx, input }) => {
+    const { data, error } = await ctx.supabase
+      .from("products")
+      .select()
+      .eq("creator", ctx.user!.id)
+      .returns<Tables<"products">[]>();
+
+    if (error) {
+      return new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
+
+    return data;
+  }),
 
   update: protectedProcedure
     .input(
