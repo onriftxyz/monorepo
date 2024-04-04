@@ -79,7 +79,6 @@ interface OverviewCardProps {
   title: string;
   data: string;
   variant: "success" | "destructive";
-  badge: string;
   icon: React.ReactNode;
 }
 
@@ -87,7 +86,6 @@ const OverviewCard = ({
   title,
   data,
   variant,
-  badge,
   icon,
 }: OverviewCardProps) => {
   return (
@@ -102,9 +100,11 @@ const OverviewCard = ({
           {title}
         </CardTitle>
         <CardContent>
+        {
           <div className="flex items-center gap-2 text-3xl">
-            {data} <Badge variant={variant}>{badge}</Badge>
+            {data}
           </div>
+        }
         </CardContent>
       </CardHeader>
       <div

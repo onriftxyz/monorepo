@@ -10,7 +10,10 @@ import { api } from "~/utils/api";
 
 const Products = () => {
   // BUG: @pybash this is getting called multiple times, should be only called once. pls fix
-  const myProducts = api.product.mine.useQuery();
+  const userProducts = api.product.mine.useQuery().data
+  // TODO: @pybash implement some loading logic
+  if (!userProducts) return null
+
   return (
     <main
       className={cn(
@@ -22,7 +25,7 @@ const Products = () => {
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Published" />
         <div className="flex flex-col gap-4 rounded-lg border border-input p-4">
-          {(myProducts.data as Tables<"products">[]).map((myProduct) => (
+          {(userProducts as Tables<"products">[]).map((myProduct) => (
             <div
               key={Math.random()}
               className="flex w-full items-center gap-3.5 p-4"

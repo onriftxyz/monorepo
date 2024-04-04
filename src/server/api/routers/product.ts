@@ -7,6 +7,7 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
+import { UserProductWithStats } from "~/utils/product";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -65,20 +66,59 @@ export const productRouter = createTRPCRouter({
     }),
 
   mine: protectedProcedure.query(async ({ ctx }) => {
-    const { data, error } = await ctx.supabase
+    const { supabase, user } = ctx;
+
+    const userProductsSelect = await supabase
       .from("products")
       .select()
-      .eq("creator", ctx.user!.id)
+      .eq("creator", user!.id)
       .returns<Tables<"products">[]>();
 
-    if (error) {
+    if (userProductsSelect.error) {
       return new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: error.message,
+        message: userProductsSelect.error.message,
       });
     }
 
-    return data;
+    const userProducts = userProductsSelect.data;
+
+    const productIds = userProducts.map((product) => product.id);
+
+    type ProductBuyerAmountSelect = {
+      product: Tables<"purchases">["product"];
+      buyer: Tables<"purchases">["buyer"];
+      amount: Tables<"purchases">["amount"];
+    }[];
+
+    const usersPostPurchasesSelect = await supabase
+      .from("purchases")
+      .select("buyer, amount, product")
+      .eq("product", productIds)
+      .returns<ProductBuyerAmountSelect>();
+
+    if (usersPostPurchasesSelect.error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: usersPostPurchasesSelect.error.message,
+      });
+    }
+
+    const userProductPurchases = usersPostPurchasesSelect.data;
+
+    const userProductsWithStats = userProducts.map((product) => {
+      const purchases = userProductPurchases.filter(
+        (purchase) => purchase.product === product.id,
+      );
+
+      return {
+        ...product,
+        revenue: purchases.reduce((acc, { amount }) => acc + amount, 0),
+        customers: new Set(purchases.map(({ buyer }) => buyer)).size,
+      } as UserProductWithStats;
+    });
+
+    return userProductsWithStats;
   }),
 
   update: protectedProcedure
@@ -271,7 +311,7 @@ export const productRouter = createTRPCRouter({
       return {
         views: productViews?.views ?? 0,
         buyers: new Set(buyersAmount.map(({ buyer }) => buyer)).size,
-        totalAmount: buyersAmount.reduce((acc, { amount }) => acc + amount, 0),
+        revenue: buyersAmount.reduce((acc, { amount }) => acc + amount, 0),
       };
     }),
 });

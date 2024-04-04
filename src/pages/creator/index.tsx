@@ -21,8 +21,17 @@ import { cn } from "~/lib/utils";
 import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
+import { api } from "~/utils/api";
+import { type Tables } from "~/server/api/supabase/types";
+import { type UserProductWithStats } from "~/utils/product";
 
 const CreatorDashboard = () => {
+  const userStats = api.user.stats.useQuery().data;
+  const userProducts = api.product.mine.useQuery()
+    .data as UserProductWithStats[];
+  // TODO: @pybash implement some loading logic
+  if (!userStats || !userProducts) return null;
+
   return (
     <main
       className={cn(
@@ -58,23 +67,20 @@ const CreatorDashboard = () => {
         <div className="flex items-center gap-6">
           <OverviewCard
             title={"Customers"}
-            data={"69K"}
+            data={userStats.uniqueBuyers.toString()}
             variant={"success"}
-            badge={"+420%"}
             icon={<Members />}
           />
           <OverviewCard
             title={"Views"}
-            data={"4.2M"}
+            data={userStats.totalViews.toString()}
             variant={"success"}
-            badge={"+69%"}
             icon={<Views />}
           />
           <OverviewCard
             title={"Revenue"}
-            data={"$420K"}
+            data={userStats.totalRevenue.toString()}
             variant={"destructive"}
-            badge={"-4.2%"}
             icon={<Money />}
           />
         </div>
@@ -96,49 +102,52 @@ const CreatorDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Array(5)
-                .fill("post")
-                .map(() => (
-                  <TableRow key={Math.random() * 100}>
-                    <TableCell className="flex items-center gap-2">
-                      <Image
-                        src={
-                          "https://picsum.photos/64" +
-                          "?random=" +
-                          Math.random() * 10
-                        }
-                        alt="cover image"
-                        width={64}
-                        height={64}
-                        className="h-12 w-12 flex-shrink-0 rounded-md"
-                      />
-                      <div className="flex w-full flex-col gap-0.5">
-                        <div>Product name</div>
-                        <div className="flex text-xs text-secondary-foreground">
-                          {new Date().toLocaleDateString("en-US", {
+              {(userProducts as Tables<"products">[]).map((userProduct) => (
+                <TableRow key={Math.random() * 100}>
+                  <TableCell className="flex items-center gap-2">
+                    <Image
+                      src={
+                        "https://picsum.photos/64" +
+                        "?random=" +
+                        Math.random() * 10
+                      }
+                      alt="cover image"
+                      width={64}
+                      height={64}
+                      className="h-12 w-12 flex-shrink-0 rounded-md"
+                    />
+                    <div className="flex w-full flex-col gap-0.5">
+                      <div>{userProduct.title}</div>
+                      <div className="flex text-xs text-secondary-foreground">
+                        {new Date(userProduct.created_at).toLocaleDateString(
+                          "en-US",
+                          {
                             month: "short",
                             year: "numeric",
                             day: "2-digit",
-                          })}
-                        </div>
+                          },
+                        )}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Math.round(Math.random() * 100000)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      ${`${(Math.random() * 1000000) / 100}`.substring(0, 7)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Math.round(Math.random() * 100000)}
-                    </TableCell>
-                    <TableCell className="w-6">
-                      <Button size="icon" variant="ghost">
-                        <ThreeDots />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {userProduct.views}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {/*NOTE: idk why eslint is complaining about this */}$
+                    {userProduct.revenue}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {/*NOTE: idk why eslint is complaining about this */}$
+                    {userProduct.customers}
+                  </TableCell>
+                  <TableCell className="w-6">
+                    <Button size="icon" variant="ghost">
+                      <ThreeDots />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

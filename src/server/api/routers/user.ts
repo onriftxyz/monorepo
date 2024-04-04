@@ -121,7 +121,7 @@ export const userRouter = createTRPCRouter({
       id: Tables<"products">["id"];
       views: Tables<"products">["views"];
     }[];
-    // Get all user posts
+
     const userProductViewsSelect = await supabase
       .from("products")
       .select("id, views")
