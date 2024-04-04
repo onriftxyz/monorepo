@@ -16,41 +16,43 @@ export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 text-[28px]">{title}</div>
-      {!minimal ? (
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size={"icon"}
-            onClick={() =>
-              toast({
-                title: "Not yet implemented!",
-                description: "Search has not yet been implemented!",
-              })
-            }
-          >
-            <Search size={20} />
-          </Button>
-          <Notifications />
-          <Button
-            variant="outline"
-            className="flex items-center"
-            onClick={() =>
-              toast({
-                title: "Not yet implemented!",
-                description: "Preview sites have not yet been implemented!",
-              })
-            }
-          >
-            <Explore />
-            Visit site
-            <ArrowTopRight />
-          </Button>
-          <Button onClick={() => router.push("/creator/create")}>
-            <Add />
-            Create
-          </Button>
-        </div>
-      ) : null}
+      <div className="flex gap-2">
+        <Button
+          variant="ghost"
+          size={"icon"}
+          onClick={() =>
+            toast({
+              title: "Not yet implemented!",
+              description: "Search has not yet been implemented!",
+            })
+          }
+        >
+          <Search size={20} />
+        </Button>
+        <Notifications />
+        {!minimal ? (
+          <>
+            <Button
+              variant="outline"
+              className="flex items-center"
+              onClick={() =>
+                toast({
+                  title: "Not yet implemented!",
+                  description: "Preview sites have not yet been implemented!",
+                })
+              }
+            >
+              <Explore />
+              Visit site
+              <ArrowTopRight />
+            </Button>
+            <Button onClick={() => router.push("/creator/create")}>
+              <Add />
+              Create
+            </Button>
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };
