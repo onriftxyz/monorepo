@@ -83,7 +83,7 @@ const CreatorDashboard = () => {
             <span className="text-secondary-foreground">
               <List />
             </span>
-            Posts
+            Products
           </div>
           <Table>
             <TableHeader>
