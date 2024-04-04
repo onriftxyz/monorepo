@@ -38,6 +38,8 @@ import {
 } from "./ui/form";
 import { Loader } from "./icons";
 import { api } from "~/utils/api";
+import { router } from "@trpc/server";
+import { useRouter } from "next/router";
 
 interface Props {
   open: boolean;
@@ -60,8 +62,10 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const generateOtp = api.auth.generateOtp.useMutation();
-  const verifyOtp = api.auth.verifyOtp.useMutation();
+  const router = useRouter();
+
+  const { mutateAsync: generateOtp } = api.auth.generateOtp.useMutation();
+  const { mutateAsync: verifyOtp } = api.auth.verifyOtp.useMutation();
 
   const authForm = useForm<z.infer<typeof AuthSchema>>({
     resolver: zodResolver(AuthSchema),
@@ -70,31 +74,34 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
-      generateOtp
-        .mutateAsync({ email: data.email })
-        .then(() => {
-          setLoading(false);
-          setStep(step + 1);
-        })
-        .catch(() => {
-          authForm.setError("email", {
-            type: "validate",
-            message: "We couldn't send you a verification code!",
-          });
+      try {
+        await generateOtp({ email: data.email });
+        setStep(step + 1);
+      } catch (e) {
+        authForm.setError("email", {
+          type: "validate",
+          message: "We couldn't send you a verification code!",
         });
+      }
+      setLoading(false);
     } else {
       setLoading(true);
-      verifyOtp
-        .mutateAsync({ email: data.email, token: data.otp! })
-        .then(() => {
-          setLoading(false);
-        })
-        .catch(() =>
-          authForm.setError("otp", {
-            type: "validate",
-            message: "Double check your verification code!",
-          }),
-        );
+      try {
+        const { session, user } = await verifyOtp({
+          email: data.email,
+          token: data.otp!,
+        });
+        if (session?.access_token && user?.user_metadata.onboarded)
+          void router.push("/home");
+        if (session?.access_token && !user?.user_metadata.onboarded)
+          void router.push("/onboard");
+      } catch (e) {
+        authForm.setError("otp", {
+          type: "validate",
+          message: "Double check your verification code!",
+        });
+      }
+      setLoading(false);
     }
   };
 
@@ -182,38 +189,35 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const generateOtp = api.auth.generateOtp.useMutation();
-  const verifyOtp = api.auth.verifyOtp.useMutation();
+  const router = useRouter();
+
+  const { mutateAsync: generateOtp } = api.auth.generateOtp.useMutation();
+  const { mutateAsync: verifyOtp } = api.auth.verifyOtp.useMutation();
 
   const authForm = useForm<z.infer<typeof AuthSchema>>({
     resolver: zodResolver(AuthSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
+  const onSubmit = async ({ email, otp }: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
-      await generateOtp.mutateAsync({ email: data.email });
+      await generateOtp({ email });
       setLoading(false);
       setStep(step + 1);
     } else {
       setLoading(true);
-      verifyOtp
-        .mutateAsync({ email: data.email, token: data.otp! })
-        .then(
-          () =>
-            authForm.setError("otp", {
-              type: "validate",
-              message: "You seem to check out!",
-            }),
-
-          // Add user to public.profiles
-        )
-        .catch(() =>
-          authForm.setError("otp", {
-            type: "validate",
-            message: "Double check your verification code!",
-          }),
-        );
+      try {
+        const { session, user } = await verifyOtp({ email, token: otp! });
+        if (session?.access_token && user?.user_metadata.onboarded)
+          void router.push("/home");
+        if (session?.access_token && !user?.user_metadata.onboarded)
+          void router.push("/onboard");
+      } catch (e) {
+        authForm.setError("otp", {
+          type: "validate",
+          message: "Double check your verification code!",
+        });
+      }
       setLoading(false);
     }
   };
