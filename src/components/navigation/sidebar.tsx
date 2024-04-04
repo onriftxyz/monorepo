@@ -1,17 +1,14 @@
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "~/components/ui/collapsible";
 import { Separator } from "~/components/ui/separator";
 import { useRouter } from "next/router";
 import {
   Home,
-  Post,
-  ChevronDown,
-  Members, Settings,
+  Members,
+  Settings,
   ChevronRight,
-  Explore
+  Explore,
+  Product,
+  Creator,
+  Chat,
 } from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -19,8 +16,6 @@ import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 
 export const CreatorSidebar = () => {
-  const [open, setOpen] = useState(false);
-
   const router = useRouter();
 
   const { toast } = useToast();
@@ -28,10 +23,20 @@ export const CreatorSidebar = () => {
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col">
-          <div className="text-sm uppercase">Rift</div>
-          <div className="text-xs text-secondary-foreground">
-            Creator Dashboard
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo-transparent.png"
+            width={48}
+            height={48}
+            alt="logo"
+          />
+          <div>
+            <div className="flex flex-col">
+              <div className="text-sm uppercase">Rift</div>
+              <div className="text-xs text-secondary-foreground">
+                Creator Dashboard
+              </div>
+            </div>
           </div>
         </div>
         <Separator />
@@ -44,14 +49,14 @@ export const CreatorSidebar = () => {
             <Home size={20} />
             Dashboard
           </Button>
-          <Button
+          {/* <Button
             variant={router.pathname === "/explore" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/explore")}
           >
             <Explore size={20} />
             Explore
-          </Button>
+          </Button> */}
           <Button
             variant={
               router.pathname === "/creator/products" ? "default" : "ghost"
@@ -59,8 +64,16 @@ export const CreatorSidebar = () => {
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/creator/products")}
           >
-            <Post size={20} />
-            Products
+            <Product size={20} />
+            Your Products
+          </Button>
+          <Button
+            variant={router.pathname === "/creator/chat" ? "default" : "ghost"}
+            className={`flex items-center justify-start gap-2 blur-[3px]`}
+            onClick={() => void router.push("/creator/chat")}
+          >
+            <Chat size={20} />
+            Chat
           </Button>
           <Button
             variant={
@@ -69,17 +82,9 @@ export const CreatorSidebar = () => {
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/creator/members")}
           >
-            <Members size={20} />
+            <Members size={18} />
             Customers
           </Button>
-          {/* <Button
-            variant={router.pathname === "/creator/chat" ? "default" : "ghost"}
-            className={`flex items-center justify-start gap-2`}
-            onClick={() => void router.push("/creator/chat")}
-          >
-            <Chat size={20} />
-            Chat
-          </Button> */}
           <Button
             variant={
               router.pathname === "/creator/settings" ? "default" : "ghost"
@@ -132,8 +137,6 @@ export const CreatorSidebar = () => {
 };
 
 export const UserSidebar = () => {
-  const [open, setOpen] = useState(false);
-
   const router = useRouter();
 
   const { toast } = useToast();
@@ -141,19 +144,29 @@ export const UserSidebar = () => {
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col">
-          <div className="text-sm uppercase">Rift</div>
-          <div className="text-xs text-secondary-foreground">Dashboard</div>
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo-transparent.png"
+            width={48}
+            height={48}
+            alt="logo"
+          />
+          <div>
+            <div className="flex flex-col">
+              <div className="text-sm uppercase">Rift</div>
+              <div className="text-xs text-secondary-foreground">Dashboard</div>
+            </div>
+          </div>
         </div>
         <Separator />
         <div className="flex flex-col gap-2 font-medium text-muted-foreground">
           <Button
-            variant={router.pathname === "/user" ? "default" : "ghost"}
+            variant={router.pathname === "/home" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
-            onClick={() => void router.push("/user")}
+            onClick={() => void router.push("/home")}
           >
             <Home size={20} />
-            Dashboard
+            Home
           </Button>
           <Button
             variant={router.pathname === "/explore" ? "default" : "ghost"}
@@ -163,62 +176,34 @@ export const UserSidebar = () => {
             <Explore size={20} />
             Explore
           </Button>
-          <Collapsible
-            open={router.pathname.startsWith("/user/items") || open}
-            onOpenChange={setOpen}
-          >
-            <CollapsibleTrigger className="w-full">
-              <Button
-                variant={
-                  router.pathname === "/user/items" ? "default" : "ghost"
-                }
-                className={`flex w-full items-center justify-between gap-2`}
-              >
-                <div className="flex w-full items-center gap-2">
-                  <Post size={20} />
-                  Items
-                </div>
-                <ChevronDown size={20} />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2">
-              <Button
-                variant={
-                  router.pathname === "/user/items/purchased"
-                    ? "default"
-                    : "ghost"
-                }
-                className={`flex w-full items-center justify-start gap-2`}
-                onClick={() => void router.push("/user/items/purchased")}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchased
-              </Button>
-              <Button
-                disabled
-                variant={
-                  router.pathname === "/user/items/recommended"
-                    ? "default"
-                    : "ghost"
-                }
-                className={`flex w-full items-center justify-start gap-2 disabled:cursor-not-allowed`}
-                onClick={() => void router.push("/user/items/recommended")}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recommended
-              </Button>
-            </CollapsibleContent>
-          </Collapsible>
-          {/* <Button
-            variant={router.pathname === "/user/chat" ? "default" : "ghost"}
+          <Button
+            variant={router.pathname === "/products" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
-            onClick={() => void router.push("/user/chat")}
+            onClick={() => void router.push("/products")}
+          >
+            <Product size={20} />
+            Products
+          </Button>
+          <Button
+            variant={router.pathname === "/creator" ? "default" : "ghost"}
+            className={`flex items-center justify-start gap-2`}
+            onClick={() => void router.push("/creator")}
+          >
+            <Creator size={20} />
+            Creator
+          </Button>
+          {/* <Button
+            variant={router.pathname === "/chat" ? "default" : "ghost"}
+            className={`flex items-center justify-start gap-2`}
+            onClick={() => void router.push("/chat")}
           >
             <Chat size={20} />
             Chat
           </Button> */}
           <Button
-            variant={router.pathname === "/user/settings" ? "default" : "ghost"}
+            variant={router.pathname === "/settings" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
-            // onClick={() => void router.push("/user/settings")}
+            // onClick={() => void router.push("/settings")}
             onClick={() =>
               toast({
                 title: "Not yet implemented!",
