@@ -1,5 +1,4 @@
-import { Search, Explore, ArrowTopRight, Add } from "../icons";
-import { Notifications } from "../notification";
+import { Explore, ArrowTopRight, Add } from "../icons";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/router";
@@ -17,7 +16,7 @@ export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 text-[28px]">{title}</div>
       <div className="flex gap-2">
-        <Button
+        {/* <Button
           variant="ghost"
           size={"icon"}
           onClick={() =>
@@ -29,7 +28,7 @@ export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
         >
           <Search size={20} />
         </Button>
-        <Notifications />
+        <Notifications /> */}
         {!minimal ? (
           <>
             <Button

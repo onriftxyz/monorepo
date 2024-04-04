@@ -9,10 +9,9 @@ import {
   Home,
   Post,
   ChevronDown,
-  Members,
-  Chat,
-  Settings,
+  Members, Settings,
   ChevronRight,
+  Explore
 } from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -45,61 +44,24 @@ export const CreatorSidebar = () => {
             <Home size={20} />
             Dashboard
           </Button>
-          <Collapsible
-            open={router.pathname.startsWith("/creator/posts") || open}
-            onOpenChange={setOpen}
+          <Button
+            variant={router.pathname === "/explore" ? "default" : "ghost"}
+            className={`flex items-center justify-start gap-2`}
+            onClick={() => void router.push("/explore")}
           >
-            <CollapsibleTrigger className="w-full">
-              <Button
-                variant={
-                  router.pathname === "/creator/posts" ? "default" : "ghost"
-                }
-                className={`flex w-full items-center justify-between gap-2`}
-              >
-                <div className="flex w-full items-center gap-2">
-                  <Post size={20} />
-                  Posts
-                </div>
-                <ChevronDown size={20} />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2">
-              <Button
-                variant={
-                  router.pathname === "/creator/posts/drafts"
-                    ? "default"
-                    : "ghost"
-                }
-                className={`flex w-full items-center justify-start gap-2`}
-                onClick={() => void router.push("/creator/posts/drafts")}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drafts
-              </Button>
-              <Button
-                disabled
-                variant={
-                  router.pathname === "/creator/posts/scheduled"
-                    ? "default"
-                    : "ghost"
-                }
-                className={`flex w-full items-center justify-start gap-2 disabled:cursor-not-allowed`}
-                onClick={() => void router.push("/creator/posts/scheduled")}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Scheduled
-              </Button>
-              <Button
-                variant={
-                  router.pathname === "/creator/posts/published"
-                    ? "default"
-                    : "ghost"
-                }
-                className={`flex w-full items-center justify-start gap-2`}
-                onClick={() => void router.push("/creator/posts/published")}
-              >
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published
-              </Button>
-            </CollapsibleContent>
-          </Collapsible>
+            <Explore size={20} />
+            Explore
+          </Button>
+          <Button
+            variant={
+              router.pathname === "/creator/products" ? "default" : "ghost"
+            }
+            className={`flex items-center justify-start gap-2`}
+            onClick={() => void router.push("/creator/products")}
+          >
+            <Post size={20} />
+            Products
+          </Button>
           <Button
             variant={
               router.pathname === "/creator/members" ? "default" : "ghost"
@@ -108,16 +70,16 @@ export const CreatorSidebar = () => {
             onClick={() => void router.push("/creator/members")}
           >
             <Members size={20} />
-            Members
+            Customers
           </Button>
-          <Button
+          {/* <Button
             variant={router.pathname === "/creator/chat" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/creator/chat")}
           >
             <Chat size={20} />
             Chat
-          </Button>
+          </Button> */}
           <Button
             variant={
               router.pathname === "/creator/settings" ? "default" : "ghost"
@@ -193,6 +155,14 @@ export const UserSidebar = () => {
             <Home size={20} />
             Dashboard
           </Button>
+          <Button
+            variant={router.pathname === "/explore" ? "default" : "ghost"}
+            className={`flex items-center justify-start gap-2`}
+            onClick={() => void router.push("/explore")}
+          >
+            <Explore size={20} />
+            Explore
+          </Button>
           <Collapsible
             open={router.pathname.startsWith("/user/items") || open}
             onOpenChange={setOpen}
@@ -237,15 +207,14 @@ export const UserSidebar = () => {
               </Button>
             </CollapsibleContent>
           </Collapsible>
-          <Button
+          {/* <Button
             variant={router.pathname === "/user/chat" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/user/chat")}
-            disabled
           >
             <Chat size={20} />
             Chat
-          </Button>
+          </Button> */}
           <Button
             variant={router.pathname === "/user/settings" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}

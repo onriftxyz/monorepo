@@ -1,10 +1,6 @@
 import { matter } from "~/components/fonts";
 import {
   Analytics,
-  ArrowRight,
-  Comment,
-  Draft,
-  Like,
   List,
   Members,
   Money,
@@ -22,14 +18,6 @@ import {
   TableCell,
 } from "~/components/ui/table";
 import { cn } from "~/lib/utils";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-} from "~/components/ui/select";
 import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
@@ -52,7 +40,7 @@ const CreatorDashboard = () => {
             </span>
             Overview
           </div>
-          <div>
+          {/* <div>
             <Select>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Time period" />
@@ -65,11 +53,11 @@ const CreatorDashboard = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
         <div className="flex items-center gap-6">
           <OverviewCard
-            title={"Subscriptions"}
+            title={"Customers"}
             data={"69K"}
             variant={"success"}
             badge={"+420%"}
@@ -90,130 +78,69 @@ const CreatorDashboard = () => {
             icon={<Money />}
           />
         </div>
-        <div className="grid grid-cols-4 gap-6">
-          <div className="col-span-3 rounded-lg border border-border p-4">
-            <div className="flex items-center gap-1">
-              <span className="text-secondary-foreground">
-                <List />
-              </span>
-              Posts
-            </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[500px]">Post</TableHead>
-                  <TableHead className="w-fit text-center">Views</TableHead>
-                  <TableHead className="w-fit text-center">Revenue</TableHead>
-                  <TableHead className="w-fit text-center">
-                    New Members
-                  </TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array(5)
-                  .fill("post")
-                  .map(() => (
-                    <TableRow key={Math.random() * 100}>
-                      <TableCell className="flex items-center gap-2">
-                        <Image
-                          src={
-                            "https://picsum.photos/64" +
-                            "?random=" +
-                            Math.random() * 10
-                          }
-                          alt="cover image"
-                          width={64}
-                          height={64}
-                          className="h-12 w-12 flex-shrink-0 rounded-md"
-                        />
-                        <div className="flex w-full flex-col gap-0.5">
-                          <div>Post title</div>
-                          <div className="flex text-xs text-secondary-foreground">
-                            {new Date().toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                              day: "2-digit",
-                            })}{" "}
-                            &bull;&nbsp;
-                            <Comment size={16} />
-                            &nbsp;
-                            {Math.round(Math.random() * 10)} comments
-                            &bull;&nbsp;
-                            <Like size={16} />
-                            &nbsp;
-                            {Math.round(Math.random() * 100)} likes
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {Math.round(Math.random() * 100000)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        ${`${(Math.random() * 1000000) / 100}`.substring(0, 7)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {Math.round(Math.random() * 100000)}
-                      </TableCell>
-                      <TableCell className="w-6">
-                        <Button size="icon" variant="ghost">
-                          <ThreeDots />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+        <div className="rounded-lg border border-border p-4">
+          <div className="flex items-center gap-1">
+            <span className="text-secondary-foreground">
+              <List />
+            </span>
+            Posts
           </div>
-          <div className="rounded-lg border border-border p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <span className="text-secondary-foreground">
-                  <Draft />
-                </span>
-                Drafts
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-secondary-foreground">
-                  {Math.round(Math.random() * 10)}
-                </span>
-                <ArrowRight size={16} />
-              </div>
-            </div>
-            <div className="flex flex-col gap-4 pt-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[500px]">Product</TableHead>
+                <TableHead className="w-fit text-center">Views</TableHead>
+                <TableHead className="w-fit text-center">Revenue</TableHead>
+                <TableHead className="w-fit text-center">Customers</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {Array(5)
-                .fill("draft")
+                .fill("post")
                 .map(() => (
-                  <div key={Math.random()} className="flex items-center gap-2">
-                    <Image
-                      src={
-                        "https://picsum.photos/64" +
-                        "?random=" +
-                        Math.random() * 10
-                      }
-                      alt="cover image"
-                      width={64}
-                      height={64}
-                      className="h-12 w-12 flex-shrink-0 rounded-md"
-                    />
-                    <div className="flex w-full flex-col gap-0.5">
-                      <div className="line-clamp-1">
-                        Draft post title which is very long for demo purposes
+                  <TableRow key={Math.random() * 100}>
+                    <TableCell className="flex items-center gap-2">
+                      <Image
+                        src={
+                          "https://picsum.photos/64" +
+                          "?random=" +
+                          Math.random() * 10
+                        }
+                        alt="cover image"
+                        width={64}
+                        height={64}
+                        className="h-12 w-12 flex-shrink-0 rounded-md"
+                      />
+                      <div className="flex w-full flex-col gap-0.5">
+                        <div>Product name</div>
+                        <div className="flex text-xs text-secondary-foreground">
+                          {new Date().toLocaleDateString("en-US", {
+                            month: "short",
+                            year: "numeric",
+                            day: "2-digit",
+                          })}
+                        </div>
                       </div>
-                      <div className="line-clamp-1 text-xs text-secondary-foreground">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Quod itaque adipisci nemo ratione, deserunt, non sed,
-                        quas ducimus unde esse quisquam. Sed porro alias
-                        adipisci quibusdam ipsum cupiditate eos amet?
-                      </div>
-                    </div>
-                    <span className="text-secondary-foreground">
-                      <ThreeDots />
-                    </span>
-                  </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {Math.round(Math.random() * 100000)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      ${`${(Math.random() * 1000000) / 100}`.substring(0, 7)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {Math.round(Math.random() * 100000)}
+                    </TableCell>
+                    <TableCell className="w-6">
+                      <Button size="icon" variant="ghost">
+                        <ThreeDots />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-            </div>
-          </div>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </main>
