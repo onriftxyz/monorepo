@@ -86,19 +86,15 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
       setLoading(true);
       verifyOtp
         .mutateAsync({ email: data.email, token: data.otp! })
-        .then(() =>
-          authForm.setError("otp", {
-            type: "validate",
-            message: "You seem to check out!",
-          }),
-        )
+        .then(() => {
+          setLoading(false);
+        })
         .catch(() =>
           authForm.setError("otp", {
             type: "validate",
             message: "Double check your verification code!",
           }),
         );
-      setLoading(false);
     }
   };
 

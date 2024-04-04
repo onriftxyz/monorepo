@@ -85,11 +85,6 @@ const CreateProduct = () => {
       >
         <ArrowLeft />
       </Button>
-      {step === 3 ? (
-        <Button className="absolute right-10 top-10" variant={"ghost"}>
-          Skip
-        </Button>
-      ) : null}
       <Image src="/create-product.svg" alt="icon" width={131} height={90} />
       <div className="text-center text-2xl  font-medium">
         {STEP_TO_TITLE[step]}
