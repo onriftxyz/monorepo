@@ -115,6 +115,8 @@ const CreateProduct = () => {
               variant: "destructive",
             });
           }
+
+          void router.push("/creator");
         }
         break;
 
@@ -144,6 +146,9 @@ const CreateProduct = () => {
             });
           }
         }
+
+        void router.push("/creator");
+
         break;
 
       case "MARKDOWN": {
@@ -174,6 +179,8 @@ const CreateProduct = () => {
             variant: "destructive",
           });
         }
+
+        void router.push("/creator");
       }
     }
   };
