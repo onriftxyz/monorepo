@@ -8,7 +8,6 @@ import { ArrowLeft } from "~/components/icons";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
-import { api } from "~/utils/api";
 
 const STEP_TO_TITLE = [
   <>
@@ -65,8 +64,6 @@ const CreateProduct = () => {
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  // const createProduct = api.product.create.useMutation();
-
   const handleSubmit = () => {
     console.log(content);
   };
@@ -88,9 +85,11 @@ const CreateProduct = () => {
       >
         <ArrowLeft />
       </Button>
-      <Button className="absolute right-10 top-10" variant={"ghost"}>
-        Skip
-      </Button>
+      {step === 3 ? (
+        <Button className="absolute right-10 top-10" variant={"ghost"}>
+          Skip
+        </Button>
+      ) : null}
       <Image src="/create-product.svg" alt="icon" width={131} height={90} />
       <div className="text-center text-2xl  font-medium">
         {STEP_TO_TITLE[step]}
