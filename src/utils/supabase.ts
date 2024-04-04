@@ -1,8 +1,12 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import {
+  createServerClient,
+  createBrowserClient,
+  type CookieOptions,
+} from "@supabase/ssr";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "~/env";
 
-export function createClient({
+export function createSupabaseServerClient({
   req,
   res,
 }: {
@@ -33,5 +37,13 @@ export function createClient({
     },
   );
 
+  return supabase;
+}
+
+export function createSupabaseBrowserClient() {
+  const supabase = createBrowserClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
   return supabase;
 }

@@ -18,6 +18,7 @@ import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
 import { api } from "~/utils/api";
 import { OnboardingSchema } from "~/utils/forms";
+import { env } from "~/env";
 
 export default function Home() {
   const router = useRouter();
@@ -28,20 +29,40 @@ export default function Home() {
     resolver: zodResolver(OnboardingSchema),
   });
 
+  const signedUrlCall = api.upload.getAvatarSignedUrl.useMutation();
+
   const onSubmit = async ({
     name,
     twitter,
     bio,
     avatar,
   }: z.infer<typeof OnboardingSchema>) => {
+    let avatarUploaded = false;
+
+    if (avatar) {
+      try {
+        const signedUrl = await signedUrlCall.mutateAsync();
+        await fetch(signedUrl, {
+          method: "PUT",
+          body: avatar,
+          headers: {
+            "Content-Type": avatar.type,
+          },
+        });
+        avatarUploaded = true;
+      } catch (e) {
+        console.log("Error when uploading avatar", e);
+        return
+      }
+    }
+
     onboard({
-      name: name,
-      username: twitter ?? "",
-      about: bio ?? "",
-      // HACK: Currently storing the image as a base64 string, but we should store it in a CDN
-      pfp: avatar?.name ?? "",
+      name,
+      twitter,
+      bio,
+      avatarUploaded: avatarUploaded,
     })
-      .then(() => {
+      .then(async () => {
         router.push("/creator");
       })
       .catch((e) => {

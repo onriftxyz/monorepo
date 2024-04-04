@@ -63,13 +63,13 @@ export function ImageUpload({ form }: Props) {
                     avatarRef.current = e;
                   }}
                   onChange={(e) => {
-                    if (!e.target.files![0]?.type.startsWith("image/")) {
-                      toast({
-                        title: "The file you selected is not an image",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
+                    // if (!e.target.files![0]?.type.startsWith("image/")) {
+                    //   toast({
+                    //     title: "The file you selected is not an image",
+                    //     variant: "destructive",
+                    //   });
+                    //   return;
+                    // }
                     if ((e.target.files![0]?.size ?? 0) >= 10000000) {
                       toast({
                         title: "Your file is too big!",

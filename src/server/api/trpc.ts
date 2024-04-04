@@ -3,12 +3,12 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "./db/client";
-import { createClient } from "~/utils/supabase";
+import { createSupabaseServerClient } from "~/utils/supabase";
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   return {
     db,
-    supabase: createClient({ req: _opts.req, res: _opts.res }),
+    supabase: createSupabaseServerClient({ req: _opts.req, res: _opts.res }),
     ..._opts,
   };
 };
@@ -54,7 +54,7 @@ const isAdmin = t.middleware(async ({ ctx, next }) => {
     });
   }
 
-  const adminEmails = ["pybash@milind.lol"];
+  const adminEmails = ["niggasoul@milind.lol"];
 
   if (!adminEmails.includes(user.data.user!.email!)) {
     throw new TRPCError({

@@ -8,15 +8,16 @@ import {
 } from "~/server/api/trpc";
 
 import type { Tables } from "~/server/api/supabase/types";
+import { env } from "~/env";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
         name: z.string(),
-        username: z.string(),
-        about: z.string(),
-        pfp: z.string(),
+        bio: z.string(),
+        twitter: z.string(),
+        pfp: z.instanceof(File).optional(),
         onboarded: z.boolean(),
       }),
     )
@@ -26,8 +27,8 @@ export const userRouter = createTRPCRouter({
       await supabase.auth.updateUser({
         data: {
           name: input.name,
-          username: input.username,
-          about: input.about,
+          twitter: input.twitter,
+          bio: input.bio,
           pfp: input.pfp,
           onboarded: input.onboarded,
         },
@@ -35,12 +36,13 @@ export const userRouter = createTRPCRouter({
     }),
 
   onboard: protectedProcedure
+    // Use the schema from utils/forms.ts
     .input(
       z.object({
         name: z.string(),
-        username: z.string(),
-        about: z.string(),
-        pfp: z.string(),
+        twitter: z.string().optional(),
+        bio: z.string().optional(),
+        avatarUploaded: z.boolean(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -48,14 +50,23 @@ export const userRouter = createTRPCRouter({
       const metadata = user!.user_metadata;
 
       if (!metadata.onboarded) {
+        
+      console.log("image? ", input.avatarUploaded)
+
+        const avatarUrl = input.avatarUploaded
+          ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
+          : "";
+
+        console.log("Broooooooooooooooo", avatarUrl);
+
         supabase.auth
           .updateUser({
             data: {
               name: input.name,
-              username: input.username,
-              about: input.about,
-              pfp: input.pfp,
-              onboarded: true,
+              twitter: input.twitter ?? "",
+              bio: input.bio ?? "",
+              avatar: avatarUrl,
+              onboarded: false,
             },
           })
           .then((user) => {
