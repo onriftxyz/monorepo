@@ -52,7 +52,7 @@ export const productRouter = createTRPCRouter({
         .from("products")
         .select()
         .eq("creator", input.creator)
-        .returns<Tables<"products">>();
+        .returns<Tables<"products">[]>();
 
       if (error) {
         return new TRPCError({
@@ -64,7 +64,7 @@ export const productRouter = createTRPCRouter({
       return data;
     }),
 
-  mine: protectedProcedure.query(async ({ ctx, input }) => {
+  mine: protectedProcedure.query(async ({ ctx }) => {
     const { data, error } = await ctx.supabase
       .from("products")
       .select()
@@ -141,7 +141,7 @@ export const productRouter = createTRPCRouter({
         .from("products")
         .select("*")
         .range(input.offset, input.offset + input.limit - 1)
-        .returns<Tables<"products">>();
+        .returns<Tables<"products">[]>();
 
       if (error) {
         throw new TRPCError({
@@ -157,14 +157,38 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number().int().positive(),
+        transcation_id: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const productSelect = await ctx.supabase
+        .from("products")
+        .select()
+        .eq("id", input.id)
+        .limit(1)
+        .returns<Tables<"products">>();
+
+      if (productSelect.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: productSelect.error.message,
+        });
+      }
+
+      if (productSelect.data.creator == ctx.user!.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can't purchase your own product",
+        });
+      }
+
       const { data, error } = await ctx.supabase
         .from("purchases")
         .upsert({
           product: input.id,
           buyer: ctx.user!.id,
+          transcation_id: input.transcation_id,
+          amount: productSelect.data.price,
         })
         .select()
         .returns<Tables<"purchases">>();
@@ -177,5 +201,77 @@ export const productRouter = createTRPCRouter({
       }
 
       return data;
+    }),
+
+  stats: protectedProcedure
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { supabase, user } = ctx;
+
+      type IdViewCreatorSelect = {
+        id: Tables<"products">["id"];
+        views: Tables<"products">["views"];
+        creator: Tables<"products">["creator"];
+      }[];
+
+      const productViewsSelect = await supabase
+        .from("products")
+        .select("id, views, creator")
+        .eq("id", input.id)
+        .limit(1)
+        .returns<IdViewCreatorSelect>();
+
+      if (productViewsSelect.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: productViewsSelect.error.message,
+        });
+      }
+
+      if (productViewsSelect.data.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No such product exists",
+        });
+      }
+
+      const productViews = productViewsSelect.data[0];
+
+      if (productViews?.creator != user!.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can only view stats of your products",
+        });
+      }
+
+      type BuyerAmountSelect = {
+        buyer: Tables<"purchases">["buyer"];
+        amount: Tables<"purchases">["amount"];
+      }[];
+
+      const buyerAmountSelect = await supabase
+        .from("purchases")
+        .select("buyer, amount")
+        .eq("product", input.id)
+        .returns<BuyerAmountSelect>();
+
+      if (buyerAmountSelect.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: buyerAmountSelect.error.message,
+        });
+      }
+
+      const buyersAmount = buyerAmountSelect.data;
+
+      return {
+        views: productViews?.views ?? 0,
+        buyers: new Set(buyersAmount.map(({ buyer }) => buyer)).size,
+        totalAmount: buyersAmount.reduce((acc, { amount }) => acc + amount, 0),
+      };
     }),
 });

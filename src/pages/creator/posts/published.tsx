@@ -5,6 +5,7 @@ import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { api } from "~/utils/api";
 
 const Published = () => {
   return (

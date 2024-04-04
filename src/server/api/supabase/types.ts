@@ -17,7 +17,7 @@ export type Database = {
           id: number
           price: number
           title: string
-          type: Database["public"]["Enums"]["contenttype"] | null
+          type: Database["public"]["Enums"]["contenttype"]
           updated_at: string
           views: number
         }
@@ -28,7 +28,7 @@ export type Database = {
           id?: number
           price?: number
           title: string
-          type?: Database["public"]["Enums"]["contenttype"] | null
+          type: Database["public"]["Enums"]["contenttype"]
           updated_at?: string
           views?: number
         }
@@ -39,7 +39,7 @@ export type Database = {
           id?: number
           price?: number
           title?: string
-          type?: Database["public"]["Enums"]["contenttype"] | null
+          type?: Database["public"]["Enums"]["contenttype"]
           updated_at?: string
           views?: number
         }
@@ -55,22 +55,28 @@ export type Database = {
       }
       purchases: {
         Row: {
+          amount: number
           buyer: string
           id: number
           product: number
           purchased_at: string
+          transcation_id: string
         }
         Insert: {
+          amount: number
           buyer?: string
           id?: number
           product: number
           purchased_at?: string
+          transcation_id: string
         }
         Update: {
+          amount?: number
           buyer?: string
           id?: number
           product?: number
           purchased_at?: string
+          transcation_id?: string
         }
         Relationships: [
           {

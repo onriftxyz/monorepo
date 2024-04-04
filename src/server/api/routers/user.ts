@@ -9,6 +9,7 @@ import {
 
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
+import { Row } from "postgres";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -86,7 +87,7 @@ export const userRouter = createTRPCRouter({
     return user;
   }),
 
-  getPurchases: protectedProcedure
+  purchases: protectedProcedure
     .input(
       z.object({
         limit: z.number().int().positive().default(10),
@@ -94,13 +95,14 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // TODO: Figure out how to inner join
       const { data, error } = await ctx.supabase
         .from("purchases")
-        .select()
+        .select("*, product, products (*) ")
         .eq("buyer", ctx.user!.id)
         .range(input.offset, input.offset + input.limit - 1)
-        .returns<Tables<"purchases">>();
+        .returns<Tables<"purchases">[]>();
+
+      console.log("My id", ctx.user!.id, "data", data);
 
       if (error) {
         throw new TRPCError({
@@ -111,6 +113,71 @@ export const userRouter = createTRPCRouter({
 
       return data;
     }),
+
+  stats: protectedProcedure.query(async ({ ctx }) => {
+    const { supabase, user } = ctx;
+
+    type IdViewSelect = {
+      id: Tables<"products">["id"];
+      views: Tables<"products">["views"];
+    }[];
+    // Get all user posts
+    const userProductViewsSelect = await supabase
+      .from("products")
+      .select("id, views")
+      .eq("creator", user!.id)
+      .returns<IdViewSelect>();
+
+    if (userProductViewsSelect.error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: userProductViewsSelect.error.message,
+      });
+    }
+
+    const userProductViews = userProductViewsSelect.data;
+    const productIds = userProductViews.map((post) => post.id);
+
+    type BuyerAmountSelect = {
+      buyer: Tables<"purchases">["buyer"];
+      amount: Tables<"purchases">["amount"];
+    }[];
+
+    const usersPostPurchasesSelect = await supabase
+      .from("purchases")
+      .select("buyer, amount")
+      .eq("product", productIds)
+      .returns<BuyerAmountSelect>();
+
+    if (usersPostPurchasesSelect.error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: usersPostPurchasesSelect.error.message,
+      });
+    }
+
+    const userProductPurchases = usersPostPurchasesSelect.data;
+
+    const totalViews = userProductViews.reduce(
+      (acc, post) => acc + post.views,
+      0,
+    );
+
+    const totalRevenue = userProductPurchases.reduce(
+      (acc, purchase) => acc + purchase.amount,
+      0,
+    );
+
+    const uniqueBuyers = new Set(
+      userProductPurchases.map((purchase) => purchase.buyer),
+    ).size;
+
+    return {
+      totalViews,
+      totalRevenue,
+      uniqueBuyers,
+    };
+  }),
 
   // NOTE:Only for testing onboarding.
   unboard: adminProcedure.query(async ({ ctx }) => {

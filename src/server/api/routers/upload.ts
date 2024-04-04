@@ -34,7 +34,7 @@ export const uploadRouter = createTRPCRouter({
       const { supabase } = ctx;
       const { data, error } = await supabase.storage
         .from("products")
-        .createSignedUploadUrl(`uploads/${input.filename}`);
+        .createSignedUploadUrl(`${input.folder}/${input.filename}`);
 
       if (error) {
         throw new TRPCError({

@@ -35,7 +35,6 @@ const Dashboard = () => {
   const [userEmail, setUserEmail] = useState<string>();
 
   const getAllProducts = api.product.getAll.useQuery({ limit: 10, offset: 0 });
-  console.log(getAllProducts);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
