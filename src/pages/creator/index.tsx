@@ -92,7 +92,7 @@ const CreatorDashboard = () => {
                 icon={<Money />}
               />
             </div>
-            {products.length ? (
+            {(products as UserProductWithStats[]).length ? (
               <div className="rounded-lg border border-border p-4">
                 <div className="flex items-center gap-1">
                   <span className="text-secondary-foreground">

@@ -80,18 +80,19 @@ export const CreatorSidebar = () => {
           </Button>
           <Button
             variant={router.pathname === "/creator/chat" ? "default" : "ghost"}
-            className={`flex items-center justify-start gap-2 blur-[3px]`}
+            className={`flex items-center justify-start gap-2 disabled:cursor-not-allowed`}
             onClick={() => void router.push("/creator/chat")}
+            disabled
           >
             <Chat size={20} />
             Chat
           </Button>
           <Button
             variant={
-              router.pathname === "/creator/members" ? "default" : "ghost"
+              router.pathname === "/creator/customers" ? "default" : "ghost"
             }
             className={`flex items-center justify-start gap-2`}
-            onClick={() => void router.push("/creator/members")}
+            onClick={() => void router.push("/creator/customers")}
           >
             <Members size={18} />
             Customers
