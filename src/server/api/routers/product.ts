@@ -115,7 +115,7 @@ export const productRouter = createTRPCRouter({
         ...product,
         revenue: purchases.reduce((acc, { amount }) => acc + amount, 0),
         customers: new Set(purchases.map(({ buyer }) => buyer)).size,
-      } as UserProductWithStats;
+      };
     });
 
     return userProductsWithStats;
