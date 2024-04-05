@@ -51,22 +51,21 @@ export default function Home() {
         avatarUploaded = true;
       } catch (e) {
         console.log("Error when uploading avatar", e);
-        return
+        return;
       }
     }
 
-    onboard({
-      name,
-      twitter,
-      bio,
-      avatarUploaded: avatarUploaded,
-    })
-      .then(async () => {
-        router.push("/creator");
-      })
-      .catch((e) => {
-        console.log("Error when onboarding", e);
+    try {
+      await onboard({
+        name,
+        twitter,
+        bio,
+        avatarUploaded,
       });
+      router.push("/home");
+    } catch (e) {
+      console.log("Error when onboarding", e);
+    }
   };
 
   return (

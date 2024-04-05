@@ -63,12 +63,12 @@ const Products = () => {
           </div>
         ) : (
           <div className="py-6 text-center text-muted-foreground">
-            You do not have any products yet.{" "}
+            You haven&apos;t purchased any products yet.{" "}
             <Link
-              href="/creator/create"
+              href="/explore"
               className="underline decoration-1 underline-offset-4 duration-200 ease-in-out hover:text-accent"
             >
-              Create a new one.
+              Explore new products.
             </Link>
           </div>
         )}
