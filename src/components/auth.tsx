@@ -70,11 +70,11 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
     resolver: zodResolver(AuthSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof AuthSchema>) => {
+  const onSubmit = async (formData: z.infer<typeof AuthSchema>) => {
     if (step === 0) {
       setLoading(true);
       try {
-        await generateOtp({ email: data.email });
+        await generateOtp({ email: formData.email });
         setStep(step + 1);
       } catch (e) {
         authForm.setError("email", {
@@ -86,15 +86,16 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
     } else {
       setLoading(true);
       try {
-        const { session, user } = await verifyOtp({
-          email: data.email,
-          token: data.otp!,
+        const { data, profile } = await verifyOtp({
+          email: formData.email,
+          token: formData.otp!,
         });
-        if (session?.access_token && user?.user_metadata.onboarded)
+        if (data.session?.access_token && profile.onboarded)
           void router.push("/home");
-        if (session?.access_token && !user?.user_metadata.onboarded)
+        if (data.session?.access_token && !profile.onboarded)
           void router.push("/onboard");
       } catch (e) {
+        console.log(e);
         authForm.setError("otp", {
           type: "validate",
           message: "Double check your verification code!",
@@ -206,10 +207,10 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
     } else {
       setLoading(true);
       try {
-        const { session, user } = await verifyOtp({ email, token: otp! });
-        if (session?.access_token && user?.user_metadata.onboarded)
+        const { data, profile } = await verifyOtp({ email, token: otp! });
+        if (data.session?.access_token && profile.onboarded)
           void router.push("/home");
-        if (session?.access_token && !user?.user_metadata.onboarded)
+        if (data.session?.access_token && !profile.onboarded)
           void router.push("/onboard");
       } catch (e) {
         authForm.setError("otp", {

@@ -1,9 +1,11 @@
-import { createTRPCRouter,
+import {
+  createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { type Tables } from "../supabase/types";
 
 export const authRouter = createTRPCRouter({
   generateOtp: publicProcedure
@@ -40,21 +42,64 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase.auth.verifyOtp({
+      const verifyOtpCall = await ctx.supabase.auth.verifyOtp({
         email: input.email,
         token: input.token.toString(),
         type: "email",
       });
 
-      if (error) {
-        console.log("Error while verifying token", error);
+      if (verifyOtpCall.error) {
+        console.log("Error while verifying token", verifyOtpCall.error);
         throw new TRPCError({
-          message: error.message,
+          message: verifyOtpCall.error.message,
           code: "INTERNAL_SERVER_ERROR",
         });
       }
 
-      return data;
+      let profile: Tables<"profiles"> | null = null;
+
+      if (!verifyOtpCall.data?.user?.email_confirmed_at === null) {
+        const { data, error } = await ctx.supabase
+          .from("profiles")
+          .insert({
+            id: verifyOtpCall.data.user!.id,
+          })
+          .eq("id", verifyOtpCall.data.user!.id)
+          .returns<Tables<"profiles">>();
+
+        if (error) {
+          throw new TRPCError({
+            message: "Error while creating user profile: " + error.message,
+            code: "INTERNAL_SERVER_ERROR",
+          });
+        }
+
+        profile = data;
+      } else {
+        const { data, error } = await ctx.supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", verifyOtpCall.data.user!.id)
+          .single<Tables<"profiles">>();
+
+        if (error) {
+          throw new TRPCError({
+            message: error.message,
+            code: "INTERNAL_SERVER_ERROR",
+          });
+        }
+
+        profile = data;
+      }
+
+      const userData = {
+        data: verifyOtpCall.data,
+        profile: profile,
+      };
+
+      console.log(userData);
+
+      return userData;
     }),
 
   logout: protectedProcedure.mutation(async ({ ctx }) => {

@@ -53,6 +53,41 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar: string | null
+          bio: string | null
+          id: string
+          name: string | null
+          onboarded: boolean
+          twitter: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          bio?: string | null
+          id: string
+          name?: string | null
+          onboarded?: boolean
+          twitter?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          bio?: string | null
+          id?: string
+          name?: string | null
+          onboarded?: boolean
+          twitter?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       purchases: {
         Row: {
           amount: number

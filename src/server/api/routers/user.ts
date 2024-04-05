@@ -2,9 +2,9 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
-  adminProcedure,
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 import type { Tables } from "~/server/api/supabase/types";
@@ -37,7 +37,6 @@ export const userRouter = createTRPCRouter({
     }),
 
   onboard: protectedProcedure
-    // Use the schema from utils/forms.ts
     .input(
       z.object({
         name: z.string(),
@@ -48,56 +47,89 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { supabase, user } = ctx;
-      const metadata = user!.user_metadata;
 
-      if (!metadata.onboarded) {
-        const avatarUrl = input.avatarUploaded
-          ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
-          : "";
+      const avatarUrl = input.avatarUploaded
+        ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
+        : "";
 
-        if (input.twitter) {
-          const pages = fs
-            .readdirSync("src/pages")
-            .filter((file) => file.endsWith(".tsx"))
-            .map((file) => file.replace(".tsx", ""));
-          if (pages.includes(input.twitter)) {
-            throw new TRPCError({
-              code: "BAD_REQUEST",
-              message: "Username not allowed",
-            });
-          }
-        }
+      if (input.twitter) {
+        const pages = fs
+          .readdirSync("src/pages")
+          .filter((file) => file.endsWith(".tsx"))
+          .map((file) => file.replace(".tsx", ""));
 
-        supabase.auth
-          .updateUser({
-            data: {
-              name: input.name,
-              twitter: input.twitter ?? "",
-              bio: input.bio ?? "",
-              avatar: avatarUrl,
-              onboarded: true,
-            },
-          })
-          .then((user) => {
-            return user;
-          })
-          .catch(() => {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: "Could not onboard user.",
-            });
+        if (pages.includes(input.twitter)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Username not allowed",
           });
-      } else {
+        }
+      }
+
+      const userProfile = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user!.id)
+        .single<Tables<"profiles">>();
+
+      if (userProfile.error) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User has already onboarded",
+          code: "INTERNAL_SERVER_ERROR",
+          message: userProfile.error.message,
         });
       }
+
+      if (userProfile.data.onboarded) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "User already onboarded",
+        });
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update([
+          {
+            name: input.name,
+            twitter: input.twitter ?? "",
+            bio: input.bio ?? "",
+            avatar: avatarUrl,
+            onboarded: true,
+          },
+        ])
+        .eq("id", user!.id)
+        .returns<Tables<"profiles">>();
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not onboard user: " + error.message,
+        });
+      }
+
+      return data;
     }),
 
   get: protectedProcedure.query(async ({ ctx }) => {
     const { user } = ctx;
-    return user;
+
+    const { data, error } = await ctx.supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user!.id)
+      .single<Tables<"profiles">>();
+
+    if (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
+    }
+
+    return {
+      user,
+      profile: data,
+    };
   }),
 
   purchases: protectedProcedure
@@ -191,13 +223,24 @@ export const userRouter = createTRPCRouter({
     };
   }),
 
-  // NOTE:Only for testing onboarding.
-  unboard: adminProcedure.query(async ({ ctx }) => {
-    const { supabase } = ctx;
-    await supabase.auth.updateUser({
-      data: {
-        onboarded: false,
-      },
-    });
-  }),
+  profile: publicProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase.auth.admin.getUserById(
+        input.id,
+      );
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data;
+    }),
 });

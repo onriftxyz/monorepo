@@ -23,9 +23,8 @@ import Image from "next/image";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { api } from "~/utils/api";
-import { type Tables } from "~/server/api/supabase/types";
-import { UserProductWithStats } from "~/utils/product";
 import Link from "next/link";
+import { type UserProductWithStats } from "~/utils/product";
 
 const CreatorDashboard = () => {
   const { data: stats, isLoading: isLoadingStats } = api.user.stats.useQuery();
