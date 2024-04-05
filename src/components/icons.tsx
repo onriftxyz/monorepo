@@ -328,6 +328,20 @@ export const ChevronRight = ({ size = 24 }: IconProps) => {
   );
 };
 
+export const ChevronLeft = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 25 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M11.5452 11.9991L16.0002 16.4541L14.7276 17.7267L9 11.9991L14.7276 6.27148L16.0002 7.54408L11.5452 11.9991Z" />
+    </svg>
+  );
+};
+
 export const ChevronDown = ({ size = 24 }: IconProps) => {
   return (
     <svg

@@ -9,10 +9,10 @@ import {
   Product,
   Creator,
   Chat,
+  ChevronLeft,
 } from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 
 export const CreatorSidebar = () => {
@@ -23,20 +23,31 @@ export const CreatorSidebar = () => {
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/logo-transparent.png"
-            width={48}
-            height={48}
-            alt="logo"
-          />
-          <div>
-            <div className="flex flex-col">
-              <div className="text-sm uppercase">Rift</div>
-              <div className="text-xs text-secondary-foreground">
-                Creator Dashboard
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/logo-transparent.png"
+              width={48}
+              height={48}
+              alt="logo"
+            />
+            <div>
+              <div className="flex flex-col">
+                <div className="text-sm uppercase">Rift</div>
+                <div className="text-xs text-secondary-foreground">
+                  Creator Dashboard
+                </div>
               </div>
             </div>
+          </div>
+          <div>
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              onClick={() => router.push("/home")}
+            >
+              <ChevronLeft />
+            </Button>
           </div>
         </div>
         <Separator />
