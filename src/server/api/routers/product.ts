@@ -7,7 +7,6 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
-import type { UserProductWithStats } from "~/utils/product";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -313,5 +312,27 @@ export const productRouter = createTRPCRouter({
         buyers: new Set(buyersAmount.map(({ buyer }) => buyer)).size,
         revenue: buyersAmount.reduce((acc, { amount }) => acc + amount, 0),
       };
+    }),
+
+  isPurchased: protectedProcedure
+    .input(z.object({ id: z.number().int().positive() }))
+    .query(async ({ ctx, input }) => {
+      const { user, supabase } = ctx;
+
+      const purchaseSelect = await supabase
+        .from("purchases")
+        .select()
+        .eq("product", input.id)
+        .eq("buyer", user!.id)
+        .returns<Tables<"purchases">[]>();
+
+      if (purchaseSelect.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: purchaseSelect.error.message,
+        });
+      }
+
+      return purchaseSelect.data.length > 0;
     }),
 });

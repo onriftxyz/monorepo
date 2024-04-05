@@ -58,7 +58,8 @@ export const userRouter = createTRPCRouter({
         if (input.twitter) {
           const pages = fs
             .readdirSync("src/pages")
-            .filter((file) => file.endsWith(".tsx")).map((file) => file.replace(".tsx", ""));
+            .filter((file) => file.endsWith(".tsx"))
+            .map((file) => file.replace(".tsx", ""));
           if (pages.includes(input.twitter)) {
             throw new TRPCError({
               code: "BAD_REQUEST",
@@ -66,7 +67,6 @@ export const userRouter = createTRPCRouter({
             });
           }
         }
-
 
         supabase.auth
           .updateUser({
