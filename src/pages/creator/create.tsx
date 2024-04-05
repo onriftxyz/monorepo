@@ -11,6 +11,7 @@ import { Textarea } from "~/components/ui/textarea";
 
 import { api } from "~/utils/api";
 import { env } from "~/env";
+import { Enums } from "~/server/api/supabase/types";
 
 const STEP_TO_TITLE = [
   <>
@@ -62,8 +63,7 @@ const CreateProduct = () => {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0.0);
-  // TODO: Use Enum from supabase type
-  const [type, setType] = useState<"UPLOAD" | "LINK" | "MARKDOWN">();
+  const [type, setType] = useState<Enums<"contenttype">>();
   const [content, setContent] = useState<(string | File)[]>([]);
 
   const uploadRef = useRef<HTMLInputElement>(null);
