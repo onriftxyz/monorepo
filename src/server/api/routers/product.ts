@@ -7,6 +7,7 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
+import { type ProductGet } from "~/utils/product";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -44,15 +45,16 @@ export const productRouter = createTRPCRouter({
   get: publicProcedure
     .input(
       z.object({
-        creator: z.string().uuid(),
+        id: z.number().int().positive(),
       }),
     )
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .select()
-        .eq("creator", input.creator)
-        .returns<Tables<"products">[]>();
+        .select("*, creator:profiles(*)")
+        .eq("id", input.id)
+        .limit(1)
+        .returns<ProductGet>();
 
       if (error) {
         return new TRPCError({
@@ -64,7 +66,54 @@ export const productRouter = createTRPCRouter({
       return data;
     }),
 
-  mine: protectedProcedure.query(async ({ ctx }) => {
+  getByCreator: publicProcedure
+    .input(
+      z.object({
+        creator: z.string().uuid(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase
+        .from("products")
+        .select("*, creator:profiles(*)")
+        .eq("creator", input.creator)
+        .returns<ProductGet[]>();
+
+      if (error) {
+        return new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data;
+    }),
+
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().int().positive().default(10),
+        offset: z.number().int().gte(0).default(0),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { data, error } = await ctx.supabase
+        .from("products")
+        .select("*, creator:profiles(*)")
+        .range(input.offset, input.offset + input.limit - 1)
+        .returns<ProductGet[]>();
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      return data;
+    }),
+
+  getMine: protectedProcedure.query(async ({ ctx }) => {
     const { supabase, user } = ctx;
 
     const userProductsSelect = await supabase
@@ -168,30 +217,6 @@ export const productRouter = createTRPCRouter({
       return data;
     }),
 
-  getAll: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number().int().positive().default(10),
-        offset: z.number().int().gte(0).default(0),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase
-        .from("products")
-        .select("*")
-        .range(input.offset, input.offset + input.limit - 1)
-        .returns<Tables<"products">[]>();
-
-      if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
-      }
-
-      return data;
-    }),
-
   purchase: protectedProcedure
     .input(
       z.object({
@@ -223,7 +248,7 @@ export const productRouter = createTRPCRouter({
 
       const { data, error } = await ctx.supabase
         .from("purchases")
-        .upsert({
+        .insert({
           product: input.id,
           buyer: ctx.user!.id,
           transcation_id: input.transcation_id,

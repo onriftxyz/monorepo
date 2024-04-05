@@ -10,6 +10,7 @@ import {
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
 import fs from "fs";
+import { ProductPurchase } from "~/utils/product";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -112,7 +113,6 @@ export const userRouter = createTRPCRouter({
 
   get: protectedProcedure.query(async ({ ctx }) => {
     const { user } = ctx;
-
     const { data, error } = await ctx.supabase
       .from("profiles")
       .select("*")
@@ -142,10 +142,10 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("purchases")
-        .select("*, product, products (*) ")
+        .select("*, product:products (*) ")
         .eq("buyer", ctx.user!.id)
         .range(input.offset, input.offset + input.limit - 1)
-        .returns<Tables<"purchases">[]>();
+        .returns<ProductPurchase[]>();
 
       console.log("My id", ctx.user!.id, "data", data);
 

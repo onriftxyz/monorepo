@@ -12,16 +12,19 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { productRouter } from "~/server/api/routers/product";
 import { createTRPCCaller, createTRPCContext } from "~/server/api/trpc";
+import { api } from "~/utils/api";
 
 const ProductPage = ({
   id,
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+
+
   return (
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">
         <Link href="/username" className="font-medium uppercase">
-          Username
+          {product.creator}
         </Link>
       </nav>
       <div className="grid grid-cols-2 gap-4 px-48 py-16">

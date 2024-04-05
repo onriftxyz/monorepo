@@ -29,7 +29,7 @@ import { type UserProductWithStats } from "~/utils/product";
 const CreatorDashboard = () => {
   const { data: stats, isLoading: isLoadingStats } = api.user.stats.useQuery();
   const { data: products, isLoading: isLoadingProducts } =
-    api.product.mine.useQuery();
+    api.product.getMine.useQuery();
 
   return (
     <main
