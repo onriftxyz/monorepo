@@ -9,6 +9,7 @@ import {
 
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
+import fs from "fs";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -53,6 +54,19 @@ export const userRouter = createTRPCRouter({
         const avatarUrl = input.avatarUploaded
           ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
           : "";
+
+        if (input.twitter) {
+          const pages = fs
+            .readdirSync("src/pages")
+            .filter((file) => file.endsWith(".tsx")).map((file) => file.replace(".tsx", ""));
+          if (pages.includes(input.twitter)) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Username not allowed",
+            });
+          }
+        }
+
 
         supabase.auth
           .updateUser({
