@@ -230,9 +230,11 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase.auth.admin.getUserById(
-        input.id,
-      );
+      const { data, error } = await ctx.supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", input.id)
+        .single<Tables<"profiles">>();
 
       if (error) {
         throw new TRPCError({
