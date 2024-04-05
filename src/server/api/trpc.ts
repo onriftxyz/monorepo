@@ -28,6 +28,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 export const createTRPCRouter = t.router;
+export const createTRPCCaller = t.createCallerFactory;
 
 const isAuthenticated = t.middleware(async ({ ctx, next }) => {
   const user = await ctx.supabase.auth.getUser();
@@ -54,7 +55,11 @@ const isAdmin = t.middleware(async ({ ctx, next }) => {
     });
   }
 
-  const adminEmails = ["niggasoul@milind.lol", "pybash@skiff.com", "hi@pybash.xyz"];
+  const adminEmails = [
+    "niggasoul@milind.lol",
+    "pybash@skiff.com",
+    "hi@pybash.xyz",
+  ];
 
   if (!adminEmails.includes(user.data.user!.email!)) {
     throw new TRPCError({
