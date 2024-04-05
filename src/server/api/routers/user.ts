@@ -9,7 +9,6 @@ import {
 
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
-import { Row } from "postgres";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -146,7 +145,7 @@ export const userRouter = createTRPCRouter({
     const usersPostPurchasesSelect = await supabase
       .from("purchases")
       .select("buyer, amount")
-      .eq("product", productIds)
+      .in("product", productIds)
       .returns<BuyerAmountSelect>();
 
     if (usersPostPurchasesSelect.error) {
@@ -155,7 +154,6 @@ export const userRouter = createTRPCRouter({
         message: usersPostPurchasesSelect.error.message,
       });
     }
-
     const userProductPurchases = usersPostPurchasesSelect.data;
 
     const totalViews = userProductViews.reduce(

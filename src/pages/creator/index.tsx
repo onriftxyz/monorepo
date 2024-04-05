@@ -23,14 +23,11 @@ import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { api } from "~/utils/api";
 import { type Tables } from "~/server/api/supabase/types";
-import { type UserProductWithStats } from "~/utils/product";
 
 const CreatorDashboard = () => {
-  const userStats = api.user.stats.useQuery().data;
-  const userProducts = api.product.mine.useQuery()
-    .data as UserProductWithStats[];
-  // TODO: @pybash implement some loading logic
-  if (!userStats || !userProducts) return null;
+  const { data: stats, isLoading: isLoadingStats } = api.user.stats.useQuery();
+  const { data: products, isLoading: isLoadingProducts } =
+    api.product.mine.useQuery();
 
   return (
     <main
@@ -42,14 +39,18 @@ const CreatorDashboard = () => {
       <CreatorSidebar />
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Creator Dashboard" />
-        <div className="flex items-center justify-between pt-4">
-          <div className="flex gap-2">
-            <span className="text-secondary-foreground">
-              <Analytics />
-            </span>
-            Overview
-          </div>
-          {/* <div>
+        {isLoadingStats || isLoadingProducts ? (
+          <></>
+        ) : (
+          <>
+            <div className="flex items-center justify-between pt-4">
+              <div className="flex gap-2">
+                <span className="text-secondary-foreground">
+                  <Analytics />
+                </span>
+                Overview
+              </div>
+              {/* <div>
             <Select>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Time period" />
@@ -63,94 +64,98 @@ const CreatorDashboard = () => {
               </SelectContent>
             </Select>
           </div> */}
-        </div>
-        <div className="flex items-center gap-6">
-          <OverviewCard
-            title={"Customers"}
-            data={userStats.uniqueBuyers.toString()}
-            variant={"success"}
-            icon={<Members />}
-          />
-          <OverviewCard
-            title={"Views"}
-            data={userStats.totalViews.toString()}
-            variant={"success"}
-            icon={<Views />}
-          />
-          <OverviewCard
-            title={"Revenue"}
-            data={userStats.totalRevenue.toString()}
-            variant={"destructive"}
-            icon={<Money />}
-          />
-        </div>
-        <div className="rounded-lg border border-border p-4">
-          <div className="flex items-center gap-1">
-            <span className="text-secondary-foreground">
-              <List />
-            </span>
-            Products
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[500px]">Product</TableHead>
-                <TableHead className="w-fit text-center">Views</TableHead>
-                <TableHead className="w-fit text-center">Revenue</TableHead>
-                <TableHead className="w-fit text-center">Customers</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(userProducts as Tables<"products">[]).map((userProduct) => (
-                <TableRow key={Math.random() * 100}>
-                  <TableCell className="flex items-center gap-2">
-                    <Image
-                      src={
-                        "https://picsum.photos/64" +
-                        "?random=" +
-                        Math.random() * 10
-                      }
-                      alt="cover image"
-                      width={64}
-                      height={64}
-                      className="h-12 w-12 flex-shrink-0 rounded-md"
-                    />
-                    <div className="flex w-full flex-col gap-0.5">
-                      <div>{userProduct.title}</div>
-                      <div className="flex text-xs text-secondary-foreground">
-                        {new Date(userProduct.created_at).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            year: "numeric",
-                            day: "2-digit",
-                          },
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {userProduct.views}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {/*NOTE: idk why eslint is complaining about this */}$
-                    {userProduct.revenue}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {/*NOTE: idk why eslint is complaining about this */}$
-                    {userProduct.customers}
-                  </TableCell>
-                  <TableCell className="w-6">
-                    <Button size="icon" variant="ghost">
-                      <ThreeDots />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <OverviewCard
+                title={"Customers"}
+                data={stats! .uniqueBuyers.toString()}
+                variant={"success"}
+                icon={<Members />}
+              />
+              <OverviewCard
+                title={"Views"}
+                data={stats!.totalViews.toString()}
+                variant={"success"}
+                icon={<Views />}
+              />
+              <OverviewCard
+                title={"Revenue"}
+                data={stats!.totalRevenue.toString()}
+                variant={"destructive"}
+                icon={<Money />}
+              />
+            </div>
+            <div className="rounded-lg border border-border p-4">
+              <div className="flex items-center gap-1">
+                <span className="text-secondary-foreground">
+                  <List />
+                </span>
+                Products
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[500px]">Product</TableHead>
+                    <TableHead className="w-fit text-center">Views</TableHead>
+                    <TableHead className="w-fit text-center">Revenue</TableHead>
+                    <TableHead className="w-fit text-center">
+                      Customers
+                    </TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(products as Tables<"products">[]).map((product) => (
+                    <TableRow key={Math.random() * 100}>
+                      <TableCell className="flex items-center gap-2">
+                        <Image
+                          src={
+                            "https://picsum.photos/64" +
+                            "?random=" +
+                            Math.random() * 10
+                          }
+                          alt="cover image"
+                          width={64}
+                          height={64}
+                          className="h-12 w-12 flex-shrink-0 rounded-md"
+                        />
+                        <div className="flex w-full flex-col gap-0.5">
+                          <div>{product.title}</div>
+                          <div className="flex text-xs text-secondary-foreground">
+                            {new Date(product.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                year: "numeric",
+                                day: "2-digit",
+                              },
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {product.views}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {/*NOTE: idk why eslint is complaining about this */}$
+                        {product.revenue}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {/*NOTE: idk why eslint is complaining about this */}$
+                        {product.customers}
+                      </TableCell>
+                      <TableCell className="w-6">
+                        <Button size="icon" variant="ghost">
+                          <ThreeDots />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
+        )}
       </div>
     </main>
   );

@@ -38,7 +38,6 @@ import {
 } from "./ui/form";
 import { Loader } from "./icons";
 import { api } from "~/utils/api";
-import { router } from "@trpc/server";
 import { useRouter } from "next/router";
 
 interface Props {

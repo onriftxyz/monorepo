@@ -7,7 +7,7 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
-import { UserProductWithStats } from "~/utils/product";
+import type { UserProductWithStats } from "~/utils/product";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -94,7 +94,7 @@ export const productRouter = createTRPCRouter({
     const usersPostPurchasesSelect = await supabase
       .from("purchases")
       .select("buyer, amount, product")
-      .eq("product", productIds)
+      .in("product", productIds)
       .returns<ProductBuyerAmountSelect>();
 
     if (usersPostPurchasesSelect.error) {

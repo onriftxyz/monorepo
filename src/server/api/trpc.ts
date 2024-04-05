@@ -54,7 +54,7 @@ const isAdmin = t.middleware(async ({ ctx, next }) => {
     });
   }
 
-  const adminEmails = ["niggasoul@milind.lol"];
+  const adminEmails = ["niggasoul@milind.lol", "pybash@skiff.com", "hi@pybash.xyz"];
 
   if (!adminEmails.includes(user.data.user!.email!)) {
     throw new TRPCError({
