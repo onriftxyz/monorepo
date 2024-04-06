@@ -16,8 +16,6 @@ import { createSupabaseServerClient } from "~/utils/supabase";
 const ProductPage = ({
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  console.log(product);
-
   return (
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">
@@ -96,8 +94,6 @@ export const getServerSideProps = (async (ctx) => {
     };
   }
 
-  // TODO: So username cannot be optional, make mandatory
-  
   if (product.creator.twitter != ctx.params!.username) {
     return {
       notFound: true,
