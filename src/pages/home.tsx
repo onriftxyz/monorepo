@@ -22,9 +22,15 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { useAuthenticated } from "~/lib/useAuthenticated";
+import { api } from "~/utils/api";
+import Link from "next/link";
 
 const UserDashboard = () => {
   useAuthenticated();
+
+  const { data: products, isLoading } = api.user.purchases.useQuery({
+    limit: 5,
+  });
 
   return (
     <main
@@ -54,60 +60,64 @@ const UserDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Array(5)
-                .fill("post")
-                .map(() => (
-                  <TableRow key={Math.random() * 100}>
-                    <TableCell className="flex items-center gap-2">
-                      <Image
-                        src={
-                          "https://picsum.photos/64" +
-                          "?random=" +
-                          Math.random() * 10
-                        }
-                        alt="cover image"
-                        width={64}
-                        height={64}
-                        className="h-12 w-12 flex-shrink-0 rounded-md"
-                      />
-                      <div className="flex w-full flex-col gap-0.5">
-                        <div>Item name</div>
-                        <div className="flex text-xs text-secondary-foreground">
-                          {new Date().toLocaleDateString("en-US", {
-                            month: "short",
-                            year: "numeric",
-                            day: "2-digit",
-                          })}
-                        </div>
+              {products?.map((product) => (
+                <TableRow key={Math.random() * 100}>
+                  <TableCell className="flex items-center gap-2">
+                    <Image
+                      src={
+                        "https://picsum.photos/64" +
+                        "?random=" +
+                        Math.random() * 10
+                      }
+                      alt="cover image"
+                      width={64}
+                      height={64}
+                      className="h-12 w-12 flex-shrink-0 rounded-md"
+                    />
+                    <div className="flex w-full flex-col gap-0.5">
+                      <Link
+                        href={`/${product.product.creator?.twitter}/${product.product.id}`}
+                      >
+                        {product.product.title}
+                      </Link>
+                      <div className="flex text-xs text-secondary-foreground">
+                        {new Date(
+                          product.product.created_at,
+                        ).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                          day: "2-digit",
+                        })}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Math.round(Math.random() * 25)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      ${`${Math.random() * 100}`.substring(0, 5)}
-                    </TableCell>
-                    <TableCell className="flex items-center gap-2">
-                      <Image
-                        src={
-                          "https://picsum.photos/64" +
-                          "?random=" +
-                          Math.random() * 10
-                        }
-                        alt="cover image"
-                        width={48}
-                        height={48}
-                        className="h-8 w-8 flex-shrink-0 rounded-full"
-                      />
-                      <div>Crea Tor</div>
-                    </TableCell>
-                    <TableCell className="w-6">
-                      <Button size="icon" variant="ghost">
-                        <ThreeDots />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {product.product.content?.length}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    ${product.product.price}
+                  </TableCell>
+                  <TableCell className="flex items-center gap-2">
+                    <Image
+                      src={
+                        "https://picsum.photos/64" +
+                        "?random=" +
+                        Math.random() * 10
+                      }
+                      alt="cover image"
+                      width={48}
+                      height={48}
+                      className="h-8 w-8 flex-shrink-0 rounded-full"
+                    />
+                    <div>{product.product.creator?.toString()}</div>
+                  </TableCell>
+                  <TableCell className="w-6">
+                    <Button size="icon" variant="ghost">
+                      <ThreeDots />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

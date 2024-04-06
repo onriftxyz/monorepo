@@ -46,7 +46,9 @@ const Products = () => {
                   className="h-12 w-12 rounded-md"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <div>{product.title}</div>
+                  <Link href={`/${product.creator?.twitter}/${product.id}`}>
+                    {product.title}
+                  </Link>
                   <div className="line-clamp-1 text-sm text-secondary-foreground">
                     Random long description. Lorem ipsum dolor sit amet
                     consectetur adipisicing elit. Quo sequi quas ullam. Fugiat
