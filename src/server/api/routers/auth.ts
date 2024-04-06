@@ -115,7 +115,7 @@ export const authRouter = createTRPCRouter({
     }
   }),
 
-  isAuthenticated: protectedProcedure.query(async ({ ctx }) => {
+  isAuthenticated: publicProcedure.query(async ({ ctx }) => {
     const user = await ctx.supabase.auth.getUser();
 
     if (!user) {
