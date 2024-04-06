@@ -10,7 +10,7 @@ import type { Tables } from "~/server/api/supabase/types";
 import { api } from "~/utils/api";
 
 const Products = () => {
-  const { data: products, isLoading } = api.product.mine.useQuery();
+  const { data: products, isLoading } = api.product.getMine.useQuery();
 
   return (
     <main

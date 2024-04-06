@@ -31,6 +31,9 @@ export const uploadRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+
+     // NOTE: this seems dangerous any user can upload as many files as possible. need some way to rate limit.
+
       const { supabase } = ctx;
       const { data, error } = await supabase.storage
         .from("products")
