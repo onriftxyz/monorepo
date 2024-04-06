@@ -16,23 +16,34 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
-        bio: z.string(),
-        twitter: z.string(),
-        pfp: z.instanceof(File).optional(),
-        onboarded: z.boolean(),
+        name: z.string().min(1).optional(),
+        bio: z.string().min(1).optional(),
+        twitter: z.string().min(1).optional(),
+        wallet: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const { supabase } = ctx;
 
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select()
+        .eq("id", ctx.user!.id)
+        .single<Tables<"profiles">>();
+
+      if (!profile || profileError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: profileError.message,
+        });
+      }
+
       await supabase.auth.updateUser({
         data: {
-          name: input.name,
-          twitter: input.twitter,
-          bio: input.bio,
-          pfp: input.pfp,
-          onboarded: input.onboarded,
+          name: input.name ?? profile.name,
+          twitter: input.twitter ?? profile.twitter,
+          bio: input.bio ?? profile.bio,
+          wallet: input.wallet ?? profile.wallet,
         },
       });
     }),
