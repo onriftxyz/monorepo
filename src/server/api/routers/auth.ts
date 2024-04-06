@@ -116,10 +116,10 @@ export const authRouter = createTRPCRouter({
   }),
 
   isAuthenticated: publicProcedure.query(async ({ ctx }) => {
-    const user = await ctx.supabase.auth.getUser();
+    const { data: user, error } = await ctx.supabase.auth.getUser();
 
-    if (!user) {
-      return false;
+    if (error || !user) {
+      return false
     }
 
     return true;
