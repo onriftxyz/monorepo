@@ -19,7 +19,10 @@ const ProductPage = ({
   return (
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">
-        <Link href="/username" className="font-medium uppercase">
+        <Link
+          href={`/${product.creator.twitter}`}
+          className="font-medium uppercase"
+        >
           {product.creator.name}
         </Link>
       </nav>

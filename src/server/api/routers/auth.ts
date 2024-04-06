@@ -56,15 +56,29 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      let profile: Tables<"profiles"> | null = null;
+      let profile: Tables<"profiles"> | null | undefined = null;
 
-      if (!verifyOtpCall.data?.user?.email_confirmed_at === null) {
+      const { data, error } = await ctx.supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", verifyOtpCall.data.user!.id)
+        .limit(1)
+        .returns<Tables<"profiles">[]>();
+
+      if (error) {
+        throw new TRPCError({
+          message: error.message,
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+
+      if (data.length === 0) {
         const { data, error } = await ctx.supabase
           .from("profiles")
           .insert({
             id: verifyOtpCall.data.user!.id,
           })
-          .eq("id", verifyOtpCall.data.user!.id)
+          .select()
           .returns<Tables<"profiles">>();
 
         if (error) {
@@ -76,28 +90,15 @@ export const authRouter = createTRPCRouter({
 
         profile = data;
       } else {
-        const { data, error } = await ctx.supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", verifyOtpCall.data.user!.id)
-          .single<Tables<"profiles">>();
-
-        if (error) {
-          throw new TRPCError({
-            message: error.message,
-            code: "INTERNAL_SERVER_ERROR",
-          });
-        }
-
-        profile = data;
+        profile = data[0];
       }
+
+      console.log("profile data", profile);
 
       const userData = {
         data: verifyOtpCall.data,
         profile: profile,
       };
-
-      console.log(userData);
 
       return userData;
     }),

@@ -90,12 +90,12 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
           email: formData.email,
           token: formData.otp!,
         });
-        if (data.session?.access_token && profile.onboarded)
+        if (data.session?.access_token && profile!.onboarded)
           void router.push("/home");
-        if (data.session?.access_token && !profile.onboarded)
+        if (data.session?.access_token && !profile!.onboarded)
           void router.push("/onboard");
       } catch (e) {
-        console.log(e);
+        console.log("error during verifying", e);
         authForm.setError("otp", {
           type: "validate",
           message: "Double check your verification code!",
@@ -208,11 +208,12 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
       setLoading(true);
       try {
         const { data, profile } = await verifyOtp({ email, token: otp! });
-        if (data.session?.access_token && profile.onboarded)
+        if (data.session?.access_token && profile!.onboarded)
           void router.push("/home");
-        if (data.session?.access_token && !profile.onboarded)
+        if (data.session?.access_token && !profile!.onboarded)
           void router.push("/onboard");
       } catch (e) {
+        console.log("error during verifying", e);
         authForm.setError("otp", {
           type: "validate",
           message: "Double check your verification code!",

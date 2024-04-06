@@ -10,7 +10,7 @@ import {
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
 import fs from "fs";
-import { ProductPurchase } from "~/utils/product";
+import { type ProductPurchase } from "~/utils/product";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -71,7 +71,8 @@ export const userRouter = createTRPCRouter({
         .from("profiles")
         .select("*")
         .eq("id", user!.id)
-        .single<Tables<"profiles">>();
+        .limit(1)
+        .returns<Tables<"profiles">>();
 
       if (userProfile.error) {
         throw new TRPCError({
