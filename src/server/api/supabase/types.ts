@@ -67,6 +67,7 @@ export type Database = {
           name: string | null
           onboarded: boolean
           twitter: string | null
+          wallet: string | null
         }
         Insert: {
           avatar?: string | null
@@ -75,6 +76,7 @@ export type Database = {
           name?: string | null
           onboarded?: boolean
           twitter?: string | null
+          wallet?: string | null
         }
         Update: {
           avatar?: string | null
@@ -83,6 +85,7 @@ export type Database = {
           name?: string | null
           onboarded?: boolean
           twitter?: string | null
+          wallet?: string | null
         }
         Relationships: [
           {

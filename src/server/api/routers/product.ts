@@ -24,7 +24,7 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .upsert({
+        .insert({
           title: input.title,
           description: input.description,
           images: input.images,

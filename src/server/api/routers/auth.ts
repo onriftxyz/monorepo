@@ -125,12 +125,13 @@ export const authRouter = createTRPCRouter({
       return { authenticated: false, onboarded: false };
     }
 
-    const { data: meta } = await ctx.supabase
+    const { data: onboarded } = await ctx.supabase
       .from("profiles")
       .select("onboarded")
       .eq("id", user.id)
-      .returns<{ onboarded: boolean }[]>();
+      .limit(1)
+      .returns<Tables<"profiles">["onboarded"]>();
 
-    return { authenticated: true, onboarded: meta?.[0]?.onboarded };
+    return { authenticated: true, onboarded: onboarded ?? false };
   }),
 });
