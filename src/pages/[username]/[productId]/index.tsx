@@ -10,21 +10,19 @@ import { matter } from "~/components/fonts";
 import { ChevronLeft, ChevronRight, Views } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { productRouter } from "~/server/api/routers/product";
-import { createTRPCCaller, createTRPCContext } from "~/server/api/trpc";
-import { api } from "~/utils/api";
+import { type ProductGet } from "~/utils/product";
+import { createSupabaseServerClient } from "~/utils/supabase";
 
 const ProductPage = ({
-  id,
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-
+  console.log(product);
 
   return (
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">
         <Link href="/username" className="font-medium uppercase">
-          {product.creator}
+          {product.creator.name}
         </Link>
       </nav>
       <div className="grid grid-cols-2 gap-4 px-48 py-16">
@@ -46,10 +44,7 @@ const ProductPage = ({
         <div className="flex h-full w-full flex-col gap-4 px-10">
           <div className="text-4xl">{product.title}</div>
           <div className="line-clamp-2 text-muted-foreground">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Error
-            mollitia quasi fugit, assumenda sequi fugiat. Necessitatibus itaque
-            officiis praesentium quidem, tenetur iure fugit quam blanditiis,
-            placeat exercitationem debitis neque enim?
+            {product.description}
           </div>
           <div className="text-2xl">${product.price}</div>
           <Button className="w-full" size="lg">
@@ -61,9 +56,16 @@ const ProductPage = ({
               <Views />
               {product.views}
             </div>
-            <div>Published on: {product.created_at}</div>
+            <div>
+              Published on:{" "}
+              {new Date(product.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                year: "numeric",
+                day: "2-digit",
+              })}
+            </div>
             <div className="text-sm text-muted-foreground">
-              You will unlock {product.content.length}{" "}
+              You will unlock {product.content?.length}{" "}
               {product.type === "LINK" ? "links" : "files"}.
             </div>
           </div>
@@ -74,67 +76,31 @@ const ProductPage = ({
 };
 
 export const getServerSideProps = (async (ctx) => {
-  //   const product = createTRPCCaller(productRouter);
-  //   try {
-  //     const products = (await product(
-  //       createTRPCContext({
-  //         req: ctx.req as NextApiRequest,
-  //         res: ctx.res as NextApiResponse,
-  //       }),
-  //     ).get({ creator: ctx.query.username as string })) as {
-  //       content: string[] | null;
-  //       created_at: string;
-  //       creator: string | null;
-  //       id: number;
-  //       price: number;
-  //       title: string;
-  //       type: "LINK" | "UPLOAD" | "MARKDOWN";
-  //       updated_at: string;
-  //       views: number;
-  //     }[];
+  const productId = ctx.params!.productId!.toString();
+  const id = parseInt(productId, 10);
+  const supabase = createSupabaseServerClient({
+    req: ctx.req as NextApiRequest,
+    res: ctx.res as NextApiResponse,
+  });
 
-  //     return {
-  //       props: {
-  //         id: Number(ctx.query.productId),
-  //         product: products.filter(
-  //           (product) => product.id === Number(ctx.query.productId),
-  //         )[0]!,
-  //       },
-  //     };
-  //   } catch (e) {
-  //     return {
-  //       notFound: true,
-  //     };
-  //   }
+  const { data: product, error } = await supabase
+    .from("products")
+    .select("*, creator: profiles(*)")
+    .eq("id", id)
+    .single<ProductGet>();
+
+  if (error) {
+    console.error(error);
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
-      id: 0,
-      product: {
-        content: ["test", "test 2"],
-        created_at: new Date().toLocaleDateString(),
-        creator: "py_bash1",
-        id: 0,
-        price: 69.0,
-        title: "Test product",
-        type: "LINK",
-        updated_at: "",
-        views: 420,
-      },
+      product,
     },
   };
-}) satisfies GetServerSideProps<{
-  id: number;
-  product: {
-    content: string[] | null;
-    created_at: string;
-    creator: string | null;
-    id: number;
-    price: number;
-    title: string;
-    type: "LINK" | "UPLOAD" | "MARKDOWN";
-    updated_at: string;
-    views: number;
-  };
-}>;
+}) satisfies GetServerSideProps<{ product: ProductGet }>;
 
 export default ProductPage;

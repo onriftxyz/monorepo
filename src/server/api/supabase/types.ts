@@ -14,7 +14,9 @@ export type Database = {
           content: string[] | null
           created_at: string
           creator: string | null
+          description: string | null
           id: number
+          images: string[] | null
           price: number
           title: string
           type: Database["public"]["Enums"]["contenttype"]
@@ -25,7 +27,9 @@ export type Database = {
           content?: string[] | null
           created_at?: string
           creator?: string | null
+          description?: string | null
           id?: number
+          images?: string[] | null
           price?: number
           title: string
           type: Database["public"]["Enums"]["contenttype"]
@@ -36,7 +40,9 @@ export type Database = {
           content?: string[] | null
           created_at?: string
           creator?: string | null
+          description?: string | null
           id?: number
+          images?: string[] | null
           price?: number
           title?: string
           type?: Database["public"]["Enums"]["contenttype"]
@@ -45,10 +51,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "public_product_creator_fkey"
+            foreignKeyName: "public_products_creator_fkey"
             columns: ["creator"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -118,7 +124,7 @@ export type Database = {
             foreignKeyName: "public_purchases_buyer_fkey"
             columns: ["buyer"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
