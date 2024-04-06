@@ -114,4 +114,14 @@ export const authRouter = createTRPCRouter({
       });
     }
   }),
+
+  isAuthenticated: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.supabase.auth.getUser();
+
+    if (!user) {
+      return false;
+    }
+
+    return true;
+  }),
 });
