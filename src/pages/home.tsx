@@ -21,8 +21,11 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const UserDashboard = () => {
+  useAuthenticated();
+
   return (
     <main
       className={cn(

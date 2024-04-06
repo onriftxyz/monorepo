@@ -5,11 +5,14 @@ import { Loader, Pencil, ThreeDots } from "~/components/icons";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { Button } from "~/components/ui/button";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn } from "~/lib/utils";
 import type { Tables } from "~/server/api/supabase/types";
 import { api } from "~/utils/api";
 
 const Products = () => {
+  useAuthenticated();
+
   const { data: products, isLoading } = api.product.getMine.useQuery();
 
   return (

@@ -2,11 +2,14 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { matter } from "~/components/fonts";
 import { Check, ChevronRight, Cross } from "~/components/icons";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const Checkout = ({
   type,
   name,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  useAuthenticated();
+
   return (
     <main
       className={`flex min-h-screen w-full flex-col items-center justify-center gap-4 ${matter.className}`}

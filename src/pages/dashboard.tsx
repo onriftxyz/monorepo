@@ -27,10 +27,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn, parseJwt } from "~/lib/utils";
 import { api } from "~/utils/api";
 
 const Dashboard = () => {
+  useAuthenticated();
+
   const [user, setUser] = useState<string>();
   const [userEmail, setUserEmail] = useState<string>();
 

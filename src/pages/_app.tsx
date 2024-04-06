@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import Head from "next/head";
-import { CommandPalette } from "~/components/palette";
+// import { CommandPalette } from "~/components/palette";
 import { Toaster } from "~/components/ui/toaster";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
@@ -47,7 +47,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
         <meta name="theme-color" content="#000000" />
       </Head>
-      <CommandPalette />
+      {/* <CommandPalette /> */}
       <Toaster />
       <Component {...pageProps} />
     </>

@@ -13,8 +13,11 @@ import {
 } from "~/components/ui/table";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const Members = () => {
+  useAuthenticated();
+
   return (
     <main
       className={cn(

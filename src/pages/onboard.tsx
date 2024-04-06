@@ -18,8 +18,11 @@ import Image from "next/image";
 import { ImageUpload } from "~/components/onboarding";
 import { api } from "~/utils/api";
 import { OnboardingSchema } from "~/utils/forms";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 export default function Home() {
+  useAuthenticated();
+
   const router = useRouter();
 
   const { mutateAsync: onboard } = api.user.onboard.useMutation();

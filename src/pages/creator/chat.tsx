@@ -3,8 +3,11 @@ import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { cn } from "~/lib/utils";
 import { ChatSidebar } from "~/components/chat/sidebar";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const Members = () => {
+  useAuthenticated();
+
   return (
     <main
       className={cn(

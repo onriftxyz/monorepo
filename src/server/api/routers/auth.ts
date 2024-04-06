@@ -116,12 +116,21 @@ export const authRouter = createTRPCRouter({
   }),
 
   isAuthenticated: publicProcedure.query(async ({ ctx }) => {
-    const { data: user, error } = await ctx.supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await ctx.supabase.auth.getUser();
 
-    if (error || !user) {
-      return false
+    if (!user || error) {
+      return { authenticated: false, onboarded: false };
     }
 
-    return true;
+    const { data: meta } = await ctx.supabase
+      .from("profiles")
+      .select("onboarded")
+      .eq("id", user.id)
+      .returns<{ onboarded: boolean }[]>();
+
+    return { authenticated: true, onboarded: meta?.[0]?.onboarded };
   }),
 });

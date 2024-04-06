@@ -10,12 +10,15 @@ import { matter } from "~/components/fonts";
 import { ChevronLeft, ChevronRight, Views } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 import { type ProductGet } from "~/utils/product";
 import { createSupabaseServerClient } from "~/utils/supabase";
 
 const ProductPage = ({
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  useAuthenticated();
+
   return (
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">

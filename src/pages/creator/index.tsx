@@ -25,8 +25,11 @@ import { CreatorTopNav } from "~/components/navigation/navbar";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { type UserProductWithStats } from "~/utils/product";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const CreatorDashboard = () => {
+  useAuthenticated();
+
   const { data: stats, isLoading: isLoadingStats } = api.user.stats.useQuery();
   const { data: products, isLoading: isLoadingProducts } =
     api.product.getMine.useQuery();

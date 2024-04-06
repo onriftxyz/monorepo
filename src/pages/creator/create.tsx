@@ -12,6 +12,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { api } from "~/utils/api";
 import { env } from "~/env";
 import { Enums } from "~/server/api/supabase/types";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 
 const STEP_TO_TITLE = [
   <>
@@ -60,6 +61,8 @@ const STEP_TO_DESC = [
 ];
 
 const CreateProduct = () => {
+  useAuthenticated();
+
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0.0);

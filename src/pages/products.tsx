@@ -5,10 +5,13 @@ import { Loader, Pencil, ThreeDots } from "~/components/icons";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { UserSidebar } from "~/components/navigation/sidebar";
 import { Button } from "~/components/ui/button";
+import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 
 const Products = () => {
+  useAuthenticated();
+
   const { data: products, isLoading } = api.user.purchases.useQuery({
     limit: 1000,
   });
