@@ -13,6 +13,7 @@ import { api } from "~/utils/api";
 import { env } from "~/env";
 import { Enums } from "~/server/api/supabase/types";
 import { useAuthenticated } from "~/lib/useAuthenticated";
+import { validateAddress } from "~/utils/solana";
 
 const STEP_TO_TITLE = [
   <>
@@ -26,13 +27,19 @@ const STEP_TO_TITLE = [
     Select your preferred format.
   </>,
   <>
-    We&apos;re almost there!
+    We&apos;re almost there! Add
     <br />
-    Let&apos;s put a price tag.
+    contents for your customers.
   </>,
   <>
-    Last step! Add some <br />
-    content to complete!
+    Put a price tag and
+    <br />
+    we&apos;re done!
+  </>,
+  <>
+    One last step!
+    <br />
+    Connect your wallet.
   </>,
 ];
 
@@ -49,14 +56,21 @@ const STEP_TO_DESC = [
     want.
   </>,
   <>
+    More content can be added later from the dashboard. But it is recommended
+    <br /> to upload atleast 1 item now. You can also skip this step if you
+    want.
+  </>,
+  <>
     Default price for all products is free($0). This can be changed in settings.
     <br />
     Price can be changed later, however this will not affect earlier purchasers.
   </>,
   <>
-    More content can be added later from the dashboard. But it is recommended
-    <br /> to upload atleast 1 item now. You can also skip this step if you
-    want.
+    You need to do this step only the first time creating a product, if you do
+    <br />
+    not have a wallet address already. This wallet is the address, where
+    <br />
+    you&apos;ll receive all of your funds paid by your customers.
   </>,
 ];
 
@@ -65,13 +79,17 @@ const CreateProduct = () => {
 
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0.0);
   const [type, setType] = useState<Enums<"contenttype">>();
   const [content, setContent] = useState<(string | File)[]>([]);
+  const [price, setPrice] = useState(0.0);
+  const [wallet, setWallet] = useState<string>();
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
+  const { data: user } = api.user.get.useQuery();
+
   const createPost = api.product.create.useMutation();
+  const { mutateAsync: updateWallet } = api.user.update.useMutation();
   const uploadProductFile = api.upload.getProductFileSignedUrl.useMutation();
 
   const uploadFile = async (folder: "uploads" | "markdown", file: File) => {
@@ -98,6 +116,10 @@ const CreateProduct = () => {
   };
 
   const handleSubmit = async () => {
+    if (wallet) {
+      void updateWallet({ wallet });
+    }
+
     switch (type) {
       case "LINK":
         {
@@ -285,33 +307,6 @@ const CreateProduct = () => {
           </div>
         </>
       ) : step === 2 ? (
-        <div className="flex w-96 flex-col gap-4 pt-4">
-          <IconInput
-            placeholder="69.00"
-            value={!!price ? price : ""}
-            onChange={(e) =>
-              setPrice(Number(e.target.value.replaceAll(/e|-/g, "")) ?? price)
-            }
-          />
-          <Button
-            onClick={() => {
-              if (price < 0)
-                toast({
-                  title: "Price must be atleast $0",
-                  variant: "destructive",
-                });
-              else if (price > 100000)
-                toast({
-                  title: "Price must be at most $100,000",
-                  variant: "destructive",
-                });
-              else setStep(step + 1);
-            }}
-          >
-            Continue &rarr;
-          </Button>
-        </div>
-      ) : step === 3 ? (
         type === "LINK" ? (
           <div className="flex w-96 flex-col gap-4 pt-4">
             {content.length > 0 ? (
@@ -339,7 +334,7 @@ const CreateProduct = () => {
               <Button onClick={() => setContent([...content, ""])}>
                 + Add link
               </Button>
-              <Button onClick={handleSubmit}>Complete &rarr;</Button>
+              <Button onClick={() => setStep(step + 1)}>Continue &rarr;</Button>
             </div>
           </div>
         ) : type === "UPLOAD" ? (
@@ -361,7 +356,7 @@ const CreateProduct = () => {
               <Button onClick={() => uploadRef.current?.click()}>
                 + Add file
               </Button>
-              <Button onClick={handleSubmit}>Complete &rarr;</Button>
+              <Button onClick={() => setStep(step + 1)}>Continue &rarr;</Button>
             </div>
           </div>
         ) : (
@@ -371,9 +366,76 @@ const CreateProduct = () => {
               value={content[0]?.toString()}
               onChange={(e) => setContent([e.target.value])}
             ></Textarea>
-            <Button onClick={handleSubmit}>Complete &rarr;</Button>
+            <Button onClick={() => setStep(step + 1)}>Continue &rarr;</Button>
           </div>
         )
+      ) : step === 3 ? (
+        <div className="flex w-96 flex-col gap-4 pt-4">
+          <IconInput
+            placeholder="69.00"
+            value={!!price ? price : ""}
+            onChange={(e) =>
+              setPrice(Number(e.target.value.replaceAll(/e|-/g, "")) ?? price)
+            }
+          />
+          {!!user?.profile.wallet ? (
+            <Button
+              onClick={() => {
+                if (price < 0)
+                  toast({
+                    title: "Price must be atleast $0",
+                    variant: "destructive",
+                  });
+                else if (price > 100000)
+                  toast({
+                    title: "Price must be at most $100,000",
+                    variant: "destructive",
+                  });
+                else void handleSubmit();
+              }}
+            >
+              Complete &rarr;
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                if (price < 0)
+                  toast({
+                    title: "Price must be atleast $0",
+                    variant: "destructive",
+                  });
+                else if (price > 100000)
+                  toast({
+                    title: "Price must be at most $100,000",
+                    variant: "destructive",
+                  });
+                else setStep(step + 1);
+              }}
+            >
+              Continue &rarr;
+            </Button>
+          )}
+        </div>
+      ) : step === 4 ? (
+        <div className="flex w-96 flex-col gap-4 pt-4">
+          <Input
+            placeholder="0x69fku420stfu"
+            value={wallet}
+            onChange={(e) => setWallet(e.target.value)}
+          />
+          <Button
+            onClick={() => {
+              if (validateAddress(wallet!)) void handleSubmit();
+              else
+                toast({
+                  title: "Address is not a valid solana address!",
+                  variant: "destructive",
+                });
+            }}
+          >
+            Complete &rarr;
+          </Button>
+        </div>
       ) : null}
     </main>
   );
