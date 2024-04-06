@@ -55,7 +55,7 @@ export const productRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .select("*, creator:profiles(*)")
+        .select("*, creator:profiles!public_products_creator_fkey(*)")
         .eq("id", input.id)
         .limit(1)
         .returns<ProductGet>();
@@ -79,7 +79,7 @@ export const productRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .select("*, creator:profiles(*)")
+        .select("*, creator:profiles!public_products_creator_fkey(*)")
         .eq("creator", input.creator)
         .returns<ProductGet[]>();
 
@@ -103,7 +103,7 @@ export const productRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .select("*, creator:profiles(*)")
+        .select("*, creator:profiles!public_products_creator_fkey(*)")
         .range(input.offset, input.offset + input.limit - 1)
         .returns<ProductGet[]>();
 
@@ -122,9 +122,9 @@ export const productRouter = createTRPCRouter({
 
     const userProductsSelect = await supabase
       .from("products")
-      .select()
+      .select("*, creator:profiles!public_products_creator_fkey(*)")
       .eq("creator", user!.id)
-      .returns<Tables<"products">[]>();
+      .returns<ProductGet[]>();
 
     if (userProductsSelect.error) {
       return new TRPCError({
@@ -173,6 +173,7 @@ export const productRouter = createTRPCRouter({
     return userProductsWithStats;
   }),
 
+  // TODO: Update product needs to update other stuff as well, make fields optional, select and use old value if not passed.
   update: protectedProcedure
     .input(
       z.object({
@@ -184,12 +185,12 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { data, error } = await ctx.supabase
         .from("products")
-        .upsert({
-          id: input.id,
+        .update({
           title: input.title,
           content: input.content,
           creator: ctx.user!.id,
         })
+        .eq("id", input.id)
         .select()
         .returns<Tables<"products">>();
 
@@ -239,8 +240,7 @@ export const productRouter = createTRPCRouter({
       if (productSelect.error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: productSelect.error.message,
-        });
+          message: productSelect.error.message, });
       }
 
       if (productSelect.data.creator == ctx.user!.id) {
@@ -268,7 +268,7 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      return data;
+      return data.product;
     }),
 
   stats: protectedProcedure

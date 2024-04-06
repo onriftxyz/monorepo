@@ -8,11 +8,12 @@ import { Button } from "~/components/ui/button";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
+import { type ProductPurchase } from "~/utils/product";
 
 const Products = () => {
   useAuthenticated();
 
-  const { data: products, isLoading } = api.user.purchases.useQuery({
+  const { data: purchases, isLoading }= api.user.purchases.useQuery({
     limit: 1000,
   });
 
@@ -32,9 +33,9 @@ const Products = () => {
               <Loader />
             </span>
           </span>
-        ) : products?.length ? (
+        ) : purchases?.length ? (
           <div className="flex flex-col gap-4 rounded-lg border border-input p-4">
-            {products.map((product) => (
+            {purchases.map((purchase: ProductPurchase) => (
               <div
                 key={Math.random()}
                 className="flex w-full items-center gap-3.5 p-4"
@@ -47,7 +48,11 @@ const Products = () => {
                   className="h-12 w-12 rounded-md"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <Link href={`/${product.product.creator.twitter}/${product.product.id}`}>{product.product.title}</Link>
+                  <Link
+                    href={`/${purchase.product.creator.twitter}/${purchase.product.id}`}
+                  >
+                    {purchase.product.title}
+                  </Link>
                   <div className="line-clamp-1 text-sm text-secondary-foreground">
                     Random long description. Lorem ipsum dolor sit amet
                     consectetur adipisicing elit. Quo sequi quas ullam. Fugiat

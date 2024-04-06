@@ -10,7 +10,7 @@ import {
 import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
 import fs from "fs";
-import { type ProductPurchase } from "~/utils/product";
+import { type PurchaseGet, type ProductPurchase } from "~/utils/product";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -38,14 +38,26 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      await supabase.auth.updateUser({
-        data: {
+      const { data: updatedProfile, error: updateError } = await supabase
+        .from("profiles")
+        .update({
           name: input.name ?? profile.name,
           twitter: input.twitter ?? profile.twitter,
           bio: input.bio ?? profile.bio,
           wallet: input.wallet ?? profile.wallet,
-        },
-      });
+        })
+        .eq("id", ctx.user!.id)
+        .select()
+        .single<Tables<"profiles">>();
+
+      if (updateError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateError.message,
+        });
+      }
+
+      return updatedProfile;
     }),
 
   onboard: protectedProcedure
@@ -129,7 +141,8 @@ export const userRouter = createTRPCRouter({
       .from("profiles")
       .select("*")
       .eq("id", user!.id)
-      .single<Tables<"profiles">>();
+      .limit(1)
+      .returns<Tables<"profiles">>();
 
     if (error) {
       throw new TRPCError({
@@ -152,21 +165,63 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase
+      const { data: purchases, error: getPurchasesError } = await ctx.supabase
         .from("purchases")
-        .select("*, product:products (*) ")
+        .select("*, product:products(*), buyer:profiles(*)")
         .eq("buyer", ctx.user!.id)
         .range(input.offset, input.offset + input.limit - 1)
-        .returns<ProductPurchase[]>();
+        .returns<PurchaseGet[]>();
 
-      console.log("My id", ctx.user!.id, "data", data);
-
-      if (error) {
+      if (getPurchasesError) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: getPurchasesError.message,
         });
       }
+
+      const creatorIds = new Set(
+        purchases.map((purchase) => purchase.product.creator),
+      );
+
+      // HACK: a very hacky way to do this inner join, do better.
+
+      const { data: creators, error: getCreatorsError } = await ctx.supabase
+        .from("profiles")
+        .select("*")
+        .in("id", Array.from(creatorIds))
+        .returns<Tables<"profiles">[]>();
+
+      if (getCreatorsError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: getCreatorsError.message,
+        });
+      }
+
+      const data = purchases.map((purchase) => {
+        const creator = creators.find(
+          (creator) => creator.id === purchase.product.creator,
+        );
+
+        const product = purchase.product;
+
+        return {
+          ...purchase,
+          product: {
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            creator: creator!,
+            images: product.images,
+            content: product.content,
+            type: product.type,
+            updated_at: product.updated_at,
+            created_at: product.created_at,
+            views: product.views,
+          },
+        } as ProductPurchase;
+      });
 
       return data;
     }),

@@ -8,6 +8,12 @@ export type ProductGet = Tables<"products"> & {
   creator: Tables<"profiles">;
 };
 
-export type ProductPurchase = Tables<"purchases"> & {
+export type PurchaseGet = Tables<"purchases"> & {
   product: Tables<"products">;
+  buyer: Tables<"profiles">;
+};
+
+export type ProductPurchase = Tables<"purchases"> & {
+  product: ProductGet
+  buyer: Tables<"profiles">;
 };

@@ -89,7 +89,7 @@ export const getServerSideProps = (async (ctx) => {
 
   const { data: product, error } = await supabase
     .from("products")
-    .select("*, creator: profiles(*)")
+    .select("*, creator:profiles!public_products_creator_fkey(*)")
     .eq("id", id)
     .single<ProductGet>();
 
