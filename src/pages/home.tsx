@@ -28,7 +28,7 @@ import Link from "next/link";
 const UserDashboard = () => {
   useAuthenticated();
 
-  const { data: products, isLoading } = api.user.purchases.useQuery({
+  const { data: purchases, isLoading } = api.user.purchases.useQuery({
     limit: 5,
   });
 
@@ -60,7 +60,7 @@ const UserDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products?.map((product) => (
+              {purchases?.map((purchase) => (
                 <TableRow key={Math.random() * 100}>
                   <TableCell className="flex items-center gap-2">
                     <Image
@@ -76,13 +76,13 @@ const UserDashboard = () => {
                     />
                     <div className="flex w-full flex-col gap-0.5">
                       <Link
-                        href={`/${product.product.creator?.twitter}/${product.product.id}`}
+                        href={`/${purchase.product.creator?.twitter}/${purchase.product.id}`}
                       >
-                        {product.product.title}
+                        {purchase.product.title}
                       </Link>
                       <div className="flex text-xs text-secondary-foreground">
                         {new Date(
-                          product.product.created_at,
+                          purchase.product.created_at,
                         ).toLocaleDateString("en-US", {
                           month: "short",
                           year: "numeric",
@@ -92,13 +92,14 @@ const UserDashboard = () => {
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    {product.product.content?.length}
+                    {purchase.product.content?.length}
                   </TableCell>
                   <TableCell className="text-center">
-                    ${product.product.price}
+                    ${purchase.product.price}
                   </TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Image
+                    // TODO: @pybash pls use avatar
                       src={
                         "https://picsum.photos/64" +
                         "?random=" +
@@ -109,7 +110,7 @@ const UserDashboard = () => {
                       height={48}
                       className="h-8 w-8 flex-shrink-0 rounded-full"
                     />
-                    <div>{product.product.creator?.toString()}</div>
+                    <div>{purchase.product.creator.name}</div>
                   </TableCell>
                   <TableCell className="w-6">
                     <Button size="icon" variant="ghost">
