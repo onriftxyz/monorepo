@@ -240,7 +240,8 @@ export const productRouter = createTRPCRouter({
       if (productSelect.error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: productSelect.error.message, });
+          message: productSelect.error.message,
+        });
       }
 
       if (productSelect.data.creator == ctx.user!.id) {
@@ -269,6 +270,54 @@ export const productRouter = createTRPCRouter({
       }
 
       return data.product;
+    }),
+
+  mostPurchased: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().int().positive().default(10),
+        offset: z.number().int().gte(0).default(0),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // TODO: SQL Query for when we move to an ORM
+      //SELECT p.*, COUNT(pu.product) AS total_purchases
+      // FROM products p
+      // JOIN purchases pu ON p.id = pu.product
+      // GROUP BY p.id
+      // ORDER BY total_purchases DESC
+
+      const { data, error } = await ctx.supabase
+        .from("purchases")
+        .select("product: products(*)")
+        .returns<{ product: Tables<"products"> }[]>();
+
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      // sort the products by the number of purchases (number of purchases are determined by the number of entries of same id)
+
+      // HACK: So hacky it's not even funny, imma throw up.
+      const products = data.map(({ product }) => product);
+      const productsWithPurchases = products.map((product) => {
+        const purchases = data.filter(
+          ({ product }) => product.id === product.id,
+        );
+        return {
+          ...product,
+          purchases: purchases.length,
+        };
+      });
+
+      const sortedProducts = productsWithPurchases.sort(
+        (a, b) => b.purchases - a.purchases,
+      );
+
+      return sortedProducts.slice(input.offset, input.offset + input.limit);
     }),
 
   stats: protectedProcedure
