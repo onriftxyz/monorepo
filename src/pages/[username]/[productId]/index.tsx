@@ -96,6 +96,14 @@ export const getServerSideProps = (async (ctx) => {
     };
   }
 
+  // TODO: So username cannot be optional, make mandatory
+  
+  if (product.creator.twitter != ctx.params!.username) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       product,
