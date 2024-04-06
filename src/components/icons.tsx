@@ -312,6 +312,34 @@ export const Loader = ({ size = 24 }: IconProps) => {
   );
 };
 
+export const Check = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 25 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10.7003 14.8548L18.9731 6.58105L20.2466 7.85365L10.7003 17.4L4.97266 11.6724L6.24526 10.3998L10.7003 14.8548Z" />
+    </svg>
+  );
+};
+
+export const Cross = ({ size = 24 }: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 25 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12.5001 10.7275L16.9551 6.27246L18.2277 7.54506L13.7727 12.0001L18.2277 16.4551L16.9551 17.7277L12.5001 13.2727L8.04506 17.7277L6.77246 16.4551L11.2275 12.0001L6.77246 7.54506L8.04506 6.27246L12.5001 10.7275Z" />
+    </svg>
+  );
+};
+
 // Chevrons / Arrows
 
 export const ChevronRight = ({ size = 24 }: IconProps) => {
