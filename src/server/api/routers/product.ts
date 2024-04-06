@@ -14,6 +14,8 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string().min(1),
+        description: z.string().optional(),
+        images: z.array(z.string()).optional(),
         content: z.array(z.string().min(1)),
         type: z.enum(["LINK", "UPLOAD", "MARKDOWN"]),
         price: z.number().gte(0),
@@ -24,6 +26,8 @@ export const productRouter = createTRPCRouter({
         .from("products")
         .upsert({
           title: input.title,
+          description: input.description,
+          images: input.images,
           content: input.content,
           price: input.price,
           type: input.type,
