@@ -132,7 +132,7 @@ const CreatorDashboard = () => {
                             className="h-12 w-12 flex-shrink-0 rounded-md"
                           />
                           <div className="flex w-full flex-col gap-0.5">
-                            <div>{product.title}</div>
+                            <Link href={`${product.creator.username}/${product.id}`}>{product.title}</Link>
                             <div className="flex text-xs text-secondary-foreground">
                               {new Date(product.created_at).toLocaleDateString(
                                 "en-US",
