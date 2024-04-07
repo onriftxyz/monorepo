@@ -23,7 +23,7 @@ const ProductPage = ({
     <main className={` ${matter.className}`}>
       <nav className="flex items-center justify-between border-b-2 px-8 py-5">
         <Link
-          href={`/${product.creator.twitter}`}
+          href={`/${product.creator.username}`}
           className="font-medium uppercase"
         >
           {product.creator.name}
@@ -100,7 +100,7 @@ export const getServerSideProps = (async (ctx) => {
     };
   }
 
-  if (product.creator.twitter != ctx.params!.username) {
+  if (product.creator.username != ctx.params!.username) {
     return {
       notFound: true,
     };

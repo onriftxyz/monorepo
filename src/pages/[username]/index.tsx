@@ -70,7 +70,7 @@ const ProfilePage = ({
                 <Card key={product.id}>
                   <CardHeader>
                     <CardTitle className="text-left">
-                      <Link href={`/${product.creator.twitter}/${product.id}`}>
+                      <Link href={`/${product.creator.username}/${product.id}`}>
                         {product.title}
                       </Link>
                     </CardTitle>
@@ -84,7 +84,7 @@ const ProfilePage = ({
                       <div className="flex items-center justify-between gap-2">
                         <Image
                           src={
-                            product.creator.avatar ||
+                            product.creator.avatar ??
                             "https://placehold.co/32.webp?text=" +
                               product.creator.name?.substring(0, 1)
                           }
@@ -112,7 +112,7 @@ const ProfilePage = ({
                       <Button
                         onClick={() =>
                           router.push(
-                            `/${product.creator.twitter}/${product.id}`,
+                            `/${product.creator.username}/${product.id}`,
                           )
                         }
                       >

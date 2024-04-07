@@ -9,6 +9,7 @@ import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn } from "~/lib/utils";
 import type { Tables } from "~/server/api/supabase/types";
 import { api } from "~/utils/api";
+import { type ProductGet } from "~/utils/product";
 
 const Products = () => {
   useAuthenticated();
@@ -33,7 +34,7 @@ const Products = () => {
           </span>
         ) : (products as Tables<"products">[])?.length ? (
           <div className="flex flex-col gap-4 rounded-lg border border-input p-4">
-            {(products as Tables<"products">[]).map((product) => (
+            {(products as ProductGet[]).map((product) => (
               <div
                 key={Math.random()}
                 className="flex w-full items-center gap-3.5 p-4"
@@ -46,14 +47,11 @@ const Products = () => {
                   className="h-12 w-12 rounded-md"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <Link href={`/${product.creator?.twitter}/${product.id}`}>
+                  <Link href={`/${product.creator?.username}/${product.id}`}>
                     {product.title}
                   </Link>
                   <div className="line-clamp-1 text-sm text-secondary-foreground">
-                    Random long description. Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Quo sequi quas ullam. Fugiat
-                    vero sed dolores officia iure quaerat, quidem ea? Saepe
-                    magni quae debitis vitae totam ducimus modi provident!
+                    {product.description}
                   </div>
                 </div>
                 <Button className="shrink-0" size={"icon"} variant="ghost">

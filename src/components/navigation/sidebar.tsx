@@ -133,7 +133,7 @@ export const CreatorSidebar = () => {
             className="h-10 w-10 rounded-full"
           />
           <div className="flex flex-col">
-            <Link href={`/${user?.profile.twitter}`}>
+            <Link href={`/${user?.profile.username}`}>
               {user?.profile.name ?? "No Name"}
             </Link>
             <span className="text-xs font-medium text-muted-foreground">
@@ -144,7 +144,7 @@ export const CreatorSidebar = () => {
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() => router.push(`/${user?.profile.twitter}`)}
+          onClick={() => router.push(`/${user?.profile.username}`)}
         >
           <ChevronRight />
         </Button>
@@ -249,7 +249,7 @@ export const UserSidebar = () => {
             className="h-10 w-10 rounded-full"
           />
           <div className="flex flex-col">
-            <Link href={`/${user?.profile.twitter}`}>
+            <Link href={`/${user?.profile.username}`}>
               {user?.profile.name ?? "No Name"}
             </Link>
             <span className="text-xs font-medium text-muted-foreground">
@@ -260,7 +260,7 @@ export const UserSidebar = () => {
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() => router.push(`/${user?.profile.twitter}`)}
+          onClick={() => router.push(`/${user?.profile.username}`)}
         >
           <ChevronRight />
         </Button>

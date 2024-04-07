@@ -49,7 +49,7 @@ const Products = () => {
                 />
                 <div className="flex flex-col gap-0.5">
                   <Link
-                    href={`/${purchase.product.creator.twitter}/${purchase.product.id}`}
+                    href={`/${purchase.product.creator.username}/${purchase.product.id}`}
                   >
                     {purchase.product.title}
                   </Link>

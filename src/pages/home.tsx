@@ -94,7 +94,7 @@ const UserDashboard = () => {
                       />
                       <div className="flex w-full flex-col gap-0.5">
                         <Link
-                          href={`/${purchase.product.creator?.twitter}/${purchase.product.id}`}
+                          href={`/${purchase.product.creator?.username}/${purchase.product.id}`}
                         >
                           {purchase.product.title}
                         </Link>
@@ -160,7 +160,7 @@ const UserDashboard = () => {
                 <Card key={product.id}>
                   <CardHeader>
                     <CardTitle>
-                      <Link href={`/${product.creator.twitter}/${product.id}`}>
+                      <Link href={`/${product.creator.username}/${product.id}`}>
                         {product.title}
                       </Link>
                     </CardTitle>
@@ -198,7 +198,7 @@ const UserDashboard = () => {
                       <Button
                         onClick={() =>
                           router.push(
-                            `/${product.creator.twitter}/${product.id}`,
+                            `/${product.creator.username}/${product.id}`,
                           )
                         }
                       >

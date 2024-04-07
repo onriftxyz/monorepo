@@ -80,13 +80,13 @@ export const userRouter = createTRPCRouter({
         ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.id}`
         : "";
 
-      if (input.twitter) {
+      if (input.username) {
         const pages = fs
           .readdirSync("src/pages")
           .filter((file) => file.endsWith(".tsx"))
           .map((file) => file.replace(".tsx", ""));
 
-        if (pages.includes(input.twitter)) {
+        if (pages.includes(input.username)) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Username not allowed",
