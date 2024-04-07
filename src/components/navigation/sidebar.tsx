@@ -17,6 +17,11 @@ import { useToast } from "../ui/use-toast";
 import { api } from "~/utils/api";
 import Link from "next/link";
 
+const walletAbbr = (inputString: string | undefined) => {
+  if (!inputString) return "Wallet Not Added";
+  return inputString.slice(0, 4) + "..." + inputString.slice(-4);
+};
+
 export const CreatorSidebar = () => {
   const router = useRouter();
 
@@ -137,7 +142,7 @@ export const CreatorSidebar = () => {
               {user?.profile.name ?? "No Name"}
             </Link>
             <span className="text-xs font-medium text-muted-foreground">
-              {user?.profile.wallet ?? "Wallet not added"}
+              {walletAbbr(user?.profile.wallet)}
             </span>
           </div>
         </div>
@@ -253,7 +258,7 @@ export const UserSidebar = () => {
               {user?.profile.name ?? "No Name"}
             </Link>
             <span className="text-xs font-medium text-muted-foreground">
-              {user?.profile.wallet ?? "Wallet not added"}
+              {walletAbbr(user?.profile.wallet)}
             </span>
           </div>
         </div>
