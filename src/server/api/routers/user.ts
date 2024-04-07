@@ -11,12 +11,14 @@ import type { Tables } from "~/server/api/supabase/types";
 import { env } from "~/env";
 import fs from "fs";
 import { type PurchaseGet, type ProductPurchase } from "~/utils/product";
+import { type UserGet } from "~/utils/user";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1).optional(),
+        username: z.string().min(1).optional(),
         bio: z.string().min(1).optional(),
         twitter: z.string().min(1).optional(),
         wallet: z.string().optional(),
@@ -42,6 +44,7 @@ export const userRouter = createTRPCRouter({
         .from("profiles")
         .update({
           name: input.name ?? profile.name,
+          username: input.username ?? profile.username,
           twitter: input.twitter ?? profile.twitter,
           bio: input.bio ?? profile.bio,
           wallet: input.wallet ?? profile.wallet,
@@ -64,6 +67,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        username: z.string(),
         twitter: z.string().optional(),
         bio: z.string().optional(),
         avatarUploaded: z.boolean(),
@@ -116,6 +120,7 @@ export const userRouter = createTRPCRouter({
         .update([
           {
             name: input.name,
+            username: input.username,
             twitter: input.twitter ?? "",
             bio: input.bio ?? "",
             avatar: avatarUrl,
@@ -142,7 +147,7 @@ export const userRouter = createTRPCRouter({
       .select("*")
       .eq("id", user!.id)
       .limit(1)
-      .returns<Tables<"profiles">>();
+      .returns<UserGet>();
 
     if (error) {
       throw new TRPCError({

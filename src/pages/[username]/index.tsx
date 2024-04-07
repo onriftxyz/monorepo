@@ -23,6 +23,7 @@ import { useAuthenticated } from "~/lib/useAuthenticated";
 import type { Tables } from "~/server/api/supabase/types";
 import { api } from "~/utils/api";
 import { createSupabaseServerClient } from "~/utils/supabase";
+import { type ProductGet } from "~/utils/product";
 
 const ProfilePage = ({
   profile,
@@ -41,7 +42,7 @@ const ProfilePage = ({
         <div className="flex items-center justify-center">
           <Image
             src={
-              profile.avatar ||
+              profile.avatar ??
               "https://placehold.co/512/333333/777777/webp?text=" +
                 profile.name?.substring(0, 1)
             }
@@ -65,7 +66,7 @@ const ProfilePage = ({
             </span>
           ) : products?.length ? (
             <div className="grid grid-cols-3 gap-4 pt-4">
-              {products?.map((product) => (
+              {(products)?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader>
                     <CardTitle className="text-left">
@@ -164,7 +165,7 @@ export const getServerSideProps = (async (ctx) => {
   const { data: profile, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("twitter", username)
+    .eq("username", username)
     .single<Tables<"profiles">>();
 
   if (!profile || error) {
