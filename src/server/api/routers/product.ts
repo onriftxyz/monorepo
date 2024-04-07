@@ -287,10 +287,12 @@ export const productRouter = createTRPCRouter({
       // GROUP BY p.id
       // ORDER BY total_purchases DESC
 
-      const { data, error } = await ctx.supabase
+      const { data: purchases, error } = await ctx.supabase
         .from("purchases")
-        .select("product: products(*)")
-        .returns<{ product: Tables<"products"> }[]>();
+        .select("product: products(id)")
+        .returns<{ product: { id: number } }[]>();
+
+      console.log(purchases);
 
       if (error) {
         throw new TRPCError({
@@ -299,17 +301,30 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      // sort the products by the number of purchases (number of purchases are determined by the number of entries of same id)
-
       // HACK: So hacky it's not even funny, imma throw up.
-      const products = data.map(({ product }) => product);
+
+      const productIds = purchases.map(({ product }) => product.id);
+
+      const { data: products, error: errorProduct } = await ctx.supabase
+        .from("products")
+        .select("*, creator:profiles!public_products_creator_fkey(*)")
+        .in("id", productIds)
+        .returns<ProductGet[]>();
+
+      if (errorProduct) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: errorProduct.message,
+        });
+      }
+
       const productsWithPurchases = products.map((product) => {
-        const purchases = data.filter(
-          ({ product }) => product.id === product.id,
-        );
+        const totalPurchases = purchases.filter(
+          (purchase) => purchase.product.id === product.id,
+        ).length;
         return {
           ...product,
-          purchases: purchases.length,
+          purchases: totalPurchases,
         };
       });
 

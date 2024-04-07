@@ -28,7 +28,17 @@ import Link from "next/link";
 const UserDashboard = () => {
   useAuthenticated();
 
-  const { data: purchases, isLoading } = api.user.purchases.useQuery({
+  // TODO: @pybash i don't think loading is taken into account?
+
+  const { data: purchases, isLoading: isLoadingPurchases } =
+    api.user.purchases.useQuery({
+      limit: 5,
+    });
+
+  const {
+    data: mostPurchasedProducts,
+    isLoading: isLoadingMostPurchasedProducts,
+  } = api.product.mostPurchased.useQuery({
     limit: 5,
   });
 
@@ -99,7 +109,7 @@ const UserDashboard = () => {
                   </TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Image
-                    // TODO: @pybash pls use avatar
+                      // TODO: @pybash pls use avatar
                       src={
                         "https://picsum.photos/64" +
                         "?random=" +
@@ -125,114 +135,42 @@ const UserDashboard = () => {
         <div>
           <div>Recommended</div>
           <div className="grid grid-cols-3 gap-4 pt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Another Item</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Officiis eum fuga vero.
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-              <CardFooter>
-                <div className="flex w-full items-center justify-between gap-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Image
-                      src={
-                        "https://picsum.photos/64" +
-                        "?random=" +
-                        Math.random() * 10
-                      }
-                      alt="cover image"
-                      width={32}
-                      height={32}
-                      className="h-6 w-6 flex-shrink-0 rounded-full"
-                    />
-                    <div>Crea Tor,</div>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date().toLocaleDateString("en-US", {
-                        month: "short",
-                        year: "numeric",
-                        day: "2-digit",
-                      })}
-                    </span>
+            {mostPurchasedProducts?.map((product) => (
+              <Card key={product.id}>
+                <CardHeader>
+                  <CardTitle>{product.title}</CardTitle>
+                  <CardDescription>{product.description}</CardDescription>
+                </CardHeader>
+                <CardContent></CardContent>
+                <CardFooter>
+                  <div className="flex w-full items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <Image
+                      // TODO:  add image once we have it
+                        src={
+                          "https://picsum.photos/64" +
+                          "?random=" +
+                          Math.random() * 10
+                        }
+                        alt="cover image"
+                        width={32}
+                        height={32}
+                        className="h-6 w-6 flex-shrink-0 rounded-full"
+                      />
+                      <div>{product.creator.name}</div>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date().toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                          day: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <Button>Buy</Button>
                   </div>
-                  <Button>Buy</Button>
-                </div>
-              </CardFooter>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Different Item</CardTitle>
-                <CardDescription>
-                  Neque labore repudiandae reiciendis optio sapiente excepturi
-                  ab? Eum in reprehenderit.
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-              <CardFooter>
-                <div className="flex w-full items-center justify-between gap-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Image
-                      src={
-                        "https://picsum.photos/64" +
-                        "?random=" +
-                        Math.random() * 10
-                      }
-                      alt="cover image"
-                      width={32}
-                      height={32}
-                      className="h-6 w-6 flex-shrink-0 rounded-full"
-                    />
-                    <div>Crea Tor,</div>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date().toLocaleDateString("en-US", {
-                        month: "short",
-                        year: "numeric",
-                        day: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                  <Button>Buy</Button>
-                </div>
-              </CardFooter>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>A Third</CardTitle>
-                <CardDescription>
-                  Nobis inventore iure deleniti illum, minima deserunt delectus
-                  possimus facilis magnam.
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-              <CardFooter>
-                <div className="flex w-full items-center justify-between gap-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Image
-                      src={
-                        "https://picsum.photos/64" +
-                        "?random=" +
-                        Math.random() * 10
-                      }
-                      alt="cover image"
-                      width={32}
-                      height={32}
-                      className="h-6 w-6 flex-shrink-0 rounded-full"
-                    />
-                    <div>Crea Tor,</div>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date().toLocaleDateString("en-US", {
-                        month: "short",
-                        year: "numeric",
-                        day: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                  <Button>Buy</Button>
-                </div>
-              </CardFooter>
-            </Card>
+                </CardFooter>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
