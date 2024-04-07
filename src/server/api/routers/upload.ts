@@ -26,7 +26,7 @@ export const uploadRouter = createTRPCRouter({
   getProductFileSignedUrl: protectedProcedure
     .input(
       z.object({
-        folder: z.enum(["uploads", "markdown"]),
+        folder: z.enum(["uploads", "markdown", "productImages"]),
         filename: z.string(),
       }),
     )

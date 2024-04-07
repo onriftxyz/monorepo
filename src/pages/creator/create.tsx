@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { IconInput, Input } from "~/components/ui/input";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { ArrowLeft } from "~/components/icons";
+import { Add, ArrowLeft, Upload } from "~/components/icons";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
@@ -13,6 +13,7 @@ import { env } from "~/env";
 import type { Enums } from "~/server/api/supabase/types";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { validateAddress } from "~/utils/solana";
+import { PlusIcon } from "@radix-ui/react-icons";
 
 const STEP_TO_TITLE = [
   <>
@@ -29,6 +30,11 @@ const STEP_TO_TITLE = [
     We&apos;re almost there! Add
     <br />
     contents for your customers.
+  </>,
+  <>
+    A picture speaks a 1000 words.
+    <br />
+    Let&apos;s add a few!
   </>,
   <>
     Put a price tag and
@@ -60,6 +66,11 @@ const STEP_TO_DESC = [
     want.
   </>,
   <>
+    The first image you upload, is used as your product&apos;s thumbnail. Other
+    <br />
+    images are optional and are only shown on your product page.
+  </>,
+  <>
     Default price for all products is free($0). This can be changed in settings.
     <br />
     Price can be changed later, however this will not affect earlier purchasers.
@@ -83,10 +94,13 @@ const CreateProduct = () => {
   const [description, setDescription] = useState("");
   const [type, setType] = useState<Enums<"contenttype">>();
   const [content, setContent] = useState<(string | File)[]>([]);
+  const [images, setImages] = useState<File[]>([]);
+  const [imageDatas, setImageDatas] = useState<string[]>([]);
   const [price, setPrice] = useState(0.0);
   const [wallet, setWallet] = useState<string>();
 
   const uploadRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
 
   const { data: user } = api.user.get.useQuery();
 
@@ -94,7 +108,10 @@ const CreateProduct = () => {
   const { mutateAsync: updateWallet } = api.user.update.useMutation();
   const uploadProductFile = api.upload.getProductFileSignedUrl.useMutation();
 
-  const uploadFile = async (folder: "uploads" | "markdown", file: File) => {
+  const uploadFile = async (
+    folder: "uploads" | "markdown" | "productImages",
+    file: File,
+  ) => {
     const signedUrl = await uploadProductFile.mutateAsync({
       filename: file.name,
       folder: folder,
@@ -122,6 +139,7 @@ const CreateProduct = () => {
     }
 
     let links: string[] = [];
+    let imageLinks: string[] = [];
 
     switch (type) {
       case "LINK": {
@@ -168,10 +186,25 @@ const CreateProduct = () => {
     }
 
     try {
+      imageLinks = await Promise.all(
+        images.map((file) => {
+          return uploadFile("productImages", file);
+        }),
+      );
+    } catch (e) {
+      toast({
+        title: "Failed to create product",
+        variant: "destructive",
+      });
+      void router.push("/creator");
+    }
+
+    try {
       await createPost.mutateAsync({
         title: name,
         description,
         content: links,
+        images: imageLinks,
         price,
         type: type!,
       });
@@ -346,6 +379,60 @@ const CreateProduct = () => {
           </div>
         )
       ) : step === 3 ? (
+        <>
+          <input
+            ref={imageRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              setImages([...images, e.target.files![0]!]);
+              if (e.target.files?.[0]) {
+                setImageDatas([
+                  ...imageDatas,
+                  URL.createObjectURL(e.target.files?.[0]),
+                ]);
+              }
+            }}
+          />
+          <div className="flex w-1/2 flex-wrap items-center justify-center gap-2">
+            <button
+              className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+              onClick={() => imageRef.current?.click()}
+              disabled={!!images[0]}
+            >
+              {images[0] ? (
+                <Image
+                  src={imageDatas[0]!}
+                  alt="cover image"
+                  width={192}
+                  height={192}
+                  className="h-48 w-48 rounded-lg"
+                />
+              ) : (
+                <Upload size={48} />
+              )}
+            </button>
+            {images.slice(1).map((image, ind) => (
+              <Image
+                key={image.name + image.size + ind}
+                src={imageDatas[ind]!}
+                alt="cover image"
+                width={192}
+                height={192}
+                className="h-48 w-48 rounded-lg"
+              />
+            ))}
+            <button
+              className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+              onClick={() => imageRef.current?.click()}
+            >
+              <Add />
+            </button>
+          </div>
+          <Button onClick={() => setStep(step + 1)}>Continue &rarr;</Button>
+        </>
+      ) : step === 4 ? (
         <div className="flex w-96 flex-col gap-4 pt-4">
           <IconInput
             placeholder="69.00"
@@ -392,7 +479,7 @@ const CreateProduct = () => {
             </Button>
           )}
         </div>
-      ) : step === 4 ? (
+      ) : step === 5 ? (
         <div className="flex w-96 flex-col gap-4 pt-4">
           <Input
             placeholder="0x69fku420stfu"
