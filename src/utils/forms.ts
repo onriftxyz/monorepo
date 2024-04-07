@@ -7,6 +7,22 @@ export const OnboardingSchema = z.object({
     .min(2, "Try something longer?"),
   bio: z.string().max(200, "Try keeping it under 200.").optional(),
   twitter: z.string().optional(),
+  username: z
+    .string({ required_error: "We won't sell your data!" })
+    .min(3, "Try something longer?")
+    .refine(
+      (un) =>
+        ![
+          "creator",
+          "404",
+          "checkout",
+          "home",
+          "index",
+          "onboard",
+          "products",
+        ].includes(un),
+      "Username is already taken.",
+    ),
   avatar: z
     .custom<File>()
     .optional()

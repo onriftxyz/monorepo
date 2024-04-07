@@ -130,8 +130,11 @@ export const authRouter = createTRPCRouter({
       .select("onboarded")
       .eq("id", user.id)
       .limit(1)
-      .returns<Tables<"profiles">["onboarded"]>();
+      .returns<Tables<"profiles">[]>(); // @milind adding `["onboarded"]` breaks the types, lets just keep this as-is for now, can make types better later
 
-    return { authenticated: true, onboarded: onboarded ?? false };
+    return {
+      authenticated: true,
+      onboarded: onboarded?.[0]?.onboarded ?? false,
+    };
   }),
 });

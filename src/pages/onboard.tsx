@@ -19,13 +19,15 @@ import { ImageUpload } from "~/components/onboarding";
 import { api } from "~/utils/api";
 import { OnboardingSchema } from "~/utils/forms";
 import { useAuthenticated } from "~/lib/useAuthenticated";
+import { Loader } from "~/components/icons";
 
-export default function Home() {
+export default function Onboard() {
   useAuthenticated();
 
   const router = useRouter();
+  const utils = api.useUtils();
 
-  const { mutateAsync: onboard } = api.user.onboard.useMutation();
+  const { mutateAsync: onboard, isLoading } = api.user.onboard.useMutation();
 
   const onboardingForm = useForm<z.infer<typeof OnboardingSchema>>({
     resolver: zodResolver(OnboardingSchema),
@@ -36,6 +38,7 @@ export default function Home() {
   const onSubmit = async ({
     name,
     twitter,
+    username,
     bio,
     avatar,
   }: z.infer<typeof OnboardingSchema>) => {
@@ -62,9 +65,12 @@ export default function Home() {
       await onboard({
         name,
         twitter,
+        username,
         bio,
         avatarUploaded,
       });
+      await utils.auth.isAuthenticated.invalidate();
+      await utils.auth.isAuthenticated.refetch();
       router.push("/home");
     } catch (e) {
       console.log("Error when onboarding", e);
@@ -116,6 +122,19 @@ export default function Home() {
             />
             <FormField
               control={onboardingForm.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem className="gap-4">
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="_anatoly" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={onboardingForm.control}
               name="bio"
               render={({ field }) => (
                 <FormItem>
@@ -140,6 +159,7 @@ export default function Home() {
                     <Input
                       placeholder="twitter.com/"
                       className="pointer-events-none w-fit cursor-not-allowed rounded-r-none"
+                      disabled
                     />
                     <FormControl>
                       <Input
@@ -153,7 +173,16 @@ export default function Home() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Continue &rarr;</Button>
+            <Button type="submit" disabled={isLoading}>
+              Continue{" "}
+              {isLoading ? (
+                <span className="animate-spin">
+                  <Loader />
+                </span>
+              ) : (
+                "→"
+              )}
+            </Button>
           </form>
         </Form>
       </div>

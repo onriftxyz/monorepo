@@ -14,9 +14,13 @@ import {
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { useToast } from "../ui/use-toast";
+import { api } from "~/utils/api";
+import Link from "next/link";
 
 export const CreatorSidebar = () => {
   const router = useRouter();
+
+  const { data: user } = api.user.get.useQuery();
 
   const { toast } = useToast();
 
@@ -118,16 +122,22 @@ export const CreatorSidebar = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
-            src="https://picsum.photos/64"
+            src={
+              user?.profile.avatar ??
+              "https://placehold.co/32.webp?text=" +
+                user?.profile.name?.substring(0, 1)
+            }
             alt="profile photo"
             width={48}
             height={48}
             className="h-10 w-10 rounded-full"
           />
           <div className="flex flex-col">
-            <span>PyBash</span>
+            <Link href={`/${user?.profile.twitter}`}>
+              {user?.profile.name ?? "No Name"}
+            </Link>
             <span className="text-xs font-medium text-muted-foreground">
-              0x000000000000
+              {user?.profile.wallet ?? "Wallet not added"}
             </span>
           </div>
         </div>
@@ -135,10 +145,7 @@ export const CreatorSidebar = () => {
           variant={"ghost"}
           size={"icon"}
           onClick={() =>
-            toast({
-              title: "Not yet implemented!",
-              description: "Profile settings have not yet been implemented!",
-            })
+            router.push(`/${user?.profile.twitter}`);
           }
         >
           <ChevronRight />
@@ -150,6 +157,8 @@ export const CreatorSidebar = () => {
 
 export const UserSidebar = () => {
   const router = useRouter();
+
+  const { data: user } = api.user.get.useQuery();
 
   const { toast } = useToast();
 
@@ -231,16 +240,22 @@ export const UserSidebar = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
-            src="https://picsum.photos/64"
+            src={
+              user?.profile.avatar ??
+              "https://placehold.co/32.webp?text=" +
+                user?.profile.name?.substring(0, 1)
+            }
             alt="profile photo"
             width={48}
             height={48}
             className="h-10 w-10 rounded-full"
           />
           <div className="flex flex-col">
-            <span>PyBash</span>
+            <Link href={`/${user?.profile.twitter}`}>
+              {user?.profile.name ?? "No Name"}
+            </Link>
             <span className="text-xs font-medium text-muted-foreground">
-              0x000000000000
+              {user?.profile.wallet ?? "Wallet not added"}
             </span>
           </div>
         </div>
@@ -248,10 +263,7 @@ export const UserSidebar = () => {
           variant={"ghost"}
           size={"icon"}
           onClick={() =>
-            toast({
-              title: "Not yet implemented!",
-              description: "Profile settings have not yet been implemented!",
-            })
+            router.push(`/${user?.profile.twitter}`);
           }
         >
           <ChevronRight />

@@ -62,6 +62,7 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const utils = api.useUtils();
 
   const { mutateAsync: generateOtp } = api.auth.generateOtp.useMutation();
   const { mutateAsync: verifyOtp } = api.auth.verifyOtp.useMutation();
@@ -90,6 +91,8 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
           email: formData.email,
           token: formData.otp!,
         });
+        await utils.auth.isAuthenticated.invalidate();
+        await utils.auth.isAuthenticated.refetch();
         if (data.session?.access_token && profile!.onboarded)
           void router.push("/home");
         if (data.session?.access_token && !profile!.onboarded)
@@ -190,6 +193,7 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const utils = api.useUtils();
 
   const { mutateAsync: generateOtp } = api.auth.generateOtp.useMutation();
   const { mutateAsync: verifyOtp } = api.auth.verifyOtp.useMutation();
@@ -208,6 +212,8 @@ export const AuthDrawer = ({ open, onOpenChange, children }: Props) => {
       setLoading(true);
       try {
         const { data, profile } = await verifyOtp({ email, token: otp! });
+        await utils.auth.isAuthenticated.invalidate();
+        await utils.auth.isAuthenticated.refetch();
         if (data.session?.access_token && profile!.onboarded)
           void router.push("/home");
         if (data.session?.access_token && !profile!.onboarded)

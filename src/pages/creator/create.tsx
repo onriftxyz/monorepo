@@ -109,6 +109,7 @@ const CreateProduct = () => {
         },
       });
     } catch (e) {
+      console.log("here");
       return "";
     }
 
@@ -149,7 +150,7 @@ const CreateProduct = () => {
         {
           const files = content.filter((c) => c instanceof File) as File[];
 
-          console.log("files", files);
+          console.log("files", content);
 
           try {
             const links = await Promise.all(
@@ -343,15 +344,13 @@ const CreateProduct = () => {
               ref={uploadRef}
               className="hidden"
               type="file"
-              onChange={(e) => setContent([...content, e.target.value])}
+              onChange={(e) => setContent([...content, e.target.files![0]!])}
             />
-            {content.map((_, ind) => (
-              <Input
-                key={"file-" + ind}
-                value={content[ind]?.toString()}
-                disabled
-              />
-            ))}
+            {(content.filter((c) => c instanceof File) as File[]).map(
+              (f, ind) => (
+                <Input key={"file-" + ind} value={f?.name} disabled />
+              ),
+            )}
             <div className="grid grid-cols-2 gap-2">
               <Button onClick={() => uploadRef.current?.click()}>
                 + Add file
@@ -378,7 +377,7 @@ const CreateProduct = () => {
               setPrice(Number(e.target.value.replaceAll(/e|-/g, "")) ?? price)
             }
           />
-          {!!user?.profile.wallet ? (
+          {validateAddress(user!.profile.wallet!) ? (
             <Button
               onClick={() => {
                 if (price < 0)
