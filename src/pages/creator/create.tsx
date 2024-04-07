@@ -295,7 +295,7 @@ const CreateProduct = () => {
                 </Button>
               </div>
             </div>
-            <div className="flex w-full items-center justify-between rounded-lg border-2 border-dashed bg-card px-4 py-3 font-medium">
+            <div className="flex w-full items-center justify-between rounded-lg border-2 bg-card px-4 py-3 font-medium">
               <div>
                 <div>Markdown Content</div>
                 <div className="text-xs text-muted-foreground">
@@ -305,7 +305,6 @@ const CreateProduct = () => {
               <div>
                 <Button
                   size="sm"
-                  variant={"outline"}
                   onClick={() => {
                     setType("MARKDOWN");
                     setStep(step + 1);
