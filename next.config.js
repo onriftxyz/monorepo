@@ -31,6 +31,12 @@ const config = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "qduetpvomkdzpftaqmfx.supabase.co",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

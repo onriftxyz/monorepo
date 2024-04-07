@@ -1,18 +1,11 @@
-import { matter } from "~/components/fonts";
-import { cn } from "~/lib/utils";
-import { UserSidebar } from "~/components/navigation/sidebar";
-import { CreatorTopNav } from "~/components/navigation/navbar";
-import { List, Loader, ThreeDots } from "~/components/icons";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { matter } from "~/components/fonts";
+import { List, Loader, ThreeDots } from "~/components/icons";
+import { CreatorTopNav } from "~/components/navigation/navbar";
+import { UserSidebar } from "~/components/navigation/sidebar";
 import { Button } from "~/components/ui/button";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "~/components/ui/table";
 import {
   Card,
   CardContent,
@@ -21,12 +14,22 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 import { useAuthenticated } from "~/lib/useAuthenticated";
+import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
-import Link from "next/link";
 
 const UserDashboard = () => {
   useAuthenticated();
+
+  const router = useRouter();
 
   const { data: purchases, isLoading: isLoadingPurchases } =
     api.user.purchases.useQuery({
@@ -149,14 +152,18 @@ const UserDashboard = () => {
               <Loader />
             </span>
           </span>
-        ) : mostPurchasedProducts.length ? (
+        ) : mostPurchasedProducts?.length ? (
           <div>
             <div>Recommended</div>
             <div className="grid grid-cols-3 gap-4 pt-4">
               {mostPurchasedProducts?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader>
-                    <CardTitle>{product.title}</CardTitle>
+                    <CardTitle>
+                      <Link href={`/${product.creator.twitter}/${product.id}`}>
+                        {product.title}
+                      </Link>
+                    </CardTitle>
                     <CardDescription>{product.description}</CardDescription>
                   </CardHeader>
                   <CardContent></CardContent>
@@ -172,21 +179,31 @@ const UserDashboard = () => {
                           alt="cover image"
                           width={32}
                           height={32}
-                          className="h-6 w-6 flex-shrink-0 rounded-full"
+                          className="h-8 w-8 flex-shrink-0 rounded-full"
                         />
-                        <div>{product.creator.name}</div>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(product.created_at).toLocaleDateString(
-                            "en-US",
-                            {
-                              month: "short",
-                              year: "numeric",
-                              day: "2-digit",
-                            },
-                          )}
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <div className="text-sm">{product.creator.name}</div>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(product.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                year: "numeric",
+                                day: "2-digit",
+                              },
+                            )}
+                          </span>
+                        </div>
                       </div>
-                      <Button>Buy</Button>
+                      <Button
+                        onClick={() =>
+                          router.push(
+                            `/${product.creator.twitter}/${product.id}`,
+                          )
+                        }
+                      >
+                        Buy
+                      </Button>
                     </div>
                   </CardFooter>
                 </Card>

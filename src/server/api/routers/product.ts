@@ -84,7 +84,7 @@ export const productRouter = createTRPCRouter({
         .returns<ProductGet[]>();
 
       if (error) {
-        return new TRPCError({
+        throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
