@@ -146,8 +146,7 @@ export const userRouter = createTRPCRouter({
       .from("profiles")
       .select("*")
       .eq("id", user!.id)
-      .limit(1)
-      .returns<UserGet>();
+      .single<UserGet>();
 
     if (error) {
       throw new TRPCError({
