@@ -144,9 +144,7 @@ export const CreatorSidebar = () => {
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() =>
-            router.push(`/${user?.profile.twitter}`);
-          }
+          onClick={() => router.push(`/${user?.profile.twitter}`)}
         >
           <ChevronRight />
         </Button>
@@ -262,9 +260,7 @@ export const UserSidebar = () => {
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() =>
-            router.push(`/${user?.profile.twitter}`);
-          }
+          onClick={() => router.push(`/${user?.profile.twitter}`)}
         >
           <ChevronRight />
         </Button>
