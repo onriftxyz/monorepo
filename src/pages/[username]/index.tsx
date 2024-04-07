@@ -73,7 +73,9 @@ const ProfilePage = ({
                         {product.title}
                       </Link>
                     </CardTitle>
-                    <CardDescription className="text-left">{product.description}</CardDescription>
+                    <CardDescription className="text-left">
+                      {product.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent></CardContent>
                   <CardFooter>

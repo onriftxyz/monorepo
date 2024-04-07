@@ -8,10 +8,9 @@ import { ArrowLeft } from "~/components/icons";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
-
 import { api } from "~/utils/api";
 import { env } from "~/env";
-import { Enums } from "~/server/api/supabase/types";
+import type { Enums } from "~/server/api/supabase/types";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { validateAddress } from "~/utils/solana";
 
@@ -77,8 +76,11 @@ const STEP_TO_DESC = [
 const CreateProduct = () => {
   useAuthenticated();
 
+  const router = useRouter();
+
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [type, setType] = useState<Enums<"contenttype">>();
   const [content, setContent] = useState<(string | File)[]>([]);
   const [price, setPrice] = useState(0.0);
@@ -93,8 +95,6 @@ const CreateProduct = () => {
   const uploadProductFile = api.upload.getProductFileSignedUrl.useMutation();
 
   const uploadFile = async (folder: "uploads" | "markdown", file: File) => {
-    console.log("file", file);
-
     const signedUrl = await uploadProductFile.mutateAsync({
       filename: file.name,
       folder: folder,
@@ -121,61 +121,32 @@ const CreateProduct = () => {
       void updateWallet({ wallet });
     }
 
+    let links: string[] = [];
+
     switch (type) {
-      case "LINK":
-        {
-          const links = content.filter(
-            (c) => typeof c === "string",
-          ) as string[];
-
-          try {
-            await createPost.mutateAsync({
-              title: name,
-              content: links,
-              price: price,
-              type: "LINK",
-            });
-          } catch (e) {
-            toast({
-              title: "Failed to create product",
-              variant: "destructive",
-            });
-          }
-
-          void router.push("/creator");
-        }
+      case "LINK": {
+        links = content.filter((c) => typeof c === "string") as string[];
         break;
+      }
 
-      case "UPLOAD":
-        {
-          const files = content.filter((c) => c instanceof File) as File[];
+      case "UPLOAD": {
+        const files = content.filter((c) => c instanceof File) as File[];
 
-          console.log("files", content);
-
-          try {
-            const links = await Promise.all(
-              files.map((file) => {
-                return uploadFile("uploads", file);
-              }),
-            );
-
-            await createPost.mutateAsync({
-              title: name,
-              content: links,
-              price: price,
-              type: "UPLOAD",
-            });
-          } catch (e) {
-            toast({
-              title: "Failed to create product",
-              variant: "destructive",
-            });
-          }
+        try {
+          links = await Promise.all(
+            files.map((file) => {
+              return uploadFile("uploads", file);
+            }),
+          );
+        } catch (e) {
+          toast({
+            title: "Failed to create product",
+            variant: "destructive",
+          });
         }
 
-        void router.push("/creator");
-
         break;
+      }
 
       case "MARKDOWN": {
         // Generate a random string
@@ -192,26 +163,27 @@ const CreateProduct = () => {
 
         const link = await uploadFile("markdown", file);
 
-        try {
-          await createPost.mutateAsync({
-            title: name,
-            content: [link],
-            price: price,
-            type: "MARKDOWN",
-          });
-        } catch (e) {
-          toast({
-            title: "Failed to create product",
-            variant: "destructive",
-          });
-        }
-
-        void router.push("/creator");
+        links.push(link);
       }
     }
-  };
 
-  const router = useRouter();
+    try {
+      await createPost.mutateAsync({
+        title: name,
+        description,
+        content: links,
+        price,
+        type: type!,
+      });
+    } catch (e) {
+      toast({
+        title: "Failed to create product",
+        variant: "destructive",
+      });
+    }
+
+    void router.push("/creator");
+  };
 
   return (
     <main
@@ -241,6 +213,11 @@ const CreateProduct = () => {
             placeholder="Content Creation Ebook"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            placeholder="This ebook teaches you how to..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <Button onClick={() => setStep(step + 1)}>Continue &rarr;</Button>
         </div>
