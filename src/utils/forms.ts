@@ -96,3 +96,12 @@ export const ProfileSettingsSchema = z.object({
 export const PaymentsSettingsSchema = z.object({
   wallet: z.string().refine((addr) => validateAddress(addr)),
 });
+
+export const EditProductSchema = z.object({
+  name: z.string(),
+  description: z.string().max(200).optional(),
+  type: z.enum(["LINK", "UPLOAD", "MARKDOWN"]),
+  content: z.string().array(),
+  price: z.number(),
+  images: z.string().array(),
+});

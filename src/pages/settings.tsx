@@ -1,13 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "@solana/web3.js";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { matter } from "~/components/fonts";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
 import { ImageUpload } from "~/components/onboarding";
-import { Button } from "~/components/ui/button";
 import {
   Form,
   FormField,

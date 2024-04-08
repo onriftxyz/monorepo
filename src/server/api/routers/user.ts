@@ -41,8 +41,6 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      console.log(input.avatar);
-
       const { data: updatedProfile, error: updateError } = await supabase
         .from("profiles")
         .update({

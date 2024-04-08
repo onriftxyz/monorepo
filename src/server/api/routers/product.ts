@@ -173,31 +173,47 @@ export const productRouter = createTRPCRouter({
     return userProductsWithStats;
   }),
 
-  // TODO: Update product needs to update other stuff as well, make fields optional, select and use old value if not passed.
   update: protectedProcedure
     .input(
       z.object({
         id: z.number().int().positive(),
-        title: z.string().min(1),
-        content: z.string().min(1),
+        title: z.string().min(1).optional(),
+        description: z.string().optional(),
+        content: z.string().array().min(1).optional(),
+        price: z.number().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase
+      const { data: product, error } = await ctx.supabase
+        .from("products")
+        .select("*")
+        .eq("id", input.id)
+        .returns<ProductGet>();
+
+      if (!product || error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      }
+
+      const { data, error: updateError } = await ctx.supabase
         .from("products")
         .update({
-          title: input.title,
-          content: input.content,
+          title: input.title ?? product.title,
+          description: input.description ?? product.description,
+          content: input.content ?? product.content,
+          price: input.price ?? product.price,
           creator: ctx.user!.id,
         })
         .eq("id", input.id)
         .select()
         .returns<Tables<"products">>();
 
-      if (error) {
+      if (updateError) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: updateError.message,
         });
       }
 
