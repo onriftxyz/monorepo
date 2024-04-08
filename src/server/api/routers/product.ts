@@ -9,7 +9,7 @@ import { TRPCError } from "@trpc/server";
 import type { Tables } from "~/server/api/supabase/types";
 import { type ProductGet } from "~/utils/product";
 import { env } from "process";
-import { SphereCreatePrice, type SphereCreateProduct } from "~/utils/spherepay";
+import { type SphereCreatePrice, type SphereCreateProduct } from "~/utils/spherepay";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure

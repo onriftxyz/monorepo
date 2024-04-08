@@ -12,6 +12,7 @@ import { env } from "~/env";
 import fs from "fs";
 import { type PurchaseGet, type ProductPurchase } from "~/utils/product";
 import { type UserGet } from "~/utils/user";
+import { type SphereCreateWallet } from "~/utils/spherepay";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -41,6 +42,43 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      let walletData = null;
+
+      if (input.wallet) {
+        const data = {
+          wallet: input.wallet,
+          network: "sol",
+        };
+
+        const URL = "https://api.spherepay.co/v1/wallet";
+
+        const response = await fetch(URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${env.SPHERE_API_TOKEN}`,
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create wallet",
+          });
+        }
+
+        // Idk what to do with this data?
+        walletData = (await response.json()) as SphereCreateWallet;
+
+        if (walletData.error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: walletData.error.message,
+          });
+        }
+      }
+
       const { data: updatedProfile, error: updateError } = await supabase
         .from("profiles")
         .update({
@@ -50,6 +88,7 @@ export const userRouter = createTRPCRouter({
           twitter: input.twitter ?? profile.twitter,
           bio: input.bio ?? profile.bio,
           wallet: input.wallet ?? profile.wallet,
+          sphere_wallet_id: walletData?.data.wallet.id,
         })
         .eq("id", ctx.user!.id)
         .select()

@@ -103,8 +103,8 @@ export type SphereCreatePaymentLink = {
       name: string;
       description: string;
       meta: {
-        buyer: string,
-        creator: string,
+        buyer: string;
+        creator: string;
       };
       url: string;
       successUrl: string;
@@ -184,4 +184,134 @@ export type SphereCreatePaymentLink = {
   };
   ts: string;
   request: string;
+};
+
+export type SpherePaymentWebhookResponse = {
+  hmacTimestamp: string;
+  id: string;
+  name: string;
+  data: {
+    payment: {
+      id: string;
+      type: string;
+      status: string;
+      meta: {
+        buyer: string;
+        product: number;
+      };
+      transactions: Array<{
+        id: string;
+        type: string;
+        rails: string;
+        network: string;
+        flow: string;
+        amount: string;
+        amountUSD: number;
+        currency: string;
+        description: string;
+        available: string;
+        updated: string;
+        created: string;
+      }>;
+      transport: {
+        solana: {
+          id: string;
+          hash: string;
+          solanaEvent: {
+            id: string;
+            name: string;
+            txSig: string;
+            slot: number;
+            errored: boolean;
+            updated: string;
+            created: string;
+          };
+          updated: string;
+          created: string;
+        };
+      };
+      updated: string;
+      created: string;
+    };
+  };
+  mock: boolean;
+  payment: {
+    id: string;
+    type: string;
+    status: string;
+    paymentReference: string;
+    transactions: Array<{
+      id: string;
+      type: string;
+      rails: string;
+      network: string;
+      flow: string;
+      amount: string;
+      amountUSD: number;
+      currency: string;
+      description: string;
+      available: string;
+      updated: string;
+      created: string;
+    }>;
+    solanaTransport: {
+      id: string;
+      tx: {
+        message: {
+          header: {
+            numRequiredSignatures: number;
+            numReadonlySignedAccounts: number;
+            numReadonlyUnsignedAccounts: number;
+          };
+          recentBlockhash: string;
+          staticAccountKeys: Array<string>;
+          addressTableLookups: Array<{
+            accountKey: string;
+            readonlyIndexes: Array<number>;
+          }>;
+          compiledInstructions: Array<{
+            data: {
+              data: Array<number>;
+              type: string;
+            };
+            programIdIndex: number;
+            accountKeyIndexes: Array<number>;
+          }>;
+        };
+      };
+      hash: string;
+      solanaEvent: {
+        id: string;
+        name: string;
+        txSig: string;
+        pEvent: {
+          transfer: {
+            "0": {
+              v1: {
+                "0": {
+                  config: string;
+                  currency: string;
+                  customer: string;
+                  feeAmount: string;
+                  configAuthority: string;
+                  totalPaymentAmount: string;
+                  solanaTransportHash: string;
+                };
+              };
+            };
+          };
+        };
+        slot: number;
+        errored: boolean;
+        updated: string;
+        created: string;
+      };
+      updated: string;
+      created: string;
+    };
+    updated: string;
+    created: string;
+  };
+  updated: string;
+  created: string;
 };

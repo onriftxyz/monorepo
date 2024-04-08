@@ -9,6 +9,7 @@ import {
 } from "~/utils/spherepay";
 import { env } from "~/env";
 import { z } from "zod";
+import { profile } from "console";
 
 export const paymentRouter = createTRPCRouter({
   createWallet: protectedProcedure.mutation(async ({ ctx }) => {
@@ -194,17 +195,23 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const { data: creator, error: getCreatorError } =
-        await ctx.supabase
-          .from("profiles")
-          .select()
-          .eq("id", product.creator)
-          .single<Tables<"profiles">>();
+      const { data: creator, error: getCreatorError } = await ctx.supabase
+        .from("profiles")
+        .select()
+        .eq("id", product.creator)
+        .single<Tables<"profiles">>();
 
       if (getCreatorError) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: getCreatorError.message,
+        });
+      }
+
+      if (!creator.sphere_wallet_id) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Creator does not have a sphere wallet id",
         });
       }
 
@@ -222,7 +229,7 @@ export const paymentRouter = createTRPCRouter({
         ],
         meta: {
           buyer: ctx.user!.id,
-          seller: product.creator,
+          product: product.id,
         },
         successUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=SUCCESS`,
         failureUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=FAILURE`,

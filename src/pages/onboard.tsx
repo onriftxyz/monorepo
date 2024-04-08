@@ -20,7 +20,6 @@ import { api } from "~/utils/api";
 import { OnboardingSchema } from "~/utils/forms";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { Loader } from "~/components/icons";
-import { env } from "~/env";
 
 export default function Onboard() {
   useAuthenticated();
@@ -53,7 +52,6 @@ export default function Onboard() {
           body: avatar,
           headers: {
             "Content-Type": avatar.type,
-            "Authorization": `Bearer ${env.SPHERE_API_TOKEN}`,
           },
         });
         avatarUploaded = true;
