@@ -46,7 +46,7 @@ export const userRouter = createTRPCRouter({
 
       if (input.wallet) {
         const data = {
-          wallet: input.wallet,
+          address: input.wallet,
           network: "sol",
         };
 

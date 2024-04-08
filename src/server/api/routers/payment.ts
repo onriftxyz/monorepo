@@ -3,13 +3,12 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { type Tables } from "../supabase/types";
 import {
-  SphereCreatePaymentLink,
+  type SphereCreatePaymentLink,
   type SphereCreatePrice,
   type SphereCreateWallet,
 } from "~/utils/spherepay";
 import { env } from "~/env";
 import { z } from "zod";
-import { profile } from "console";
 
 export const paymentRouter = createTRPCRouter({
   createWallet: protectedProcedure.mutation(async ({ ctx }) => {
