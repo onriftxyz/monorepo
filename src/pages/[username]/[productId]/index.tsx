@@ -32,16 +32,25 @@ const ProductPage = ({
       <div className="grid grid-cols-2 gap-4 px-48 py-16">
         <div className="relative">
           <Image
-            src="https://placehold.co/512/333333/777777/webp?text=Cover Image"
+            src={
+              product.images?.[0] ||
+              "https://placehold.co/512/333333/777777/webp?text=Cover Image"
+            }
             width={512}
             height={512}
             alt="cover image"
             className="h-full w-full"
           />
-          <button className="absolute left-2 top-1/2 -translate-y-1/2">
+          <button
+            className="absolute left-2 top-1/2 -translate-y-1/2 disabled:cursor-not-allowed disabled:text-muted"
+            disabled
+          >
             <ChevronLeft size={32} />
           </button>
-          <button className="absolute right-2 top-1/2 -translate-y-1/2">
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2 disabled:cursor-not-allowed disabled:text-muted"
+            disabled
+          >
             <ChevronRight size={32} />
           </button>
         </div>

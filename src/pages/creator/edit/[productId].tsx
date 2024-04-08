@@ -5,9 +5,9 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from "next";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { matter } from "~/components/fonts";
 import { CreatorTopNav } from "~/components/navigation/navbar";
 import { CreatorSidebar } from "~/components/navigation/sidebar";
@@ -27,10 +27,18 @@ import { api } from "~/utils/api";
 import { EditProductSchema } from "~/utils/forms";
 import type { ProductGet } from "~/utils/product";
 import { createSupabaseServerClient } from "~/utils/supabase";
+import Image from "next/image";
+import { Upload } from "~/components/icons";
+import { env } from "~/env";
 
 const EditProduct = ({
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [image, setImage] = useState<File>();
+  const [imageLink, setImageLink] = useState(product.images?.[0]);
+
+  const imageRef = useRef<HTMLInputElement>(null);
+
   const editProductForm = useForm<z.infer<typeof EditProductSchema>>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
@@ -43,9 +51,64 @@ const EditProduct = ({
   });
 
   const { mutateAsync: update } = api.product.update.useMutation();
+  const { mutateAsync: uploadProductImage } =
+    api.upload.getProductFileSignedUrl.useMutation();
 
   useEffect(() => {
     const { unsubscribe } = editProductForm.watch((data) => {
+      // @milind yet another file upload
+      const uploadFile = async (file: File) => {
+        const signedUrl = await uploadProductImage({
+          filename: file.name,
+          folder: "productImages",
+        });
+
+        try {
+          await fetch(signedUrl, {
+            method: "PUT",
+            body: file,
+            headers: {
+              "Content-Type": file.type,
+            },
+          });
+        } catch (e) {
+          console.log("here");
+          return "";
+        }
+
+        return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/productImages/${file.name}`;
+      };
+
+      if (image) {
+        uploadFile(image)
+          .then((uploadedImageLink) => {
+            update({
+              id: product.id,
+              title: data.name,
+              description: data.description,
+              price: Number(data.price),
+              image: uploadedImageLink,
+              // content: data.content!,
+            })
+              .then(() => {
+                toast({ title: "Product details updated!" });
+              })
+              .catch(() => {
+                toast({
+                  title: "Could not update product details!",
+                  variant: "destructive",
+                });
+              });
+          })
+          .catch(() =>
+            toast({
+              title: "Could not upload product image!",
+              variant: "destructive",
+            }),
+          );
+        return;
+      }
+
       update({
         id: product.id,
         title: data.name,
@@ -65,7 +128,7 @@ const EditProduct = ({
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [editProductForm, image, product, update, uploadProductImage]);
 
   return (
     <main
@@ -79,15 +142,46 @@ const EditProduct = ({
         <CreatorTopNav title={`Edit ${product.title}`} />
         <Form {...editProductForm}>
           <form className="flex w-full flex-col gap-6 px-80 py-8">
-            {/* <div className="flex justify-center">
-                  <ImageUpload
-                    form={editProductForm}
-                    defaultAvatar={
-                      user?.profile.avatar ||
-                      "https://placehold.co/256/333/777.webp?text=PFP"
-                    }
+            <div className="flex justify-center">
+              {/* @milind yet another file upload */}
+              <FormField
+                name="images"
+                render={() => (
+                  <input
+                    ref={imageRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      setImage(e.target.files![0]);
+                      if (e.target.files?.[0]) {
+                        setImageLink(URL.createObjectURL(e.target.files?.[0]));
+                      }
+                      editProductForm.setValue("images", [
+                        (Math.random() * 100).toString(),
+                      ]);
+                    }}
                   />
-                </div> */}
+                )}
+              />
+              <button
+                className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+                type="button"
+                onClick={() => imageRef.current?.click()}
+              >
+                {imageLink ? (
+                  <Image
+                    src={imageLink}
+                    alt="cover image"
+                    width={192}
+                    height={192}
+                    className="h-48 w-48 rounded-lg"
+                  />
+                ) : (
+                  <Upload size={48} />
+                )}
+              </button>
+            </div>
             <FormField
               control={editProductForm.control}
               name="name"

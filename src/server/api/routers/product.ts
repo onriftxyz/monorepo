@@ -181,6 +181,7 @@ export const productRouter = createTRPCRouter({
         description: z.string().optional(),
         content: z.string().array().min(1).optional(),
         price: z.number().optional(),
+        image: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -204,6 +205,9 @@ export const productRouter = createTRPCRouter({
           description: input.description ?? product.description,
           content: input.content ?? product.content,
           price: input.price ?? product.price,
+          images: product.images
+            ?.concat(input.image ?? "")
+            .filter((img) => !!img),
           creator: ctx.user!.id,
         })
         .eq("id", input.id)
