@@ -102,6 +102,7 @@ export const CreatorSidebar = () => {
             }
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/creator/customers")}
+            disabled
           >
             <Members size={18} />
             Customers
