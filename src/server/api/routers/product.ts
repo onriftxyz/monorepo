@@ -9,7 +9,10 @@ import { TRPCError } from "@trpc/server";
 import type { Tables } from "~/server/api/supabase/types";
 import { type ProductGet } from "~/utils/product";
 import { env } from "process";
-import { type SphereCreatePrice, type SphereCreateProduct } from "~/utils/spherepay";
+import {
+  type SphereCreatePrice,
+  type SphereCreateProduct,
+} from "~/utils/spherepay";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -42,14 +45,15 @@ export const productRouter = createTRPCRouter({
       });
 
       if (!sphereCreateProductResponse.ok) {
+        console.log("we errorr?", sphereCreateProductResponse.body);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create product",
         });
       }
 
-      const sphereProductData = (await sphereCreateProductResponse.json()) as SphereCreateProduct;
-
+      const sphereProductData =
+        (await sphereCreateProductResponse.json()) as SphereCreateProduct;
 
       const sphereCreatePriceUrl = "https://api.spherepay.co/v1/price";
 
@@ -76,7 +80,8 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      const spherePriceData = (await sphereCreatePriceResponse.json()) as SphereCreatePrice;
+      const spherePriceData =
+        (await sphereCreatePriceResponse.json()) as SphereCreatePrice;
 
       if (spherePriceData.error) {
         throw new TRPCError({

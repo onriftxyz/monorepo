@@ -14,7 +14,6 @@ import { useAuthenticated } from "~/lib/useAuthenticated";
 import { api } from "~/utils/api";
 import { type ProductGet } from "~/utils/product";
 import { createSupabaseServerClient } from "~/utils/supabase";
-import { redirect } from "next/navigation";
 
 const ProductPage = ({
   product,
@@ -27,7 +26,7 @@ const ProductPage = ({
       const checkoutData = await checkout.mutateAsync({
         product_id: product.id,
       });
-      redirect(checkoutData.paymentLink.url);
+      window.location.href = checkoutData.paymentLink.url;
     } catch (e) {
       // TODO: @pyabash handle this error pls
       console.log(e);
