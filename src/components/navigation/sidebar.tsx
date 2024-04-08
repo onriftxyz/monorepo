@@ -10,6 +10,7 @@ import {
   Creator,
   Chat,
   ChevronLeft,
+  Logout,
 } from "../icons";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -26,8 +27,7 @@ export const CreatorSidebar = () => {
   const router = useRouter();
 
   const { data: user } = api.user.get.useQuery();
-
-  const { toast } = useToast();
+  const { mutateAsync: logout } = api.auth.logout.useMutation();
 
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
@@ -140,9 +140,12 @@ export const CreatorSidebar = () => {
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() => router.push(`/${user?.profile.username}`)}
+          onClick={() => {
+            void logout();
+            void router.push("/");
+          }}
         >
-          <ChevronRight />
+          <Logout />
         </Button>
       </div>
     </div>
@@ -153,8 +156,6 @@ export const UserSidebar = () => {
   const router = useRouter();
 
   const { data: user } = api.user.get.useQuery();
-
-  const { toast } = useToast();
 
   return (
     <div className="flex flex-col justify-between gap-4 px-4 py-6">
