@@ -19,6 +19,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1).optional(),
         username: z.string().min(1).optional(),
+        avatar: z.string().optional(),
         bio: z.string().min(1).optional(),
         twitter: z.string().min(1).optional(),
         wallet: z.string().optional(),
@@ -40,11 +41,14 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      console.log(input.avatar);
+
       const { data: updatedProfile, error: updateError } = await supabase
         .from("profiles")
         .update({
           name: input.name ?? profile.name,
           username: input.username ?? profile.username,
+          avatar: input.avatar ?? profile.avatar,
           twitter: input.twitter ?? profile.twitter,
           bio: input.bio ?? profile.bio,
           wallet: input.wallet ?? profile.wallet,

@@ -20,6 +20,7 @@ import { Input } from "~/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Textarea } from "~/components/ui/textarea";
 import { toast } from "~/components/ui/use-toast";
+import { env } from "~/env";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
@@ -31,6 +32,8 @@ const Settings = () => {
 
   const { data: user } = api.user.get.useQuery();
   const { mutateAsync: update } = api.user.update.useMutation();
+  const { mutateAsync: uploadAvatar } =
+    api.upload.getAvatarSignedUrl.useMutation();
 
   const settingsForm = useForm<z.infer<typeof ProfileSettingsSchema>>({
     resolver: zodResolver(ProfileSettingsSchema),
@@ -45,17 +48,73 @@ const Settings = () => {
       settingsForm.setValue("username", user.profile.username!);
       settingsForm.setValue("bio", user.profile.bio!);
       settingsForm.setValue("twitter", user.profile.twitter!);
+      settingsForm.setValue("avatar", user.profile.avatar!);
       paymentSettingsForm.setValue("wallet", user.profile.wallet!);
     }
   }, [user, settingsForm, paymentSettingsForm]);
 
   useEffect(() => {
     const { unsubscribe } = settingsForm.watch((data) => {
+      if (data.avatar) {
+        try {
+          uploadAvatar()
+            .then((signedUrl) =>
+              fetch(signedUrl, {
+                method: "PUT",
+                body: data.avatar,
+                headers: {
+                  "Content-Type": data.avatar!.type,
+                },
+              })
+                .then(() => {
+                  console.log(data.avatar, user?.user?.id);
+
+                  update({
+                    name: data.name,
+                    bio: data.bio,
+                    username: data.username,
+                    twitter: data.twitter,
+                    avatar: `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/users/${user?.user?.id}`,
+                  })
+                    .then(() => {
+                      toast({ title: "Profile settings updated!" });
+                      return;
+                    })
+                    .catch(() => {
+                      toast({
+                        title: "Could not save new profile settings!",
+                        variant: "destructive",
+                      });
+                      return;
+                    });
+                })
+                .catch(() => {
+                  toast({
+                    title: "Could not save new profile settings!",
+                    variant: "destructive",
+                  });
+                }),
+            )
+            .catch(() => {
+              toast({
+                title: "Could not save new profile settings!",
+                variant: "destructive",
+              });
+            });
+        } catch (e) {
+          console.log("Error when uploading avatar", e);
+          return;
+        }
+      }
+
+      console.log(data.avatar);
+
       update({
         name: data.name,
         bio: data.bio,
         username: data.username,
         twitter: data.twitter,
+        avatar: "",
       })
         .then(() => {
           toast({ title: "Profile settings updated!" });
@@ -119,7 +178,13 @@ const Settings = () => {
             <Form {...settingsForm}>
               <form className="flex w-full flex-col gap-6 py-8">
                 <div className="flex justify-center">
-                  <ImageUpload form={settingsForm} defaultAvatar={user?.profile.avatar} />
+                  <ImageUpload
+                    form={settingsForm}
+                    defaultAvatar={
+                      user?.profile.avatar ||
+                      "https://placehold.co/256/333/777.webp?text=PFP"
+                    }
+                  />
                 </div>
                 <FormField
                   control={settingsForm.control}

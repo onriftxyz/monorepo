@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function ImageUpload({ form, defaultAvatar }: Props) {
-  const [avatar, setAvatar] = useState<string | null>(defaultAvatar ?? null);
+  const [avatar, setAvatar] = useState<string | null>(defaultAvatar || null);
   const avatarRef = useRef<HTMLInputElement>(null);
 
   const previewUpload = (file?: File) => {
