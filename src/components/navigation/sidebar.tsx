@@ -108,16 +108,10 @@ export const CreatorSidebar = () => {
           </Button>
           <Button
             variant={
-              router.pathname === "/creator/settings" ? "default" : "ghost"
+              router.pathname === "/settings" ? "default" : "ghost"
             }
             className={`flex items-center justify-start gap-2`}
-            // onClick={() => void router.push("/creator/settings")}
-            onClick={() =>
-              toast({
-                title: "Not yet implemented!",
-                description: "The settings page has not yet been implemented.",
-              })
-            }
+            onClick={() => void router.push("/settings")}
           >
             <Settings size={20} />
             Settings
@@ -227,13 +221,7 @@ export const UserSidebar = () => {
           <Button
             variant={router.pathname === "/settings" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
-            // onClick={() => void router.push("/settings")}
-            onClick={() =>
-              toast({
-                title: "Not yet implemented!",
-                description: "The settings page has not yet been implemented.",
-              })
-            }
+            onClick={() => void router.push("/settings")}
           >
             <Settings size={20} />
             Settings

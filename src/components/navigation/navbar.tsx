@@ -1,3 +1,4 @@
+import { api } from "~/utils/api";
 import { Explore, ArrowTopRight, Add } from "../icons";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
@@ -11,6 +12,8 @@ interface CreatorNavProps {
 export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
   const router = useRouter();
   const { toast } = useToast();
+
+  const { data: user } = api.user.get.useQuery();
 
   return (
     <div className="flex items-center justify-between">
@@ -35,10 +38,11 @@ export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
               variant="outline"
               className="flex items-center"
               onClick={() =>
-                toast({
-                  title: "Not yet implemented!",
-                  description: "Preview sites have not yet been implemented!",
-                })
+                // toast({
+                //   title: "Not yet implemented!",
+                //   description: "Preview sites have not yet been implemented!",
+                // })
+                void router.push(`/${user?.profile.username}`)
               }
             >
               <Explore />

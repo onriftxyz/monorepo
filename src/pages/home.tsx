@@ -83,9 +83,8 @@ const UserDashboard = () => {
                     <TableCell className="flex items-center gap-2">
                       <Image
                         src={
-                          "https://picsum.photos/64" +
-                          "?random=" +
-                          Math.random() * 10
+                          purchase.product.images?.[0] ??
+                          "https://placehold.co/64/333/777.webp?text=Cover"
                         }
                         alt="cover image"
                         width={64}
@@ -172,7 +171,7 @@ const UserDashboard = () => {
                       <div className="flex items-center justify-between gap-2">
                         <Image
                           src={
-                            product.creator.avatar ||
+                            product.creator.avatar ??
                             "https://placehold.co/32.webp?text=" +
                               product.creator.name?.substring(0, 1)
                           }

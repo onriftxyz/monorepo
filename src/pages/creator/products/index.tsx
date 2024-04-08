@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { matter } from "~/components/fonts";
 import { Loader, Pencil, ThreeDots } from "~/components/icons";
 import { CreatorTopNav } from "~/components/navigation/navbar";
@@ -13,6 +14,8 @@ import { type ProductGet } from "~/utils/product";
 
 const Products = () => {
   useAuthenticated();
+
+  const router = useRouter();
 
   const { data: products, isLoading } = api.product.getMine.useQuery();
 
@@ -37,29 +40,41 @@ const Products = () => {
             {(products as ProductGet[]).map((product) => (
               <div
                 key={Math.random()}
-                className="flex w-full items-center gap-3.5 p-4"
+                className="flex w-full items-center justify-between gap-3.5 p-4"
               >
-                <Image
-                  src={`https://picsum.photos/64?random=${Math.random() * 10}`}
-                  alt="post image"
-                  width={64}
-                  height={64}
-                  className="h-12 w-12 rounded-md"
-                />
-                <div className="flex flex-col gap-0.5">
-                  <Link href={`/${product.creator?.username}/${product.id}`}>
-                    {product.title}
-                  </Link>
-                  <div className="line-clamp-1 text-sm text-secondary-foreground">
-                    {product.description}
+                <div className="flex items-center gap-3.5">
+                  <Image
+                    src={
+                      product.images?.[0] ??
+                      "https://placehold.co/64/333/777.webp?text=Cover"
+                    }
+                    alt="post image"
+                    width={64}
+                    height={64}
+                    className="h-12 w-12 rounded-md"
+                  />
+                  <div className="flex flex-col gap-0.5">
+                    <Link href={`/${product.creator?.username}/${product.id}`}>
+                      {product.title}
+                    </Link>
+                    <div className="line-clamp-1 text-sm text-secondary-foreground">
+                      {product.description}
+                    </div>
                   </div>
                 </div>
-                <Button className="shrink-0" size={"icon"} variant="ghost">
-                  <Pencil size={20} />
-                </Button>
-                <Button className="shrink-0" size={"icon"} variant="ghost">
-                  <ThreeDots size={20} />
-                </Button>
+                <div className="flex shrink-0 gap-3.5">
+                  <Button
+                    className="shrink-0"
+                    size={"icon"}
+                    variant="ghost"
+                    onClick={() => router.push(`/creator/edit/${product.id}`)}
+                  >
+                    <Pencil size={20} />
+                  </Button>
+                  <Button className="shrink-0" size={"icon"} variant="ghost">
+                    <ThreeDots size={20} />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

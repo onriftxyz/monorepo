@@ -122,9 +122,8 @@ const CreatorDashboard = () => {
                         <TableCell className="flex items-center gap-2">
                           <Image
                             src={
-                              "https://picsum.photos/64" +
-                              "?random=" +
-                              Math.random() * 10
+                              product.images?.[0] ??
+                              "https://placehold.co/64/333/777.webp?text=Cover"
                             }
                             alt="cover image"
                             width={64}
@@ -132,7 +131,11 @@ const CreatorDashboard = () => {
                             className="h-12 w-12 flex-shrink-0 rounded-md"
                           />
                           <div className="flex w-full flex-col gap-0.5">
-                            <Link href={`${product.creator.username}/${product.id}`}>{product.title}</Link>
+                            <Link
+                              href={`${product.creator.username}/${product.id}`}
+                            >
+                              {product.title}
+                            </Link>
                             <div className="flex text-xs text-secondary-foreground">
                               {new Date(product.created_at).toLocaleDateString(
                                 "en-US",

@@ -41,7 +41,7 @@ const Products = () => {
                 className="flex w-full items-center gap-3.5 p-4"
               >
                 <Image
-                  src={`https://picsum.photos/64?random=${Math.random() * 10}`}
+                  src={purchase.product.images?.[0] ?? "https://placehold.co/64/333/777.webp?text=Cover"}
                   alt="post image"
                   width={64}
                   height={64}
