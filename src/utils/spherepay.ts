@@ -103,8 +103,8 @@ export type SphereCreatePaymentLink = {
       name: string;
       description: string;
       meta: {
-        product_id: number;
-        product_sphere_id: string;
+        buyer: string,
+        creator: string,
       };
       url: string;
       successUrl: string;

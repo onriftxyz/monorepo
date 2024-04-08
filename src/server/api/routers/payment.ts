@@ -194,12 +194,12 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const { data: creator_sphere_wallet_id, error: getCreatorError } =
+      const { data: creator, error: getCreatorError } =
         await ctx.supabase
           .from("profiles")
-          .select("sphere_wallet_id")
+          .select()
           .eq("id", product.creator)
-          .single<Tables<"profiles">["sphere_wallet_id"]>();
+          .single<Tables<"profiles">>();
 
       if (getCreatorError) {
         throw new TRPCError({
@@ -221,8 +221,8 @@ export const paymentRouter = createTRPCRouter({
           },
         ],
         meta: {
-          product_id: product.id,
-          product_sphere_id: product.sphere_product_id,
+          buyer: ctx.user!.id,
+          seller: product.creator,
         },
         successUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=SUCCESS`,
         failureUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=FAILURE`,
@@ -232,7 +232,7 @@ export const paymentRouter = createTRPCRouter({
             shareBps: 1000,
           },
           {
-            id: creator_sphere_wallet_id,
+            id: creator.sphere_wallet_id,
             shareBps: 9000,
           },
         ],
