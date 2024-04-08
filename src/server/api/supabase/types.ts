@@ -18,6 +18,8 @@ export type Database = {
           id: number
           images: string[] | null
           price: number
+          sphere_price_id: string | null
+          sphere_product_id: string | null
           title: string
           type: Database["public"]["Enums"]["contenttype"]
           updated_at: string
@@ -31,6 +33,8 @@ export type Database = {
           id?: number
           images?: string[] | null
           price?: number
+          sphere_price_id?: string | null
+          sphere_product_id?: string | null
           title: string
           type: Database["public"]["Enums"]["contenttype"]
           updated_at?: string
@@ -44,6 +48,8 @@ export type Database = {
           id?: number
           images?: string[] | null
           price?: number
+          sphere_price_id?: string | null
+          sphere_product_id?: string | null
           title?: string
           type?: Database["public"]["Enums"]["contenttype"]
           updated_at?: string
@@ -66,6 +72,7 @@ export type Database = {
           id: string
           name: string | null
           onboarded: boolean
+          sphere_wallet_id: string | null
           twitter: string | null
           username: string | null
           wallet: string | null
@@ -76,6 +83,7 @@ export type Database = {
           id: string
           name?: string | null
           onboarded?: boolean
+          sphere_wallet_id?: string | null
           twitter?: string | null
           username?: string | null
           wallet?: string | null
@@ -86,6 +94,7 @@ export type Database = {
           id?: string
           name?: string | null
           onboarded?: boolean
+          sphere_wallet_id?: string | null
           twitter?: string | null
           username?: string | null
           wallet?: string | null

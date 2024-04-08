@@ -8,6 +8,8 @@ import { TRPCError } from "@trpc/server";
 
 import type { Tables } from "~/server/api/supabase/types";
 import { type ProductGet } from "~/utils/product";
+import { env } from "process";
+import { SphereCreatePrice, type SphereCreateProduct } from "~/utils/spherepay";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -22,7 +24,68 @@ export const productRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { data, error } = await ctx.supabase
+      const sphereCreateProductUrl = "https://api.spherepay.co/v1/product";
+
+      const createSphereProductData = {
+        name: input.title,
+        description: input.description,
+        images: input.images,
+      };
+
+      const sphereCreateProductResponse = await fetch(sphereCreateProductUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${env.SPHERE_API_TOKEN}`,
+        },
+        body: JSON.stringify(createSphereProductData),
+      });
+
+      if (!sphereCreateProductResponse.ok) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create product",
+        });
+      }
+
+      const sphereProductData = (await sphereCreateProductResponse.json()) as SphereCreateProduct;
+
+
+      const sphereCreatePriceUrl = "https://api.spherepay.co/v1/price";
+
+      const sphereCreatePriceData = {
+        product: sphereProductData.data.product.id,
+        currency: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        billingScheme: "perUnit",
+        unitAmountDecimal: input.price,
+      };
+
+      const sphereCreatePriceResponse = await fetch(sphereCreatePriceUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${env.SPHERE_API_TOKEN}`,
+        },
+        body: JSON.stringify(sphereCreatePriceData),
+      });
+
+      if (!sphereCreatePriceResponse.ok) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create price",
+        });
+      }
+
+      const spherePriceData = (await sphereCreatePriceResponse.json()) as SphereCreatePrice;
+
+      if (spherePriceData.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: spherePriceData.error.message,
+        });
+      }
+
+      const { data: product, error } = await ctx.supabase
         .from("products")
         .insert({
           title: input.title,
@@ -32,6 +95,8 @@ export const productRouter = createTRPCRouter({
           price: input.price,
           type: input.type,
           creator: ctx.user!.id,
+          sphere_product_id: sphereProductData.data.product.id,
+          sphere_price_id: spherePriceData.data.price.id,
         })
         .select()
         .returns<Tables<"products">>();
@@ -43,7 +108,7 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      return data;
+      return product;
     }),
 
   get: publicProcedure

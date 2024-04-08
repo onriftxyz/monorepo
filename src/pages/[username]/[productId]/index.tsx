@@ -11,13 +11,28 @@ import { ChevronLeft, ChevronRight, Views } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { useAuthenticated } from "~/lib/useAuthenticated";
+import { api } from "~/utils/api";
 import { type ProductGet } from "~/utils/product";
 import { createSupabaseServerClient } from "~/utils/supabase";
+import { redirect } from "next/navigation";
 
 const ProductPage = ({
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   useAuthenticated();
+  const checkout = api.payment.createPaymentLink.useMutation();
+
+  const handleBuy = async () => {
+    try {
+      const checkoutData = await checkout.mutateAsync({
+        product_id: product.id,
+      });
+      redirect(checkoutData.paymentLink.url);
+    } catch (e) {
+      // TODO: @pyabash handle this error pls
+      console.log(e);
+    }
+  };
 
   return (
     <main className={` ${matter.className}`}>
@@ -33,7 +48,7 @@ const ProductPage = ({
         <div className="relative">
           <Image
             src={
-              product.images?.[0] ||
+              product.images?.[0] ??
               "https://placehold.co/512/333333/777777/webp?text=Cover Image"
             }
             width={512}
@@ -60,7 +75,7 @@ const ProductPage = ({
             {product.description}
           </div>
           <div className="text-2xl">${product.price}</div>
-          <Button className="w-full" size="lg">
+          <Button onClick={handleBuy} className="w-full" size="lg">
             Buy Now
           </Button>
           <Separator />

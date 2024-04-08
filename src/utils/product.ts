@@ -17,3 +17,4 @@ export type ProductPurchase = Tables<"purchases"> & {
   product: ProductGet
   buyer: Tables<"profiles">;
 };
+
