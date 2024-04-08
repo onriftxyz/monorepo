@@ -17,7 +17,7 @@ import { useToast } from "../ui/use-toast";
 import { api } from "~/utils/api";
 import Link from "next/link";
 
-const walletAbbr = (inputString: string | undefined) => {
+const walletAbbr = (inputString: string | undefined | null) => {
   if (!inputString) return "Wallet Not Added";
   return inputString.slice(0, 4) + "..." + inputString.slice(-4);
 };
@@ -107,9 +107,7 @@ export const CreatorSidebar = () => {
             Customers
           </Button>
           <Button
-            variant={
-              router.pathname === "/settings" ? "default" : "ghost"
-            }
+            variant={router.pathname === "/settings" ? "default" : "ghost"}
             className={`flex items-center justify-start gap-2`}
             onClick={() => void router.push("/settings")}
           >
@@ -123,8 +121,7 @@ export const CreatorSidebar = () => {
           <Image
             src={
               user?.profile.avatar ??
-              "https://placehold.co/32.webp?text=" +
-                user?.profile.name?.substring(0, 1)
+              `https://placehold.co/32/333/777.webp?text=${user?.profile.name?.substring(0, 1)}`
             }
             alt="profile photo"
             width={48}

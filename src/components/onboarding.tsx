@@ -10,10 +10,11 @@ import type { OnboardingSchema } from "~/utils/forms";
 
 interface Props {
   form: UseFormReturn<z.infer<typeof OnboardingSchema>>;
+  defaultAvatar?: string | null;
 }
 
-export function ImageUpload({ form }: Props) {
-  const [avatar, setAvatar] = useState<string | null>(null);
+export function ImageUpload({ form, defaultAvatar }: Props) {
+  const [avatar, setAvatar] = useState<string | null>(defaultAvatar ?? null);
   const avatarRef = useRef<HTMLInputElement>(null);
 
   const previewUpload = (file?: File) => {
@@ -49,7 +50,7 @@ export function ImageUpload({ form }: Props) {
                 }
               >
                 <FormLabel className="flex h-20 w-20 cursor-pointer items-center justify-center">
-                  {avatar ? (
+                  {!!avatar ? (
                     <Image src={avatar} width={112} height={112} alt="avatar" />
                   ) : (
                     <Upload />
