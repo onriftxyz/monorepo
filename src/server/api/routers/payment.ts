@@ -253,7 +253,10 @@ export const paymentRouter = createTRPCRouter({
         body: JSON.stringify(data),
       });
 
+      console.log(data)
+
       if (!response.ok) {
+        console.log(response);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create payment link",
