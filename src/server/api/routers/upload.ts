@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { string, z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -32,16 +32,14 @@ export const uploadRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // NOTE: this seems dangerous any user can upload as many files as possible. need some way to rate limit.
-      //
-
-      // random six letter string
 
       const { supabase } = ctx;
+
+      const location = `${input.folder}/${ctx.user?.id}/${Math.random().toString(36).substring(2, 8) + "_" + input.filename}`;
+
       const { data, error } = await supabase.storage
         .from("products")
-        .createSignedUploadUrl(
-          `${input.folder}/${ctx.user?.id}/${Math.random().toString(36).substring(2, 8) + "_" + input.filename}`,
-        );
+        .createSignedUploadUrl(location);
 
       if (error) {
         throw new TRPCError({
@@ -50,6 +48,9 @@ export const uploadRouter = createTRPCRouter({
         });
       }
 
-      return data.signedUrl;
+      return {
+        url: data.signedUrl,
+        location: location
+      };
     }),
 });

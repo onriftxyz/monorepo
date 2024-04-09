@@ -11,8 +11,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-  console.log("Payment webhook: Request Method:", req.method);
-  console.log(req.body);
+
+
+  console.log("webhook")
+  console.log(JSON.stringify(req.body))
 
   if (req.method !== "POST") {
     res.status(405).send({ message: "Only POST requests allowed" });
@@ -21,12 +23,17 @@ export default async function handler(
 
   const { data } = req.body as SpherePaymentWebhookResponse;
 
-  if (data.payment.status === "success") {
-    const { buyer, product } = data.payment.meta;
+
+  if (data.payment.status === "succeeded") {
+    const { buyer, product } = data.payment.paymentLink.meta;
     const txSig = data.payment.transport.solana.solanaEvent.txSig;
     const amount = data.payment.transactions[0]!.amountUSD;
 
+    console.log(buyer, product, txSig, amount)
+
     const supabase = createSupabaseServerClient({ req, res });
+
+    console.log(supabase)
 
     const { error } = await supabase.from("purchases").insert({
       buyer: buyer,
@@ -34,6 +41,8 @@ export default async function handler(
       amount: amount,
       transaction_id: txSig,
     });
+
+    console.log("db")
 
     if (error) {
       console.error(error);

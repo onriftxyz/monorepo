@@ -112,13 +112,13 @@ const CreateProduct = () => {
     folder: "uploads" | "markdown" | "productImages",
     file: File,
   ) => {
-    const signedUrl = await uploadProductFile.mutateAsync({
+    const signedUrlCall = await uploadProductFile.mutateAsync({
       filename: file.name,
       folder: folder,
     });
 
     try {
-      await fetch(signedUrl, {
+      await fetch(signedUrlCall.url, {
         method: "PUT",
         body: file,
         headers: {
@@ -130,7 +130,10 @@ const CreateProduct = () => {
       return "";
     }
 
-    return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/${folder}/${file.name}`;
+    return (
+      `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/` +
+      signedUrlCall.location
+    );
   };
 
   const handleSubmit = async () => {
