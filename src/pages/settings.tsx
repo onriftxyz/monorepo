@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { type WatchObserver, useForm } from "react-hook-form";
+import { useDebounceCallback } from "usehooks-ts";
 import type { z } from "zod";
 import { matter } from "~/components/fonts";
 import { CreatorTopNav } from "~/components/navigation/navbar";
@@ -34,27 +34,14 @@ const Settings = () => {
   const { mutateAsync: uploadAvatar } =
     api.upload.getAvatarSignedUrl.useMutation();
 
-  const settingsForm = useForm<z.infer<typeof ProfileSettingsSchema>>({
-    resolver: zodResolver(ProfileSettingsSchema),
-  });
-  const paymentSettingsForm = useForm<z.infer<typeof PaymentsSettingsSchema>>({
-    resolver: zodResolver(PaymentsSettingsSchema),
-  });
-
-  useEffect(() => {
-    if (user) {
-      settingsForm.setValue("name", user.profile.name!);
-      settingsForm.setValue("username", user.profile.username!);
-      settingsForm.setValue("bio", user.profile.bio!);
-      settingsForm.setValue("twitter", user.profile.twitter!);
-      // @ts-expect-error
-      settingsForm.setValue("avatar", user.profile.avatar);
-      paymentSettingsForm.setValue("wallet", user.profile.wallet!);
-    }
-  }, [user, settingsForm, paymentSettingsForm]);
-
-  useEffect(() => {
-    const { unsubscribe } = settingsForm.watch((data) => {
+  const debouncedAutoSave = useDebounceCallback(
+    (data: {
+      name?: string;
+      username?: string;
+      bio?: string | undefined;
+      twitter?: string | undefined;
+      avatar?: File | undefined;
+    }) => {
       if (data.avatar) {
         try {
           uploadAvatar()
@@ -125,37 +112,70 @@ const Settings = () => {
             variant: "destructive",
           });
         });
-    });
+    },
+    1000,
+  );
+  const debouncedPaymentsAutoSave = useDebounceCallback(
+    (data: { wallet?: string }) => {
+      if (validateAddress(data.wallet!)) {
+        update({
+          wallet: data.wallet,
+        })
+          .then(() => {
+            toast({ title: "Payment settings updated!" });
+          })
+          .catch(() => {
+            toast({
+              title: "Could not save new payment settings!",
+              variant: "destructive",
+            });
+          });
+      } else
+        toast({
+          title: "Invalid solana address!",
+          variant: "destructive",
+        });
+    },
+    1000,
+  );
+
+  const settingsForm = useForm<z.infer<typeof ProfileSettingsSchema>>({
+    resolver: zodResolver(ProfileSettingsSchema),
+  });
+  const paymentSettingsForm = useForm<z.infer<typeof PaymentsSettingsSchema>>({
+    resolver: zodResolver(PaymentsSettingsSchema),
+  });
+
+  useEffect(() => {
+    if (user) {
+      settingsForm.setValue("name", user.profile.name!);
+      settingsForm.setValue("username", user.profile.username!);
+      settingsForm.setValue("bio", user.profile.bio!);
+      settingsForm.setValue("twitter", user.profile.twitter!);
+      // @ts-expect-error -- it wants file but i give string but it still works lmao
+      settingsForm.setValue("avatar", user.profile.avatar);
+      paymentSettingsForm.setValue("wallet", user.profile.wallet!);
+    }
+  }, [user, settingsForm, paymentSettingsForm]);
+
+  useEffect(() => {
+    const { unsubscribe } = settingsForm.watch(debouncedAutoSave);
 
     const { unsubscribe: unsubscribePayments } = paymentSettingsForm.watch(
-      (data) => {
-        if (validateAddress(data.wallet!)) {
-          update({
-            wallet: data.wallet,
-          })
-            .then(() => {
-              toast({ title: "Payment settings updated!" });
-            })
-            .catch(() => {
-              toast({
-                title: "Could not save new payment settings!",
-                variant: "destructive",
-              });
-            });
-        } else
-          toast({
-            title: "Invalid solana address!",
-            variant: "destructive",
-          });
-      },
+      debouncedPaymentsAutoSave,
     );
 
     return () => {
       unsubscribe();
       unsubscribePayments();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settingsForm, paymentSettingsForm, update]);
+  }, [
+    settingsForm,
+    paymentSettingsForm,
+    update,
+    debouncedAutoSave,
+    debouncedPaymentsAutoSave,
+  ]);
 
   return (
     <main

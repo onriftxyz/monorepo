@@ -127,7 +127,7 @@ export const AuthDialog = ({ open, onOpenChange, children }: Props) => {
               control={authForm.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem className="flex flex-col gap-1">
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
