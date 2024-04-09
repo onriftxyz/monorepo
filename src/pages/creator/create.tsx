@@ -416,7 +416,7 @@ const CreateProduct = () => {
             </button>
             {images.slice(1).map((image, ind) => (
               <Image
-                key={image.name + image.size + ind}
+                key={image?.name + image?.size + ind + Math.random() * 100}
                 src={imageDatas[ind]!}
                 alt="cover image"
                 width={192}
