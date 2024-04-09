@@ -13,7 +13,6 @@ import { env } from "~/env";
 import type { Enums } from "~/server/api/supabase/types";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { validateAddress } from "~/utils/solana";
-import { PlusIcon } from "@radix-ui/react-icons";
 
 const STEP_TO_TITLE = [
   <>

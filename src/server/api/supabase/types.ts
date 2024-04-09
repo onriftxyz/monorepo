@@ -4,170 +4,171 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export type Database = {
   public: {
     Tables: {
       products: {
         Row: {
-          content: string[] | null
-          created_at: string
-          creator: string | null
-          description: string | null
-          id: number
-          images: string[] | null
-          price: number
-          sphere_price_id: string | null
-          sphere_product_id: string | null
-          title: string
-          type: Database["public"]["Enums"]["contenttype"]
-          updated_at: string
-          views: number
-        }
+          content: string[] | null;
+          created_at: string;
+          creator: string | null;
+          description: string | null;
+          id: number;
+          images: string[] | null;
+          price: number;
+          sphere_price_id: string | null;
+          sphere_product_id: string | null;
+          title: string;
+          type: Database["public"]["Enums"]["contenttype"];
+          updated_at: string;
+          views: number;
+        };
         Insert: {
-          content?: string[] | null
-          created_at?: string
-          creator?: string | null
-          description?: string | null
-          id?: number
-          images?: string[] | null
-          price?: number
-          sphere_price_id?: string | null
-          sphere_product_id?: string | null
-          title: string
-          type: Database["public"]["Enums"]["contenttype"]
-          updated_at?: string
-          views?: number
-        }
+          content?: string[] | null;
+          created_at?: string;
+          creator?: string | null;
+          description?: string | null;
+          id?: number;
+          images?: string[] | null;
+          price?: number;
+          sphere_price_id?: string | null;
+          sphere_product_id?: string | null;
+          title: string;
+          type: Database["public"]["Enums"]["contenttype"];
+          updated_at?: string;
+          views?: number;
+        };
         Update: {
-          content?: string[] | null
-          created_at?: string
-          creator?: string | null
-          description?: string | null
-          id?: number
-          images?: string[] | null
-          price?: number
-          sphere_price_id?: string | null
-          sphere_product_id?: string | null
-          title?: string
-          type?: Database["public"]["Enums"]["contenttype"]
-          updated_at?: string
-          views?: number
-        }
+          content?: string[] | null;
+          created_at?: string;
+          creator?: string | null;
+          description?: string | null;
+          id?: number;
+          images?: string[] | null;
+          price?: number;
+          sphere_price_id?: string | null;
+          sphere_product_id?: string | null;
+          title?: string;
+          type?: Database["public"]["Enums"]["contenttype"];
+          updated_at?: string;
+          views?: number;
+        };
         Relationships: [
           {
-            foreignKeyName: "public_products_creator_fkey"
-            columns: ["creator"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
+            foreignKeyName: "public_products_creator_fkey";
+            columns: ["creator"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       profiles: {
         Row: {
-          avatar: string | null
-          bio: string | null
-          id: string
-          name: string | null
-          onboarded: boolean
-          sphere_wallet_id: string | null
-          twitter: string | null
-          username: string | null
-          wallet: string | null
-        }
+          [x: string]: string | number | Date | null | boolean;
+          avatar: string | null;
+          bio: string | null;
+          id: string;
+          name: string | null;
+          onboarded: boolean;
+          sphere_wallet_id: string | null;
+          twitter: string | null;
+          username: string | null;
+          wallet: string | null;
+        };
         Insert: {
-          avatar?: string | null
-          bio?: string | null
-          id: string
-          name?: string | null
-          onboarded?: boolean
-          sphere_wallet_id?: string | null
-          twitter?: string | null
-          username?: string | null
-          wallet?: string | null
-        }
+          avatar?: string | null;
+          bio?: string | null;
+          id: string;
+          name?: string | null;
+          onboarded?: boolean;
+          sphere_wallet_id?: string | null;
+          twitter?: string | null;
+          username?: string | null;
+          wallet?: string | null;
+        };
         Update: {
-          avatar?: string | null
-          bio?: string | null
-          id?: string
-          name?: string | null
-          onboarded?: boolean
-          sphere_wallet_id?: string | null
-          twitter?: string | null
-          username?: string | null
-          wallet?: string | null
-        }
+          avatar?: string | null;
+          bio?: string | null;
+          id?: string;
+          name?: string | null;
+          onboarded?: boolean;
+          sphere_wallet_id?: string | null;
+          twitter?: string | null;
+          username?: string | null;
+          wallet?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "public_profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
+            foreignKeyName: "public_profiles_id_fkey";
+            columns: ["id"];
+            isOneToOne: true;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       purchases: {
         Row: {
-          amount: number
-          buyer: string
-          id: number
-          product: number
-          purchased_at: string
-          transcation_id: string
-        }
+          amount: number;
+          buyer: string;
+          id: number;
+          product: number;
+          purchased_at: string;
+          transcation_id: string;
+        };
         Insert: {
-          amount: number
-          buyer?: string
-          id?: number
-          product: number
-          purchased_at?: string
-          transcation_id: string
-        }
+          amount: number;
+          buyer?: string;
+          id?: number;
+          product: number;
+          purchased_at?: string;
+          transcation_id: string;
+        };
         Update: {
-          amount?: number
-          buyer?: string
-          id?: number
-          product?: number
-          purchased_at?: string
-          transcation_id?: string
-        }
+          amount?: number;
+          buyer?: string;
+          id?: number;
+          product?: number;
+          purchased_at?: string;
+          transcation_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "public_purchases_buyer_fkey"
-            columns: ["buyer"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
+            foreignKeyName: "public_purchases_buyer_fkey";
+            columns: ["buyer"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "public_purchases_product_fkey"
-            columns: ["product"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
+            foreignKeyName: "public_purchases_product_fkey";
+            columns: ["product"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
           },
-        ]
-      }
-    }
+        ];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Enums: {
-      contenttype: "LINK" | "UPLOAD" | "MARKDOWN"
-    }
+      contenttype: "LINK" | "UPLOAD" | "MARKDOWN";
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+      [_ in never]: never;
+    };
+  };
+};
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type PublicSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -180,7 +181,7 @@ export type Tables<
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+      Row: infer R;
     }
     ? R
     : never
@@ -188,11 +189,11 @@ export type Tables<
         PublicSchema["Views"])
     ? (PublicSchema["Tables"] &
         PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R
+        Row: infer R;
       }
       ? R
       : never
-    : never
+    : never;
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -203,17 +204,17 @@ export type TablesInsert<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+      Insert: infer I;
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I
+        Insert: infer I;
       }
       ? I
       : never
-    : never
+    : never;
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -224,17 +225,17 @@ export type TablesUpdate<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+      Update: infer U;
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U
+        Update: infer U;
       }
       ? U
       : never
-    : never
+    : never;
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -247,4 +248,4 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never
+    : never;

@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { cn } from "~/lib/utils";
-import { Badge } from "./badge";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -82,12 +81,7 @@ interface OverviewCardProps {
   icon: React.ReactNode;
 }
 
-const OverviewCard = ({
-  title,
-  data,
-  variant,
-  icon,
-}: OverviewCardProps) => {
+const OverviewCard = ({ title, data, variant, icon }: OverviewCardProps) => {
   return (
     <Card className="relative w-full overflow-hidden">
       <CardHeader>
@@ -100,11 +94,7 @@ const OverviewCard = ({
           {title}
         </CardTitle>
         <CardContent>
-        {
-          <div className="flex items-center gap-2 text-3xl">
-            {data}
-          </div>
-        }
+          {<div className="flex items-center gap-2 text-3xl">{data}</div>}
         </CardContent>
       </CardHeader>
       <div

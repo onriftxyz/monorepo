@@ -1,7 +1,6 @@
 import { api } from "~/utils/api";
 import { Explore, ArrowTopRight, Add } from "../icons";
 import { Button } from "../ui/button";
-import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/router";
 
 interface CreatorNavProps {
@@ -11,7 +10,6 @@ interface CreatorNavProps {
 
 export const CreatorTopNav = ({ title, minimal = false }: CreatorNavProps) => {
   const router = useRouter();
-  const { toast } = useToast();
 
   const { data: user } = api.user.get.useQuery();
 

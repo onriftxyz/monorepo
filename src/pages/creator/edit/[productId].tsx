@@ -64,7 +64,7 @@ const EditProduct = ({
         });
 
         try {
-          await fetch(signedUrl, {
+          await fetch(signedUrl.url, {
             method: "PUT",
             body: file,
             headers: {

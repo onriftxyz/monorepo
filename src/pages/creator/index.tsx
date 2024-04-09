@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { matter } from "~/components/fonts";
 import {
   Analytics,
@@ -132,7 +133,8 @@ const CreatorDashboard = () => {
                           />
                           <div className="flex w-full flex-col gap-0.5">
                             <Link
-                              href={`${product.creator.username}/${product.id}`}
+                              // @ts-expect-error
+                              href={`${product.creator!.username}/${product.id}`}
                             >
                               {product.title}
                             </Link>

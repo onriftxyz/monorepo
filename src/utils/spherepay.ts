@@ -192,6 +192,7 @@ export type SpherePaymentWebhookResponse = {
   name: string;
   data: {
     payment: {
+      [x: string]: unknown;
       id: string;
       type: string;
       status: string;

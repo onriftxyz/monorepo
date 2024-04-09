@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -46,7 +47,8 @@ const Settings = () => {
       settingsForm.setValue("username", user.profile.username!);
       settingsForm.setValue("bio", user.profile.bio!);
       settingsForm.setValue("twitter", user.profile.twitter!);
-      settingsForm.setValue("avatar", user.profile.avatar!);
+      // @ts-expect-error
+      settingsForm.setValue("avatar", user.profile.avatar);
       paymentSettingsForm.setValue("wallet", user.profile.wallet!);
     }
   }, [user, settingsForm, paymentSettingsForm]);
@@ -152,6 +154,7 @@ const Settings = () => {
       unsubscribe();
       unsubscribePayments();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsForm, paymentSettingsForm, update]);
 
   return (
@@ -179,7 +182,7 @@ const Settings = () => {
                   <ImageUpload
                     form={settingsForm}
                     defaultAvatar={
-                      user?.profile.avatar ||
+                      user?.profile.avatar ??
                       "https://placehold.co/256/333/777.webp?text=PFP"
                     }
                   />

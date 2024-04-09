@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -23,7 +24,6 @@ import { useAuthenticated } from "~/lib/useAuthenticated";
 import type { Tables } from "~/server/api/supabase/types";
 import { api } from "~/utils/api";
 import { createSupabaseServerClient } from "~/utils/supabase";
-import { type ProductGet } from "~/utils/product";
 
 const ProfilePage = ({
   profile,
@@ -66,7 +66,7 @@ const ProfilePage = ({
             </span>
           ) : products?.length ? (
             <div className="grid grid-cols-3 gap-4 pt-4">
-              {(products)?.map((product) => (
+              {products?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader>
                     <CardTitle className="text-left">
@@ -142,11 +142,13 @@ const ProfilePage = ({
             </div>
             <div className="text-left text-muted-foreground">
               Joined on{" "}
-              {new Date(profile.created_at).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-                day: "2-digit",
-              })}
+              {profile.created_at
+                ? new Date(String(profile.created_at)).toLocaleDateString("en-US", {
+                    month: "short",
+                    year: "numeric",
+                    day: "2-digit",
+                  })
+                : "N/A"}
             </div>
           </div>
         </div>

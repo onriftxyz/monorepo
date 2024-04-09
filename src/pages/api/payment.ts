@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Tables } from "~/server/api/supabase/types";
 import { type SpherePaymentWebhookResponse } from "~/utils/spherepay";
 import { createSupabaseServerClient } from "~/utils/supabase";
 
@@ -11,10 +12,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-
-
-  console.log("webhook")
-  console.log(JSON.stringify(req.body))
+  console.log("webhook");
+  console.log(JSON.stringify(req.body));
 
   if (req.method !== "POST") {
     res.status(405).send({ message: "Only POST requests allowed" });
@@ -23,17 +22,18 @@ export default async function handler(
 
   const { data } = req.body as SpherePaymentWebhookResponse;
 
-
   if (data.payment.status === "succeeded") {
-    const { buyer, product } = data.payment.paymentLink.meta;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const { buyer, product } = data.payment.paymentLink!.meta;
     const txSig = data.payment.transport.solana.solanaEvent.txSig;
     const amount = data.payment.transactions[0]!.amountUSD;
 
-    console.log(buyer, product, txSig, amount)
+    console.log(buyer, product, txSig, amount);
 
     const supabase = createSupabaseServerClient({ req, res });
 
-    console.log(supabase)
+    console.log(supabase);
 
     const { error } = await supabase.from("purchases").insert({
       buyer: buyer,
@@ -42,7 +42,7 @@ export default async function handler(
       transaction_id: txSig,
     });
 
-    console.log("db")
+    console.log("db");
 
     if (error) {
       console.error(error);

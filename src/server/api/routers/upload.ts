@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { string, z } from "zod";
+import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -50,7 +50,7 @@ export const uploadRouter = createTRPCRouter({
 
       return {
         url: data.signedUrl,
-        location: location
+        location: location,
       };
     }),
 });
