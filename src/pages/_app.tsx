@@ -11,7 +11,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>Rift - Read. Write. Own.</title>
+        <title>Rift - Helping creators monetize</title>
+        <meta name="description" content="We help creators monetize their audince. " />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
