@@ -47,6 +47,9 @@ const ProductContentPage = ({
         >
           {product.creator.name}
         </Link>
+        <div className="text-muted-foreground">
+          Powered by <Link href="/home">Rift</Link>
+        </div>
       </nav>
       <div className="px-48 py-16">
         <div className="flex h-full w-full items-center justify-between gap-4 px-10">

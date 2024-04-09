@@ -154,6 +154,7 @@ const ProfilePage = ({
                   })
                 : "N/A"}
             </div>
+            <div className="text-muted-foreground py-10">Powered by <Link href="/home">Rift</Link></div>
           </div>
         </div>
       </div>

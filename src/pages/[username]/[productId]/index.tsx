@@ -47,6 +47,7 @@ const ProductPage = ({
         >
           {product.creator.name}
         </Link>
+        <div className="text-muted-foreground">Powered by <Link href="/home">Rift</Link></div>
       </nav>
       <div className="grid grid-cols-2 gap-4 px-48 py-16">
         <div className="relative">
