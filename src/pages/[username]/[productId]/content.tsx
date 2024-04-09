@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { matter } from "~/components/fonts";
+import { Views } from "~/components/icons";
 import { toast } from "~/components/ui/use-toast";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { api } from "~/utils/api";

@@ -147,7 +147,7 @@ const ProfilePage = ({
             <div className="text-left text-muted-foreground">
               Joined on{" "}
               {profile.created_at
-                ? new Date(String(profile.created_at)).toLocaleDateString("en-US", {
+                ? new Date(profile.created_at as string | number).toLocaleDateString("en-US", {
                     month: "short",
                     year: "numeric",
                     day: "2-digit",
