@@ -7,36 +7,35 @@ import type {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { matter } from "~/components/fonts";
-import { ChevronLeft, ChevronRight, Views } from "~/components/icons";
-import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
 import { toast } from "~/components/ui/use-toast";
 import { useAuthenticated } from "~/lib/useAuthenticated";
 import { api } from "~/utils/api";
 import { type ProductGet } from "~/utils/product";
 import { createSupabaseServerClient } from "~/utils/supabase";
 
-const ProductPage = ({
+const ProductContentPage = ({
   product,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   useAuthenticated();
 
-  const { data: isPurchased } = api.product.isPurchased.useQuery({ id: product.id });
-  const checkout = api.payment.createPaymentLink.useMutation();
-
+  const { data: isPurchased } = api.product.isPurchased.useQuery({
+    id: product.id,
+  });
   const router = useRouter();
 
-  const handleBuy = async () => {
-    try {
-      const checkoutData = await checkout.mutateAsync({
-        product_id: product.id,
+  useEffect(() => {
+    if (!isPurchased) {
+      void router.push(`/${product.creator.username}/${product.id}`);
+      toast({
+        title: "You have not purchased this product!",
+        description:
+          "To access the contents of this product, purchase a copy of the product and come back here.",
+        variant: "destructive",
       });
-      window.location.href = checkoutData.paymentLink.url;
-    } catch (e) {
-      toast({ title: "Failed to purchase product!", variant: "destructive" })
     }
-  };
+  }, [isPurchased, router, product]);
 
   return (
     <main className={` ${matter.className}`}>
@@ -48,41 +47,25 @@ const ProductPage = ({
           {product.creator.name}
         </Link>
       </nav>
-      <div className="grid grid-cols-2 gap-4 px-48 py-16">
-        <div className="relative">
-          <Image
-            src={
-              product.images?.[0] ??
-              "https://placehold.co/512/333333/777777/webp?text=Cover Image"
-            }
-            width={512}
-            height={512}
-            alt="cover image"
-            className="h-full w-full"
-          />
-          <button
-            className="absolute left-2 top-1/2 -translate-y-1/2 disabled:cursor-not-allowed disabled:text-muted"
-            disabled
-          >
-            <ChevronLeft size={32} />
-          </button>
-          <button
-            className="absolute right-2 top-1/2 -translate-y-1/2 disabled:cursor-not-allowed disabled:text-muted"
-            disabled
-          >
-            <ChevronRight size={32} />
-          </button>
-        </div>
-        <div className="flex h-full w-full flex-col gap-4 px-10">
-          <div className="text-4xl">{product.title}</div>
-          <div className="line-clamp-2 text-muted-foreground">
-            {product.description}
+      <div className="px-48 py-16">
+        <div className="flex h-full w-full items-center justify-between gap-4 px-10">
+          <div className="flex items-center gap-4">
+            <Image
+              src={
+                product.images?.[0] ??
+                "https://placehold.co/512/333333/777777/webp?text=Cover Image"
+              }
+              width={124}
+              height={124}
+              alt="cover image"
+            />
+            <div className="flex flex-col gap-4">
+              <div className="text-4xl">{product.title}</div>
+              <div className="line-clamp-2 text-muted-foreground">
+                {product.description}
+              </div>
+            </div>
           </div>
-          <div className="text-2xl">${product.price}</div>
-          <Button onClick={() => !isPurchased ? handleBuy() : router.push(`/${product.creator.username}/${product.id}/content`)} className="w-full" size="lg">
-            {isPurchased ? "Go to Content" : "Buy Now"}
-          </Button>
-          <Separator />
           <div className="flex flex-col gap-1">
             <div className="flex gap-1">
               <Views />
@@ -97,9 +80,24 @@ const ProductPage = ({
               })}
             </div>
             <div className="text-sm text-muted-foreground">
-              You will unlock {product.content?.length}{" "}
+              Contains {product.content?.length}{" "}
               {product.type === "LINK" ? "links" : "files"}.
             </div>
+          </div>
+        </div>
+        <div className="px-24 py-12">
+          <div className="text-2xl">
+            {product.type === "LINK" ? "Links" : "Files"}
+          </div>
+          <div className="flex flex-col gap-2 text-blue-400">
+            {product.content?.map((content) => (
+              <Link href={content} target="_blank" key={content}>
+                &bull;{" "}
+                <span className="underline underline-offset-2 transition-opacity duration-200 ease-in-out hover:opacity-90">
+                  {content}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -141,4 +139,4 @@ export const getServerSideProps = (async (ctx) => {
   };
 }) satisfies GetServerSideProps<{ product: ProductGet }>;
 
-export default ProductPage;
+export default ProductContentPage;
