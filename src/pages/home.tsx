@@ -157,13 +157,16 @@ const UserDashboard = () => {
             <div className="grid grid-cols-3 gap-4 pt-4">
               {mostPurchasedProducts?.map((product) => (
                 <Card key={product.id}>
-                  <CardHeader>
-                    <CardTitle>
-                      <Link href={`/${product.creator.username}/${product.id}`}>
-                        {product.title}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription>{product.description}</CardDescription>
+                  <CardHeader className="flex gap-2 flex-row">
+                    <Image src={product.images?.[0]} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
+                    <div>
+                      <CardTitle>
+                        <Link href={`/${product.creator.username}/${product.id}`}>
+                          {product.title}
+                        </Link>
+                      </CardTitle>
+                      <CardDescription>{product.description}</CardDescription>
+                    </div>
                   </CardHeader>
                   <CardContent></CardContent>
                   <CardFooter>

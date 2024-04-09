@@ -68,7 +68,9 @@ const ProfilePage = ({
             <div className="grid grid-cols-3 gap-4 pt-4">
               {products?.map((product) => (
                 <Card key={product.id}>
-                  <CardHeader>
+                  <CardHeader className="flex gap-2 flex-row">
+                  <Image src={product.images?.[0]} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
+                  <div>
                     <CardTitle className="text-left">
                       <Link href={`/${product.creator.username}/${product.id}`}>
                         {product.title}
@@ -77,6 +79,8 @@ const ProfilePage = ({
                     <CardDescription className="text-left">
                       {product.description}
                     </CardDescription>
+
+                  </div>
                   </CardHeader>
                   <CardContent></CardContent>
                   <CardFooter>
