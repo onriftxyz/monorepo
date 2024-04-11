@@ -232,6 +232,7 @@ export const paymentRouter = createTRPCRouter({
         },
         successUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=SUCCESS`,
         failureUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout?type=FAILURE`,
+        requiresEmail: true,
         wallets: [
           {
             id: env.RIFT_SPHERE_WALLET_ID,
@@ -253,7 +254,7 @@ export const paymentRouter = createTRPCRouter({
         body: JSON.stringify(data),
       });
 
-      console.log(data)
+      console.log(data);
 
       if (!response.ok) {
         console.log(response);
