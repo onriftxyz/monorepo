@@ -362,7 +362,7 @@ export const productRouter = createTRPCRouter({
       return data.product;
     }),
 
-  mostPurchased: publicProcedure
+  recommended: publicProcedure
     .input(
       z.object({
         limit: z.number().int().positive().default(10),
@@ -377,28 +377,9 @@ export const productRouter = createTRPCRouter({
       // GROUP BY p.id
       // ORDER BY total_purchases DESC
 
-      const { data: purchases, error } = await ctx.supabase
-        .from("purchases")
-        .select("product: products(id)")
-        .returns<{ product: { id: number } }[]>();
-
-      console.log(purchases);
-
-      if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
-      }
-
-      // HACK: So hacky it's not even funny, imma throw up.
-
-      const productIds = purchases.map(({ product }) => product.id);
-
       const { data: products, error: errorProduct } = await ctx.supabase
         .from("products")
         .select("*, creator:profiles!public_products_creator_fkey(*)")
-        .in("id", productIds)
         .returns<ProductGet[]>();
 
       if (errorProduct) {
@@ -408,21 +389,7 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      const productsWithPurchases = products.map((product) => {
-        const totalPurchases = purchases.filter(
-          (purchase) => purchase.product.id === product.id,
-        ).length;
-        return {
-          ...product,
-          purchases: totalPurchases,
-        };
-      });
-
-      const sortedProducts = productsWithPurchases.sort(
-        (a, b) => b.purchases - a.purchases,
-      );
-
-      return sortedProducts.slice(input.offset, input.offset + input.limit);
+      return products
     }),
 
   stats: protectedProcedure
