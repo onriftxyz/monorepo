@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -37,9 +38,9 @@ const UserDashboard = () => {
     });
 
   const {
-    data: mostPurchasedProducts,
-    isLoading: isLoadingMostPurchasedProducts,
-  } = api.product.mostPurchased.useQuery({
+    data: recommenedProducts,
+    isLoading: isLoadingRecommendedProducts,
+  } = api.product.recommended.useQuery({
     limit: 5,
   });
 
@@ -145,20 +146,20 @@ const UserDashboard = () => {
             </Link>
           </div>
         )}
-        {isLoadingMostPurchasedProducts ? (
+        {isLoadingRecommendedProducts ? (
           <span className="flex max-h-96 w-full grow items-center justify-center">
             <span className="animate-spin">
               <Loader />
             </span>
           </span>
-        ) : mostPurchasedProducts?.length ? (
+        ) : recommenedProducts?.length ? (
           <div>
             <div>Recommended</div>
             <div className="grid grid-cols-3 gap-4 pt-4">
-              {mostPurchasedProducts?.map((product) => (
+              {recommenedProducts?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader className="flex gap-2 flex-row">
-                    <Image src={product.images?.[0]} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
+                    <Image src={product.images?.[0] as string} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
                     <div>
                       <CardTitle>
                         <Link href={`/${product.creator.username}/${product.id}`}>

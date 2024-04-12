@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -24,9 +25,9 @@ const Explore = () => {
   const router = useRouter();
 
   const {
-    data: mostPurchasedProducts,
-    isLoading: isLoadingMostPurchasedProducts,
-  } = api.product.mostPurchased.useQuery({});
+    data: recommendedProducts,
+    isLoading: isLoadingRecommendedProducts,
+  } = api.product.recommended.useQuery({});
 
   return (
     <main
@@ -38,20 +39,20 @@ const Explore = () => {
       <UserSidebar />
       <div className="col-span-4 flex flex-col gap-5 px-8 py-5">
         <CreatorTopNav title="Explore" minimal />
-        {isLoadingMostPurchasedProducts ? (
+        {isLoadingRecommendedProducts ? (
           <span className="flex h-full w-full grow items-center justify-center">
             <span className="animate-spin">
               <Loader />
             </span>
           </span>
-        ) : mostPurchasedProducts?.length ? (
+        ) : recommendedProducts?.length ? (
           <div>
             <div>Recommended</div>
             <div className="grid grid-cols-3 gap-4 pt-4">
-              {mostPurchasedProducts?.map((product) => (
+              {recommendedProducts?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader className="flex gap-2 flex-row">
-                  <Image src={product.images?.[0]} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
+                  <Image src={product.images?.[0] as string} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
                   <div>
                     <CardTitle>
                       <Link href={`/${product.creator.username}/${product.id}`}>

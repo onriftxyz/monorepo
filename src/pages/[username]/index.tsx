@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -69,7 +70,7 @@ const ProfilePage = ({
               {products?.map((product) => (
                 <Card key={product.id}>
                   <CardHeader className="flex gap-2 flex-row">
-                  <Image src={product.images?.[0]} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
+                  <Image src={product.images?.[0] as string} alt="cover" width={64} height={64} className="shrink-0 h-10 w-10 rounded-lg" />
                   <div>
                     <CardTitle className="text-left">
                       <Link href={`/${product.creator.username}/${product.id}`}>
