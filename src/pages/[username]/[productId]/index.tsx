@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { matter } from "~/components/fonts";
-import { ChevronLeft, ChevronRight, Views } from "~/components/icons";
+import { ChevronLeft, ChevronRight, Loader, Views } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { toast } from "~/components/ui/use-toast";
@@ -22,7 +22,9 @@ const ProductPage = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   useAuthenticated();
 
-  const { data: isPurchased } = api.product.isPurchased.useQuery({ id: product.id });
+  const { data: isPurchased } = api.product.isPurchased.useQuery({
+    id: product.id,
+  });
   const checkout = api.payment.createPaymentLink.useMutation();
 
   const router = useRouter();
@@ -34,7 +36,7 @@ const ProductPage = ({
       });
       window.location.href = checkoutData.paymentLink.url;
     } catch (e) {
-      toast({ title: "Failed to purchase product!", variant: "destructive" })
+      toast({ title: "Failed to purchase product!", variant: "destructive" });
     }
   };
 
@@ -47,7 +49,9 @@ const ProductPage = ({
         >
           {product.creator.name}
         </Link>
-        <div className="text-muted-foreground">Powered by <Link href="/home">Rift</Link></div>
+        <div className="text-muted-foreground">
+          Powered by <Link href="/home">Rift</Link>
+        </div>
       </nav>
       <div className="grid grid-cols-2 gap-4 px-48 py-16">
         <div className="relative">
@@ -80,8 +84,26 @@ const ProductPage = ({
             {product.description}
           </div>
           <div className="text-2xl">${product.price}</div>
-          <Button onClick={() => !isPurchased ? handleBuy() : router.push(`/${product.creator.username}/${product.id}/content`)} className="w-full" size="lg">
-            {isPurchased ? "Go to Content" : "Buy Now"}
+          <Button
+            disabled={checkout.isLoading}
+            onClick={() =>
+              !isPurchased
+                ? handleBuy()
+                : router.push(
+                    `/${product.creator.username}/${product.id}/content`,
+                  )
+            }
+            className="w-full"
+            size="lg"
+          >
+            {isPurchased ? "Go to Content" : "Buy Now"}{" "}
+            {checkout.isLoading ? (
+              <span className="animate-spin">
+                <Loader />
+              </span>
+            ) : (
+              ""
+            )}
           </Button>
           <Separator />
           <div className="flex flex-col gap-1">

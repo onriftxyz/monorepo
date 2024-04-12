@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { IconInput, Input } from "~/components/ui/input";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { Add, ArrowLeft, Upload } from "~/components/icons";
+import { Add, ArrowLeft, Loader, Upload } from "~/components/icons";
 import { useRouter } from "next/router";
 import { toast } from "~/components/ui/use-toast";
 import { Textarea } from "~/components/ui/textarea";
@@ -444,6 +444,7 @@ const CreateProduct = () => {
           />
           {validateAddress(user!.profile.wallet!) ? (
             <Button
+              disabled={createPost.isLoading}
               onClick={() => {
                 if (price < 0)
                   toast({
@@ -458,7 +459,14 @@ const CreateProduct = () => {
                 else void handleSubmit();
               }}
             >
-              Complete &rarr;
+              Complete{" "}
+              {createPost.isLoading ? (
+                <span className="animate-spin">
+                  <Loader />
+                </span>
+              ) : (
+                "→"
+              )}
             </Button>
           ) : (
             <Button
@@ -488,6 +496,7 @@ const CreateProduct = () => {
             onChange={(e) => setWallet(e.target.value)}
           />
           <Button
+            disabled={createPost.isLoading}
             onClick={() => {
               if (validateAddress(wallet!)) void handleSubmit();
               else
@@ -497,7 +506,14 @@ const CreateProduct = () => {
                 });
             }}
           >
-            Complete &rarr;
+            Complete{" "}
+            {createPost.isLoading ? (
+              <span className="animate-spin">
+                <Loader />
+              </span>
+            ) : (
+              "→"
+            )}
           </Button>
         </div>
       ) : null}
