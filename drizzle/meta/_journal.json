@@ -1,33 +1,12 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1709556247286,
-      "tag": "0000_shocking_luke_cage",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1709641174019,
-      "tag": "0001_huge_captain_stacy",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1709723261514,
-      "tag": "0002_huge_la_nuit",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1712644332741,
-      "tag": "0003_free_nitro",
+      "version": "7",
+      "when": 1727192757880,
+      "tag": "0000_talented_sway",
       "breakpoints": true
     }
   ]

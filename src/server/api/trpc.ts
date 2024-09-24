@@ -2,7 +2,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { db } from "./db/client";
+import { db } from "./db";
 import { createSupabaseServerClient } from "~/utils/supabase";
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
